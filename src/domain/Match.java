@@ -3,6 +3,7 @@ package domain;
 /**
  * Created by ArcticMonkey on 4/9/2017.
  */
+
 public class Match {
     private String matchName;
     private Team team1;

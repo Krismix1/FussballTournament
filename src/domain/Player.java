@@ -16,19 +16,18 @@ public class Player {
     }
 
     public void setMatchesPlayed(int matchesPlayed) {
-        if(matchesPlayed >= 0) {
+        if (matchesPlayed >= 0) {
             this.matchesPlayed = matchesPlayed;
-        }else
-        {
+        } else {
             throw new IllegalArgumentException("Matches played can't be negative!");
             //this.matchesPlayed = 0;
         }
     }
-    public void updateMatchesPlayed(int matchesPlayed) {
-        if(matchesPlayed >= 0) {// FIXME: 4/9/2017 consider checking sum greater than 0
+
+    public void addMatchesPlayed(int matchesPlayed) {
+        if (matchesPlayed >= 0) {// FIXME: 4/9/2017 consider checking sum greater than 0
             this.matchesPlayed += matchesPlayed;
-        }else
-        {
+        } else {
             throw new IllegalArgumentException("Matches played can't be negative!");
             //this.matchesPlayed = 0;
         }
@@ -50,7 +49,7 @@ public class Player {
         return matchesPlayed;
     }
 
-    public String getDob() {
+    public String getDateOfBirth() {
         return dob;
     }
 }
