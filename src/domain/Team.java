@@ -9,7 +9,7 @@ public class Team {
      * The names is composed from the DEFAULT_NAME and a number which is auto-incremented
      * every time a team with no name is created.
      */
-    public static final String DEFAULT_NAME = "Team #";
+    public static final String DEFAULT_NAME = "Team #"; // FIXME: 10-Apr-17 Fucks up when project restarts
 
     private static int teamDefaultNameIndex = 1;
 
@@ -110,6 +110,26 @@ public class Team {
             secondPlayer = player;
         } else {
             throw new IllegalStateException("Full team");
+        }
+    }
+
+    /**
+     * Substitutes players in the team with a new one.
+     * @param oldPlayer the player to substitute
+     * @param newPlayer the new player to add. This value can't be null.
+     * @throws Exception if the player to substitute is not found or if the new player is null.
+     */
+    public void substitutePlayer(Player oldPlayer, Player newPlayer) throws Exception{
+        if (newPlayer != null) {
+            if (firstPlayer.equals(oldPlayer)) {
+                firstPlayer = newPlayer;
+            } else if (secondPlayer.equals(oldPlayer)) {
+                secondPlayer = newPlayer;
+            } else {
+                throw new Exception("Player not found.");
+            }
+        } else {
+            throw new Exception("Player can't be null");
         }
     }
 
