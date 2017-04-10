@@ -6,6 +6,7 @@ package domain;
 
 public class Match {
     private String matchName;
+    private String matchDate;
     private Team team1;
     private Team team2;
     private int goals1, goals2;
@@ -22,5 +23,9 @@ public class Match {
         this.team2 = team2;
         this.goals1 = goals1;
         this.goals2 = goals2;
+    }
+
+    public String getMatchName() {
+        return matchName;
     }
 }
