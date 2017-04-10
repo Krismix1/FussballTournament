@@ -11,12 +11,26 @@ public class Match {
     private Team team2;
     private int goals1, goals2;
 
+    /**
+     * Creates a new match given matchName and two teams.
+     * @param matchName name of match
+     * @param team1 team #1
+     * @param team2 team #2
+     */
     public Match(String matchName, Team team1, Team team2) {
         this.matchName = matchName;
         this.team1 = team1;
         this.team2 = team2;
     }
 
+    /**
+     * Creates a new match given matchName, two teams and also goals scored for each team
+     * @param matchName name of match
+     * @param team1 team #1
+     * @param team2 team #2
+     * @param goals1 goals scored by team #1
+     * @param goals2 goals scored by team #2
+     */
     public Match(String matchName, Team team1, Team team2, int goals1, int goals2) {
         this.matchName = matchName;
         this.team1 = team1;
@@ -25,6 +39,10 @@ public class Match {
         this.goals2 = goals2;
     }
 
+    /**
+     * Gets match name
+     * @return match name
+     */
     public String getMatchName() {
         return matchName;
     }
