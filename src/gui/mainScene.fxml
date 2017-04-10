@@ -15,7 +15,7 @@
         <TextField fx:id="emailInput" GridPane.columnIndex="1" GridPane.rowIndex="1" />
         <Button mnemonicParsing="false" onAction="#saveAction" text="Save" GridPane.columnIndex="1" GridPane.rowIndex="3" />
       <Label text="Birthday:" GridPane.rowIndex="2" />
-      <TextField fx:id="dateBirthInput" promptText="0000/00/00" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+      <TextField fx:id="dateBirthInput" promptText="DD.MM.YYYY" GridPane.columnIndex="1" GridPane.rowIndex="2" />
     </children>
     <rowConstraints>
         <RowConstraints />

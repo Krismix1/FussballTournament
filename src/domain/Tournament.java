@@ -1,5 +1,6 @@
 package domain;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -9,33 +10,38 @@ import java.util.List;
 public class Tournament {
 
     List<Match> matchList = new LinkedList<>();
-    List<Team> teamList = new LinkedList<>();
+    List<Team> teamList = new ArrayList<>();
     List<Player> playerList = new LinkedList<>();
 
-    public void registerPlayer (Player p){
-
-    playerList.add(p);
+    /**
+     * Adds player to the tournament.
+     * @param p the player to be added.
+     */
+    public void registerPlayer(Player p) {
+        playerList.add(p);
     }
 
-    public void registerTeam (Team t){
-
+    /**
+     * Adds team to the tournament.
+     * @param t the team to be added.
+     */
+    public void registerTeam(Team t) {
         teamList.add(t);
     }
 
-    public void createMatches(){
-        for(int i = 0; i< teamList.size()-1; i++){
+    /**
+     * Creates the matches for the tournament.
+     * Each team is assigned to play a match against all other remaining teams.
+     */
+    public void createMatches() {
+        for (int i = 0; i < teamList.size() - 1; i++) {
             Team team1 = teamList.get(i);
-            for(int j = i+1; j <teamList.size(); j++){
+            for (int j = i + 1; j < teamList.size(); j++) {
                 Team team2 = teamList.get(j);
                 String matchName = team1.getTeamName() + " vs " + team2.getTeamName();
                 matchList.add(new Match(matchName, team1, team2));
             }
-
         }
-
-
-
     }
-
 }
 
