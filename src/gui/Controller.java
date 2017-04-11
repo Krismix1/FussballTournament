@@ -9,8 +9,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import technicalservices.DBConnection;
 
-import javax.xml.soap.Text;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -27,7 +27,6 @@ public class Controller {
 
 
     public void saveAction(ActionEvent actionEvent) {
-        System.out.println("Hello ...");
         String name = nameInput.getText();
         String email = emailInput.getText();
         String birthday = dateBirthInput.getText();
@@ -50,7 +49,6 @@ public class Controller {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
     }
 
     @FXML
@@ -59,24 +57,25 @@ public class Controller {
     private PasswordField adminPassword;
 
     public void btnLoginAction(){
-        System.out.println("hh");
         String admin = adminLogin.getText();
         String pass = adminPassword.getText();
-        System.out.println("Admin ->" + admin + "<-");
-        System.out.println("Password ->" + pass + "<-");
+        System.out.println("Admin -> " + admin + " <-");
+        System.out.println("Password -> " + pass + " <-");
         try {
             Parent root = FXMLLoader.load(getClass().getResource("/gui/mainScene.fxml"));
             Scene scene = new Scene(root, 300, 275);
-            Stage adminWindow = new Stage();
-            adminWindow.setScene(scene);
-            adminWindow.show();
+            Main.mainStage.setScene(scene);
+            //Stage adminStage = new Stage();
+            //adminStage.setScene(scene);
+            //adminStage.show();
+            //Main.mainStage.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     public void btnPlayersLoginAction(){
-        System.out.println("Player Logged Inz");
+        System.out.println("Player Logged In");
     }
 
 }
