@@ -19,6 +19,46 @@ import java.sql.Statement;
 public class Controller {
 
     @FXML
+    private TextField teamInput;
+    @FXML
+    private TextField goalInput;
+    @FXML
+    private TextField againstInput;
+    @FXML
+    private TextField pointInput;
+
+
+    public void saveLeagueAction(ActionEvent actionEvent) {
+        String team = teamInput.getText();
+        String goals = goalInput.getText();
+        String against = againstInput.getText();
+        String points = pointInput.getText();
+
+
+        System.out.println("Team ->" + team + "<-");
+        System.out.println("Goals ->" + goals + "<-");
+        System.out.println("Against ->" + against + "<-");
+        System.out.println("Points ->" + points + "<-");
+
+
+        try {
+            String sql1 = "INSERT INTO League VALUES " +
+                    "(NULL, '" + team + "', '" + goals + "', '" + against + "', '" + points + "')";
+            System.out.println(sql1);
+
+            Connection con1 = DBConnection.getConnection();
+            Statement stmt1 = con1.createStatement();
+            stmt1.executeUpdate(sql1);
+            con1.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    public void btnScoreAction(){
+        System.out.println("Score Logged In");
+    }
+
+    @FXML
     private TextField nameInput;
     @FXML
     private TextField emailInput;
@@ -39,7 +79,7 @@ public class Controller {
 
         try {
             String sql = "INSERT INTO Players VALUES " +
-                    "(NULL, '" + name + "', '" + email + "','" + birthday + "')";
+                    "(NULL, '" + name + "', '" + email + "', '" + birthday + "')";
             System.out.println(sql);
 
             Connection con = DBConnection.getConnection();

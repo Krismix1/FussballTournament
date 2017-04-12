@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<GridPane alignment="center" hgap="10" stylesheets="@mainScene.fxml" vgap="10" xmlns="http://javafx.com/javafx/8.0.101" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.Controller">
+<GridPane alignment="center" hgap="10" stylesheets="@mainScene.fxml" vgap="10" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.Controller">
     <children>
         <Label text="Name:" />
         <Label text="Email:" GridPane.rowIndex="1" />
@@ -15,7 +15,7 @@
         <TextField fx:id="emailInput" GridPane.columnIndex="1" GridPane.rowIndex="1" />
         <Button mnemonicParsing="false" onAction="#saveAction" text="Save" GridPane.columnIndex="1" GridPane.rowIndex="3" />
       <Label text="Birthday:" GridPane.rowIndex="2" />
-      <TextField fx:id="dateBirthInput" promptText="DD.MM.YYYY" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+      <TextField fx:id="dateBirthInput" promptText="YYYY.MM.DD" GridPane.columnIndex="1" GridPane.rowIndex="2" />
     </children>
     <rowConstraints>
         <RowConstraints />
