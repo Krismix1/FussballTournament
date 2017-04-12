@@ -26,7 +26,7 @@
                               <Label text="Birthday:" GridPane.rowIndex="2" />
                               <TextField fx:id="dateBirthInput" promptText="DD.MM.YYYY" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                               <Label text="Name:" />
-                              <TextField prefHeight="39.0" prefWidth="590.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                              <TextField fx:id="emailInput" prefHeight="39.0" prefWidth="590.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                            </children>
                            <columnConstraints>
                               <ColumnConstraints hgrow="SOMETIMES" maxWidth="633.0" minWidth="10.0" prefWidth="175.0" />
@@ -79,7 +79,7 @@
                               <TableColumn prefWidth="90.0" text="Goals" />
                               <TableColumn prefWidth="54.0" text="MP" />
                               <TableColumn prefWidth="66.0" text="Wins" />
-                              <TableColumn prefWidth="58.0" text="Losts" />
+                              <TableColumn prefWidth="58.0" text="Losses" />
                           </columns>
                         </TableView>
                      </children>
