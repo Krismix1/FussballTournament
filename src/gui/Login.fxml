@@ -5,7 +5,7 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="222.0" prefWidth="261.0" styleClass="persistent-prompt" stylesheets="@stylish.css" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.Controller">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="222.0" prefWidth="261.0" styleClass="persistent-prompt" stylesheets="@stylish.css" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.Login">
    <children>
       <TextField fx:id="adminLogin" layoutX="27.0" layoutY="36.0" prefHeight="30.0" prefWidth="214.0" promptText="Admin" styleClass="persistent-prompt" />
       <PasswordField fx:id="adminPassword" layoutX="27.0" layoutY="84.0" maxWidth="230.0" prefHeight="30.0" prefWidth="214.0" promptText="Password" styleClass="persistent-prompt" />
