@@ -6,6 +6,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.stage.Stage;
 
 import java.io.IOException;
 
@@ -49,6 +50,18 @@ public class Login {
 
     @FXML
     private void btnPlayersLoginAction(){
-        System.out.println("Player Logged In");
+        try {
+            Stage playerStage = new Stage();
+            Parent playerRoot = FXMLLoader.load(getClass().getResource("/gui/playerView.fxml"));
+            playerStage.setTitle("Player View");
+            Scene playerScene = new Scene(playerRoot, 300, 275);
+            playerStage.setScene(playerScene);
+            playerStage.show();
+            Main.mainStage.close();
+
+            System.out.println("Player Logged In");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
