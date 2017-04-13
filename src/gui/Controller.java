@@ -1,11 +1,13 @@
 package gui;
 
 
+import domain.Player;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.ListView;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
@@ -104,7 +106,8 @@ public class Controller {
     private TextField dateBirthInput;
 
 
-    public void saveAction(ActionEvent actionEvent) {
+    @FXML
+    private void saveAction(ActionEvent actionEvent) {
         String name = nameInput.getText();
         String email = emailInput.getText();
         String birthday = dateBirthInput.getText();
@@ -134,7 +137,8 @@ public class Controller {
     @FXML
     private PasswordField adminPassword;
 
-    public void btnLoginAction(){
+    @FXML
+    private void btnLoginAction(){
         String admin = adminLogin.getText();
         String pass = adminPassword.getText();
         System.out.println("Admin -> " + admin + " <-");
@@ -152,10 +156,13 @@ public class Controller {
         }
     }
 
-    public void btnPlayersLoginAction(){
+    @FXML
+    private void btnPlayersLoginAction(){
         System.out.println("Player Logged In");
     }
 
+    @FXML
+    private ListView<Player> playersListView;
 }
 
 

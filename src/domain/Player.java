@@ -8,6 +8,7 @@ public class Player {
     private String playerName;
     private int matchesPlayed;
     private String dob; // DD.MM.YYYY, change to LocalDate
+    private String email;
 
 
     /**
@@ -15,9 +16,10 @@ public class Player {
      * @param playerName player name
      * @param dob date of birth of the player
      */
-    public Player(String playerName, String dob) {
+    public Player(String playerName, String dob, String email) {
         this.playerName = playerName;
         this.dob = dob;
+        this.email = email;
     }
 
     /**
@@ -86,5 +88,21 @@ public class Player {
      */
     public String getDateOfBirth() {
         return dob;
+    }
+
+    /**
+     * Returns the email of the player.
+     * @return the email of the player.
+     */
+    public String getEmail() {
+        return email;
+    }
+
+    /**
+     * Sets the email for the player.
+     * @param email player's email.
+     */
+    public void setEmail(String email) {
+        this.email = email;
     }
 }
