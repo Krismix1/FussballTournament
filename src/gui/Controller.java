@@ -2,21 +2,25 @@ package gui;
 
 
 import domain.Player;
+import domain.Team;
+import domain.Tournament;
+import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.ListView;
-import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
-import javafx.stage.Stage;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import technicalservices.DBConnection;
 
-import java.io.IOException;
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.LinkedList;
+import java.util.List;
 
 public class Controller {
 
@@ -28,18 +32,18 @@ public class Controller {
     private TextField dateInput;
 
     @FXML
-    private void saveSchedule(ActionEvent actionEvent){
-       String team1 = team1Input.getText();
-       String team2 = team2Input.getText();
-       String date = dateInput.getText();
+    private void saveSchedule(ActionEvent actionEvent) {
+        String team1 = team1Input.getText();
+        String team2 = team2Input.getText();
+        String date = dateInput.getText();
 
-       System.out.println("Team1 ->" + team1 + "<-");
-       System.out.println("Team2 ->" + team2 + "<-");
-       System.out.println("Date->" + date + "<-");
+        System.out.println("Team1 ->" + team1 + "<-");
+        System.out.println("Team2 ->" + team2 + "<-");
+        System.out.println("Date->" + date + "<-");
 
         try {
             String sql2 = "INSERT INTO Schedule VALUES " +
-                    "('" + team1 + "', '" + team2 + "', '" + date +  "')";
+                    "('" + team1 + "', '" + team2 + "', '" + date + "')";
             System.out.println(sql2);
 
             Connection con2 = DBConnection.getConnection();
@@ -50,12 +54,10 @@ public class Controller {
             e.printStackTrace();
         }
     }
-    public void btnScoreAction2(){
+
+    public void btnScoreAction2() {
         System.out.println("Schedule Logged In");
     }
-
-
-
 
 
     @FXML
@@ -94,7 +96,8 @@ public class Controller {
             e.printStackTrace();
         }
     }
-    public void btnScoreAction(){
+
+    public void btnScoreAction() {
         System.out.println("Score Logged In");
     }
 
@@ -112,14 +115,9 @@ public class Controller {
         String email = emailInput.getText();
         String birthday = dateBirthInput.getText();
 
-        System.out.println("Name ->" + name + "<-");
-        System.out.println("Email ->" + email + "<-");
-        System.out.println("Birthday ->" + birthday + "<-");
-
         try {
-            String sql = "INSERT INTO Players VALUES " +
-                    "(NULL, '" + name + "', '" + email + "', '" + birthday + "')";
-            System.out.println(sql);
+            String sql = "INSERT INTO player VALUES " +
+                    "(NULL, '" + name + "', '" + birthday + "', '" + email + "')";
 
             Connection con = DBConnection.getConnection();
             Statement stmt = con.createStatement();
@@ -132,6 +130,86 @@ public class Controller {
 
     @FXML
     private ListView<Player> playersListView;
+    @FXML
+    private TextField player1TextField;
+    @FXML
+    private TextField player2TextField;
+    @FXML
+    private TextField teamNameTextField;
+    private Player player1Selected;
+    private Player player2Selected;
+
+    @FXML
+    private void RegisterTeamTabChanged() {
+        try {
+            Connection con = DBConnection.getConnection();
+            Statement stmt = con.createStatement();
+            //String sql = "SELECT player_id,player.name,dob,email FROM `player`,team " +
+            //        "WHERE not (`team`.`player_one_id` = player_id or `team`.`player_two_id` = player_id)"
+            String sql = "SELECT player_id,player.name,dob,email from player WHERE player_id not in" +
+                    "( SELECT player_id FROM `player`,team WHERE `team`.`player_one_id` = player_id or " +
+                    "`team`.`player_two_id` = player_id)";
+            ResultSet rs = stmt.executeQuery(sql);
+            List<Player> playerList = new LinkedList<>();
+            while (rs.next()) {
+                int id = rs.getInt(1);
+                String name = rs.getString(2);
+                String dob = rs.getString(3);
+                String email = rs.getString(4);
+                // FIXME: 02-Apr-17
+                /*if (email.equalsIgnoreCase("null"))
+                {
+                    email = "";
+                }*/
+                playerList.add(new Player(name, dob, email));
+            }
+            con.close();
+            playersListView.setOnMouseClicked(new EventHandler<MouseEvent>() {
+
+                @Override
+                public void handle(MouseEvent click) {
+
+                    if (click.getClickCount() == 2 && click.getButton().equals(MouseButton.PRIMARY)) {
+                        Player p = playersListView.getSelectionModel()
+                                .getSelectedItem();
+                        if (p != null) {
+                            if (player1TextField.getText().isEmpty()) {
+                                player1Selected = p;
+                                player1TextField.setText(p.getPlayerName());
+                            } else if (player2TextField.getText().isEmpty()) {
+                                player2TextField.setText(p.getPlayerName());
+                                player2Selected = p;
+                            }
+                        } else System.out.println("select item");
+                    }
+                }
+            });
+            playersListView.setItems(FXCollections.observableArrayList(playerList));
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+    }
+
+    @FXML
+    private void registerTeam() {
+        String teamName = teamNameTextField.getText();
+
+        //Check for team name, empty player 1 and player 2
+        //Team team = new Team(player1Selected, player2Selected, teamName);
+
+        try {
+            String sql = "INSERT INTO `team` (`team_id`, `name`, `player_one_id`, `player_two_id`) " +
+                    "VALUES (NULL, '" + teamName + "', '" + player1Selected.getPlayerID() + "', '" + player2Selected
+                    .getPlayerID() + "')";
+
+            Connection con = DBConnection.getConnection();
+            Statement stmt = con.createStatement();
+            stmt.executeUpdate(sql);
+            con.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 }
 
 
