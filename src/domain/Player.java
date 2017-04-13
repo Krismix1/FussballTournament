@@ -5,6 +5,7 @@ package domain;
  */
 public class Player {
 
+    private int player_id;
     private String playerName;
     private int matchesPlayed;
     private String dob; // DD.MM.YYYY, change to LocalDate
@@ -21,6 +22,15 @@ public class Player {
         this.dob = dob;
         this.email = email;
     }
+
+    public Player(String playerName, String dob, String email,int id) {
+        this.playerName = playerName;
+        this.dob = dob;
+        this.email = email;
+        this.player_id = id;
+    }
+
+
 
     /**
      * Sets amount of matches played for the player.
@@ -104,5 +114,14 @@ public class Player {
      */
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public int getPlayerID() {
+        return player_id;
+    }
+
+    public String toString() {
+        //return String.format("%s %s %s",playerName, dob, email);
+        return this.playerName;
     }
 }

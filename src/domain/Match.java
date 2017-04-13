@@ -12,7 +12,7 @@ public class Match {
     private int goals1, goals2;
 
     /**
-     * Creates a new match given matchName and two teams.
+     * Creates a new match with given matchName and two teams.
      * @param matchName name of match
      * @param team1 team #1
      * @param team2 team #2
