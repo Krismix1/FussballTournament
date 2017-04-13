@@ -16,17 +16,17 @@
         <tabs>
           <Tab text="Register player">
                <content>
-                  <AnchorPane prefHeight="410.0" prefWidth="617.0">
+                  <AnchorPane prefHeight="410.0" prefWidth="617.0" stylesheets="@stylish.css">
                      <children>
                         <GridPane layoutX="37.0" layoutY="25.0" prefHeight="257.0" prefWidth="411.0">
                            <children>
                               <Label text="Email:" GridPane.rowIndex="1" />
-                              <TextField fx:id="nameInput" GridPane.columnIndex="1" />
+                              <TextField fx:id="nameInput" promptText="Player name" styleClass="persistent-prompt" GridPane.columnIndex="1" />
                               <Button mnemonicParsing="false" onAction="#saveAction" text="Save" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                               <Label text="Birthday:" GridPane.rowIndex="2" />
-                              <TextField fx:id="dateBirthInput" promptText="DD.MM.YYYY" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                              <TextField fx:id="dateBirthInput" promptText="DD.MM.YYYY" styleClass="persistent-prompt" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                               <Label text="Name:" />
-                              <TextField fx:id="emailInput" prefHeight="39.0" prefWidth="590.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                              <TextField fx:id="emailInput" prefHeight="39.0" prefWidth="590.0" promptText="name@domain.com" styleClass="persistent-prompt" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                            </children>
                            <columnConstraints>
                               <ColumnConstraints hgrow="SOMETIMES" maxWidth="633.0" minWidth="10.0" prefWidth="175.0" />
