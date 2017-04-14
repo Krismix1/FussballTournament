@@ -34,7 +34,7 @@ public class Login {
         try {
             if (grantAccess(admin,pass)) {
                 Parent root = FXMLLoader.load(getClass().getResource("/gui/mainScene.fxml"));
-                Scene scene = new Scene(root, 300, 275);
+                Scene scene = new Scene(root, 900, 575);
                 Main.mainStage.setScene(scene);
             } else {
                 System.out.println("wrong username or password");
@@ -54,7 +54,7 @@ public class Login {
             Stage playerStage = new Stage();
             Parent playerRoot = FXMLLoader.load(getClass().getResource("/gui/playerView.fxml"));
             playerStage.setTitle("Player View");
-            Scene playerScene = new Scene(playerRoot, 300, 275);
+            Scene playerScene = new Scene(playerRoot, 900, 575);
             playerStage.setScene(playerScene);
             playerStage.show();
             Main.mainStage.close();
