@@ -3,14 +3,12 @@ package gui;
 
 import domain.Player;
 import domain.Team;
-import domain.Tournament;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import technicalservices.DBConnection;
@@ -134,13 +132,20 @@ public class Controller {
     private TextField player1TextField;
     @FXML
     private TextField player2TextField;
-    @FXML
-    private TextField teamNameTextField;
+
     private Player player1Selected;
     private Player player2Selected;
+    @FXML
+    private TableView<Team> teamTableView;
+    @FXML
+    private TableColumn<Team, String> teamNameColumn;
+    @FXML
+    private TableColumn<Player, String> playerOneName;
+    @FXML
+    private TableColumn<Player, String> playerTwoName;
 
     @FXML
-    private void RegisterTeamTabChanged() {
+    private void registerTeamTabChanged() {
         try {
             Connection con = DBConnection.getConnection();
             Statement stmt = con.createStatement();
@@ -161,34 +166,63 @@ public class Controller {
                 {
                     email = "";
                 }*/
-                playerList.add(new Player(name, dob, email));
+                playerList.add(new Player(name, dob, email, id));
             }
             con.close();
-            playersListView.setOnMouseClicked(new EventHandler<MouseEvent>() {
-
-                @Override
-                public void handle(MouseEvent click) {
-
-                    if (click.getClickCount() == 2 && click.getButton().equals(MouseButton.PRIMARY)) {
-                        Player p = playersListView.getSelectionModel()
-                                .getSelectedItem();
-                        if (p != null) {
-                            if (player1TextField.getText().isEmpty()) {
-                                player1Selected = p;
-                                player1TextField.setText(p.getPlayerName());
-                            } else if (player2TextField.getText().isEmpty()) {
-                                player2TextField.setText(p.getPlayerName());
-                                player2Selected = p;
-                            }
-                        } else System.out.println("select item");
-                    }
-                }
-            });
             playersListView.setItems(FXCollections.observableArrayList(playerList));
-        } catch (Exception e) {
+        } catch (SQLException e) {
             System.out.println(e);
         }
+
+        try {
+            Connection con = DBConnection.getConnection();
+            Statement stmt = con.createStatement();
+            String sql = "SELECT team_name, player_one_id, player_two_id";
+            /*ResultSet rs = stmt.executeQuery(sql);
+            List<Team> teamList = new LinkedList<>();
+            while (rs.next()) {
+
+
+                //teamList.add(new Team());
+            }*/
+            con.close();
+            //teamTableView.setItems(FXCollections.observableList(teamList));
+            addProperties();
+        } catch (SQLException exception) {
+            exception.printStackTrace();
+            displayError("Error", null, "Please try again!");
+        }
     }
+
+    private void addProperties() {
+        playersListView.setOnMouseClicked(new EventHandler<MouseEvent>() {
+
+            @Override
+            public void handle(MouseEvent click) {
+
+                if (click.getClickCount() == 2 && click.getButton().equals(MouseButton.PRIMARY)) {
+                    Player p = playersListView.getSelectionModel()
+                            .getSelectedItem();
+                    if (p != null) {
+                        if (player1TextField.getText().isEmpty()) {
+                            player1Selected = p;
+                            player1TextField.setText(p.getPlayerName());
+                        } else if (player2TextField.getText().isEmpty()) {
+                            player2TextField.setText(p.getPlayerName());
+                            player2Selected = p;
+                        }
+                    } else System.out.println("select item");
+                }
+            }
+        });
+
+        teamNameColumn.setCellValueFactory(new PropertyValueFactory<Team, String>("teamName"));
+        playerOneName.setCellValueFactory(new PropertyValueFactory<Player, String>("name"));
+        playerTwoName.setCellValueFactory(new PropertyValueFactory<Player, String>("name"));
+    }
+
+    @FXML
+    private TextField teamNameTextField;
 
     @FXML
     private void registerTeam() {
@@ -198,17 +232,40 @@ public class Controller {
         //Team team = new Team(player1Selected, player2Selected, teamName);
 
         try {
-            String sql = "INSERT INTO `team` (`team_id`, `name`, `player_one_id`, `player_two_id`) " +
-                    "VALUES (NULL, '" + teamName + "', '" + player1Selected.getPlayerID() + "', '" + player2Selected
-                    .getPlayerID() + "')";
+            String sql = "INSERT INTO `team` (`team_id`, `team_name`, `player_one_id`, `player_two_id`) " +
+                    "VALUES (NULL, '" + teamName + "', '" + player1Selected.getPlayerID() + "', '" + player2Selected.getPlayerID() + "')";
 
             Connection con = DBConnection.getConnection();
             Statement stmt = con.createStatement();
             stmt.executeUpdate(sql);
             con.close();
+            registerTeamTabChanged();
+
+            displayError("Team creation", null, "Team created!");
         } catch (SQLException e) {
+            displayError("Error Dialog", null, "Ooops, there was an error!\n Try again");
             e.printStackTrace();
+        } catch (NullPointerException nullPointer) {
+            displayError("Error Dialog", null, "Ooops, you need to select the players first!");
+            nullPointer.printStackTrace();
         }
+    }
+
+    /**
+     * Display an error alert with the given information.
+     *
+     * @param title   the title of the error window.
+     * @param header  the message which will be showed in the header. If headers is not wanted,
+     *                a null value can be sent as parameter.
+     * @param content the message of the error window.
+     */
+    private void displayError(String title, String header, String content) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(content);
+
+        alert.showAndWait();
     }
 }
 

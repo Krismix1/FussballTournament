@@ -43,7 +43,7 @@
                   </AnchorPane>
                </content>
             </Tab>
-            <Tab onSelectionChanged="#RegisterTeamTabChanged" text="Register teams">
+            <Tab onSelectionChanged="#registerTeamTabChanged" text="Register teams">
               <content>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
@@ -51,16 +51,16 @@
                         <Label layoutX="23.0" layoutY="340.0" text="Team name" />
                         <Label layoutX="27.0" layoutY="398.0" text="Player one" />
                         <Label layoutX="28.0" layoutY="449.0" text="Player two" />
-                        <Button layoutX="242.0" layoutY="496.0" mnemonicParsing="false" onAction="#registerTeam" text="Create team" />
+                        <Button layoutX="242.0" layoutY="496.0" mnemonicParsing="false" text="Create team" />
                         <TextField fx:id="teamNameTextField" layoutX="139.0" layoutY="334.0" />
                         <TextField fx:id="player1TextField" layoutX="139.0" layoutY="392.0" />
                         <TextField fx:id="player2TextField" layoutX="139.0" layoutY="443.0" />
-                        <Label layoutX="23.0" layoutY="14.0" text="Players not in a team" />
-                        <TableView layoutX="410.0" layoutY="50.0" prefHeight="433.0" prefWidth="427.0">
+                        <Label layoutX="23.0" layoutY="14.0" text="Players' list" />
+                        <TableView fx:id="teamTableView" layoutX="410.0" layoutY="50.0" prefHeight="433.0" prefWidth="427.0">
                           <columns>
-                            <TableColumn prefWidth="134.0" text="Team name" />
-                            <TableColumn prefWidth="151.0" text="Player one" />
-                              <TableColumn prefWidth="141.0" text="Player two" />
+                            <TableColumn fx:id="teamNameColumn" prefWidth="134.0" text="Team name" />
+                            <TableColumn fx:id="playerOneName" prefWidth="151.0" text="Player one" />
+                              <TableColumn fx:id="playerTwoName" prefWidth="141.0" text="Player two" />
                           </columns>
                         </TableView>
                      </children></AnchorPane>
