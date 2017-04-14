@@ -121,6 +121,10 @@ public class Controller {
             Statement stmt = con.createStatement();
             stmt.executeUpdate(sql);
             con.close();
+            nameInput.setText("");
+            emailInput.setText("");
+            dateBirthInput.setText("");
+            displayInformation("Player saved!", null, "Player was saved!");
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -147,7 +151,7 @@ public class Controller {
     @FXML
     private void registerTeamTabChanged() {
         playersListView.setItems(FXCollections.observableArrayList(Tournament.getPlayersWithoutTeam()));
-        teamTableView.setItems(FXCollections.observableList(Tournament.getTeamsList()));
+        //teamTableView.setItems(FXCollections.observableList(Tournament.getTeamsList()));
 
         addProperties();
     }
@@ -187,19 +191,19 @@ public class Controller {
         String teamName = teamNameTextField.getText();
 
         //Check for team name, empty player 1 and player 2
-        //Team team = new Team(player1Selected, player2Selected, teamName);
 
         try {
-            String sql = "INSERT INTO `teams` (`team_name`, `player_one_id`, `player_two_id`) " +
-                    "VALUES ('" + teamName + "', '" + player1Selected.getPlayerID() + "', '" + player2Selected.getPlayerID() + "')";
+            Tournament.createAndSaveTeam(teamName, player1Selected, player2Selected);
 
-            Connection con = DBConnection.getConnection();
-            Statement stmt = con.createStatement();
-            stmt.executeUpdate(sql);
-            con.close();
             registerTeamTabChanged();
 
-            displayError("Team creation", null, "Team created!");
+            displayInformation("Team creation", null, "Team created!");
+            player1Selected = null;
+            player2Selected = null;
+
+            teamNameTextField.setText("");
+            player1TextField.setText("");
+            player2TextField.setText("");
         } catch (SQLException e) {
             displayError("Error Dialog", null, "Ooops, there was an error!\n Try again");
             e.printStackTrace();
@@ -219,6 +223,15 @@ public class Controller {
      */
     private void displayError(String title, String header, String content) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(content);
+
+        alert.showAndWait();
+    }
+
+    private void displayInformation(String title, String header, String content) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle(title);
         alert.setHeaderText(null);
         alert.setContentText(content);

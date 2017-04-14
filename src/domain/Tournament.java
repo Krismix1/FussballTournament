@@ -97,8 +97,13 @@ public class Tournament {
         }
     }
 
-    public static void createAndSaveTeam() throws NullPointerException, SQLException{
-
+    public static void createAndSaveTeam(String teamName, Player p1, Player p2) throws NullPointerException, SQLException{
+        String sql = "INSERT INTO `teams` (`team_name`, `player_one_id`, `player_two_id`) " +
+                "VALUES ('" + teamName + "', '" + p1.getPlayerID() + "', '" + p2.getPlayerID() + "')";
+        Connection con = DBConnection.getConnection();
+        Statement stmt = con.createStatement();
+        stmt.executeUpdate(sql);
+        con.close();
     }
 }
 

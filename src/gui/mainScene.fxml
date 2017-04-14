@@ -20,13 +20,13 @@
                      <children>
                         <GridPane layoutX="37.0" layoutY="25.0" prefHeight="257.0" prefWidth="411.0">
                            <children>
-                              <Label text="Email:" GridPane.rowIndex="1" />
-                              <TextField fx:id="nameInput" promptText="Player name" styleClass="persistent-prompt" GridPane.columnIndex="1" />
-                              <Button mnemonicParsing="false" onAction="#saveAction" text="Save" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                              <Label text="Birthday:" GridPane.rowIndex="2" />
-                              <TextField fx:id="dateBirthInput" promptText="DD.MM.YYYY" styleClass="persistent-prompt" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                              <Label text="Name:" />
-                              <TextField fx:id="emailInput" prefHeight="39.0" prefWidth="590.0" promptText="name@domain.com" styleClass="persistent-prompt" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                               <TextField fx:id="nameInput" promptText="Player name" styleClass="persistent-prompt" GridPane.columnIndex="1" />
+                               <TextField fx:id="emailInput" prefHeight="39.0" prefWidth="590.0" promptText="name@domain.com" styleClass="persistent-prompt" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                               <TextField fx:id="dateBirthInput" promptText="DD.MM.YYYY" styleClass="persistent-prompt" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                               <Label text="Email:" GridPane.rowIndex="1" />
+                               <Button mnemonicParsing="false" onAction="#saveAction" text="Save" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                               <Label text="Birthday:" GridPane.rowIndex="2" />
+                               <Label text="Name:" />
                            </children>
                            <columnConstraints>
                               <ColumnConstraints hgrow="SOMETIMES" maxWidth="633.0" minWidth="10.0" prefWidth="175.0" />
@@ -51,7 +51,7 @@
                         <Label layoutX="23.0" layoutY="340.0" text="Team name" />
                         <Label layoutX="27.0" layoutY="398.0" text="Player one" />
                         <Label layoutX="28.0" layoutY="449.0" text="Player two" />
-                        <Button layoutX="242.0" layoutY="496.0" mnemonicParsing="false" text="Create team" />
+                        <Button layoutX="242.0" layoutY="496.0" mnemonicParsing="false" onAction="#registerTeam" text="Create team" />
                         <TextField fx:id="teamNameTextField" layoutX="139.0" layoutY="334.0" />
                         <TextField fx:id="player1TextField" layoutX="139.0" layoutY="392.0" />
                         <TextField fx:id="player2TextField" layoutX="139.0" layoutY="443.0" />
