@@ -87,7 +87,7 @@ public class Tournament {
             while (rs.next()) {
 
 
-                teamList.add(new Team());
+               // teamList.add(new Team());
             }
             con.close();
             return teamList;
