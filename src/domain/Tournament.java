@@ -1,5 +1,11 @@
 package domain;
 
+import technicalservices.DBConnection;
+
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -42,6 +48,57 @@ public class Tournament {
                 matchList.add(new Match(matchName, team1, team2));
             }
         }
+    }
+
+    public static List<Player> getPlayersWithoutTeam() {
+        try {
+            Connection con = DBConnection.getConnection();
+            Statement stmt = con.createStatement();
+            //String sql = "SELECT player_id,player.name,dob,email FROM `player`,team " +
+            //        "WHERE not (`team`.`player_one_id` = player_id or `team`.`player_two_id` = player_id)"
+            // Selects all players that don't have a team yet
+            String sql = "SELECT player_id,players.name,birthday,email from players WHERE player_id not in" +
+                    "( SELECT player_id FROM `players`,teams WHERE `teams`.`player_one_id` = player_id or " +
+                    "`teams`.`player_two_id` = player_id)";
+            ResultSet rs = stmt.executeQuery(sql);
+            List<Player> playerList = new LinkedList<>();
+            while (rs.next()) {
+                int id = rs.getInt(1);
+                String name = rs.getString(2);
+                String dob = rs.getString(3);
+                String email = rs.getString(4);
+                playerList.add(new Player(name, dob, email, id));
+            }
+            con.close();
+            return playerList;
+        } catch (SQLException e) {
+            System.out.println(e);
+            return null;
+        }
+    }
+
+    public static List<Team> getTeamsList() {
+        try {
+            Connection con = DBConnection.getConnection();
+            Statement stmt = con.createStatement();
+            String sql = "SELECT team_name, player_one_id, player_two_id";
+            ResultSet rs = stmt.executeQuery(sql);
+            List<Team> teamList = new LinkedList<>();
+            while (rs.next()) {
+
+
+                teamList.add(new Team());
+            }
+            con.close();
+            return teamList;
+        } catch (SQLException exception) {
+            exception.printStackTrace();
+            return null;
+        }
+    }
+
+    public static void createAndSaveTeam() throws NullPointerException, SQLException{
+
     }
 }
 

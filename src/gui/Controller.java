@@ -3,6 +3,7 @@ package gui;
 
 import domain.Player;
 import domain.Team;
+import domain.Tournament;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -14,15 +15,12 @@ import javafx.scene.input.MouseEvent;
 import technicalservices.DBConnection;
 
 import java.sql.Connection;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.LinkedList;
-import java.util.List;
 
 public class Controller {
 
-    @FXML
+    /*@FXML
     private TextField team1Input;
     @FXML
     private TextField team2Input;
@@ -55,10 +53,10 @@ public class Controller {
 
     public void btnScoreAction2() {
         System.out.println("Schedule Logged In");
-    }
+    }*/
 
 
-    @FXML
+    /*@FXML
     private TextField teamInput;
     @FXML
     private TextField goalInput;
@@ -97,7 +95,9 @@ public class Controller {
 
     public void btnScoreAction() {
         System.out.println("Score Logged In");
-    }
+    }*/
+
+
 
     @FXML
     private TextField nameInput;
@@ -114,8 +114,8 @@ public class Controller {
         String birthday = dateBirthInput.getText();
 
         try {
-            String sql = "INSERT INTO player VALUES " +
-                    "(NULL, '" + name + "', '" + birthday + "', '" + email + "')";
+            String sql = "INSERT INTO players VALUES " +
+                    "(NULL, '" + name + "', '" + email + "', '" + birthday + "')";
 
             Connection con = DBConnection.getConnection();
             Statement stmt = con.createStatement();
@@ -146,52 +146,10 @@ public class Controller {
 
     @FXML
     private void registerTeamTabChanged() {
-        try {
-            Connection con = DBConnection.getConnection();
-            Statement stmt = con.createStatement();
-            //String sql = "SELECT player_id,player.name,dob,email FROM `player`,team " +
-            //        "WHERE not (`team`.`player_one_id` = player_id or `team`.`player_two_id` = player_id)"
-            String sql = "SELECT player_id,player.name,dob,email from player WHERE player_id not in" +
-                    "( SELECT player_id FROM `player`,team WHERE `team`.`player_one_id` = player_id or " +
-                    "`team`.`player_two_id` = player_id)";
-            ResultSet rs = stmt.executeQuery(sql);
-            List<Player> playerList = new LinkedList<>();
-            while (rs.next()) {
-                int id = rs.getInt(1);
-                String name = rs.getString(2);
-                String dob = rs.getString(3);
-                String email = rs.getString(4);
-                // FIXME: 02-Apr-17
-                /*if (email.equalsIgnoreCase("null"))
-                {
-                    email = "";
-                }*/
-                playerList.add(new Player(name, dob, email, id));
-            }
-            con.close();
-            playersListView.setItems(FXCollections.observableArrayList(playerList));
-        } catch (SQLException e) {
-            System.out.println(e);
-        }
+        playersListView.setItems(FXCollections.observableArrayList(Tournament.getPlayersWithoutTeam()));
+        teamTableView.setItems(FXCollections.observableList(Tournament.getTeamsList()));
 
-        try {
-            Connection con = DBConnection.getConnection();
-            Statement stmt = con.createStatement();
-            String sql = "SELECT team_name, player_one_id, player_two_id";
-            /*ResultSet rs = stmt.executeQuery(sql);
-            List<Team> teamList = new LinkedList<>();
-            while (rs.next()) {
-
-
-                //teamList.add(new Team());
-            }*/
-            con.close();
-            //teamTableView.setItems(FXCollections.observableList(teamList));
-            addProperties();
-        } catch (SQLException exception) {
-            exception.printStackTrace();
-            displayError("Error", null, "Please try again!");
-        }
+        addProperties();
     }
 
     private void addProperties() {
@@ -232,8 +190,8 @@ public class Controller {
         //Team team = new Team(player1Selected, player2Selected, teamName);
 
         try {
-            String sql = "INSERT INTO `team` (`team_id`, `team_name`, `player_one_id`, `player_two_id`) " +
-                    "VALUES (NULL, '" + teamName + "', '" + player1Selected.getPlayerID() + "', '" + player2Selected.getPlayerID() + "')";
+            String sql = "INSERT INTO `teams` (`team_name`, `player_one_id`, `player_two_id`) " +
+                    "VALUES ('" + teamName + "', '" + player1Selected.getPlayerID() + "', '" + player2Selected.getPlayerID() + "')";
 
             Connection con = DBConnection.getConnection();
             Statement stmt = con.createStatement();
