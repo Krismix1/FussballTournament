@@ -51,13 +51,9 @@ public class Login {
     @FXML
     private void btnPlayersLoginAction(){
         try {
-            Stage playerStage = new Stage();
             Parent playerRoot = FXMLLoader.load(getClass().getResource("/gui/playerView.fxml"));
-            playerStage.setTitle("Player View");
             Scene playerScene = new Scene(playerRoot, 900, 575);
-            playerStage.setScene(playerScene);
-            playerStage.show();
-            Main.mainStage.close();
+            Main.mainStage.setScene(playerScene);
 
             System.out.println("Player Logged In");
         } catch (IOException e) {
