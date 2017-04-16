@@ -47,7 +47,7 @@ public class Controller {
         String name = nameInput.getText();
         String email = emailInput.getText();
         String birthday = dateBirthInput.getText();
-<<<<<<< HEAD
+
         if (name.equalsIgnoreCase(""))
         {
             System.out.println("Enter player details and proceed");
