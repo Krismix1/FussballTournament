@@ -4,6 +4,11 @@ package gui;
 import domain.Player;
 import domain.Team;
 import domain.Tournament;
+
+import javafx.beans.value.ObservableValue;
+import javafx.util.Callback;
+import technicalservices.DBConnection;
+
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -12,7 +17,6 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import technicalservices.DBConnection;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -143,14 +147,14 @@ public class Controller {
     @FXML
     private TableColumn<Team, String> teamNameColumn;
     @FXML
-    private TableColumn<Player, String> playerOneName;
+    private TableColumn<Team, String> playerOneName;
     @FXML
-    private TableColumn<Player, String> playerTwoName;
+    private TableColumn<Team, String> playerTwoName;
 
     @FXML
     private void registerTeamTabChanged() {
         playersListView.setItems(FXCollections.observableArrayList(Tournament.getInstance().getPlayersWithoutTeam()));
-        teamTableView.setItems(FXCollections.observableList(Tournament.getInstance().getTeamsList()));
+        teamTableView.setItems(FXCollections.observableArrayList(Tournament.getInstance().getTeamsList()));
 
         addProperties();
     }
@@ -178,8 +182,9 @@ public class Controller {
         });
 
         teamNameColumn.setCellValueFactory(new PropertyValueFactory<>("teamName"));
-        playerOneName.setCellValueFactory(new PropertyValueFactory<>("playerName"));
-        playerTwoName.setCellValueFactory(new PropertyValueFactory<>("playerName"));
+        playerOneName.setCellValueFactory(new PropertyValueFactory<>("firstPlayerName"));
+        playerTwoName.setCellValueFactory(new PropertyValueFactory<>("secondPlayerName"));
+
     }
 
     @FXML

@@ -21,6 +21,14 @@ public class Team {
     private int goalsFor;
     private int goalsAgainst;
 
+    public String getFirstPlayerName() {
+        return firstPlayer.getPlayerName();
+    }
+
+    public String getSecondPlayerName() {
+        return secondPlayer.getPlayerName();
+    }
+
     /**
      * Creates a new team with given players and given name.
      * @param firstPlayer first player of the team

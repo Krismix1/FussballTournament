@@ -30,8 +30,6 @@ public class Player {
         this.player_id = id;
     }
 
-
-
     /**
      * Sets amount of matches played for the player.
      * @throws IllegalArgumentException if the number of matches played is negative
