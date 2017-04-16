@@ -17,13 +17,11 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<<<<<<< HEAD
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="608.0"
-      prefWidth="862.0" xmlns="http://javafx.com/javafx/8.0.111"
+
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
+      prefHeight="608.0" prefWidth="862.0" xmlns="http://javafx.com/javafx/8"
       xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.Controller">
-=======
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="608.0" prefWidth="862.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.Controller">
->>>>>>> 547c99cb035f90f02bc6bc231c8d2af6b8cc471d
+
    <children>
       <TabPane prefHeight="608.0" prefWidth="862.0" tabClosingPolicy="UNAVAILABLE">
         <tabs>
