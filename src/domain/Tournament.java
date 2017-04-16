@@ -129,7 +129,6 @@ public class Tournament {
                 String p2Email = rs.getString(4);
                 Player p2 = new Player(p2Name, p2Birthday, p2Email);
                 //rs.getObject(1, Player.class);
-
                 teamList.add(new Team(p1, p2, teamName));
             }
             con.close();
