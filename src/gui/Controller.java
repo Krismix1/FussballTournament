@@ -1,10 +1,12 @@
 package gui;
 
 
+import domain.Match;
 import domain.Player;
 import domain.Team;
 import domain.Tournament;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -17,6 +19,7 @@ import technicalservices.DBConnection;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.List;
 
 public class Controller {
 
@@ -237,6 +240,25 @@ public class Controller {
 
         alert.showAndWait();
     }
+
+    @FXML
+    private TableView matchTable;
+    @FXML
+    TableColumn<Match, String> matchColumn;
+    @FXML
+    TableColumn<Match, String> dateColumn; // FIXME: 14.04.2017 how to store date?
+
+    public void schedule() {
+        Tournament tournament = Tournament.getInstance();
+        tournament.getTeamsList();
+
+        tournament.createMatches();
+        List<Match> matchList = tournament.getMatchList();
+        ObservableList<Match> data = FXCollections.observableArrayList(matchList);
+        matchColumn.setCellValueFactory(new PropertyValueFactory<>("matchName"));
+        matchTable.setItems(data);
+    }
+
 }
 
 

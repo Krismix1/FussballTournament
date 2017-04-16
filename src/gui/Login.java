@@ -60,6 +60,7 @@ public class Login {
             Main.mainStage.close();
 
             System.out.println("Player Logged In");
+
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -4,20 +4,32 @@
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 
-
-<AnchorPane xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.PlayerController">
+<AnchorPane xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.Controller">
    <children>
       <TabPane prefHeight="379.0" prefWidth="582.0" tabClosingPolicy="UNAVAILABLE">
          <tabs>
-            <Tab text="Schedule">
+            <Tab fx:id="schedule" onSelectionChanged="#schedule" text="Schedule">
                <content>
-                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <TableView fx:id="matchTable" layoutX="21.0" layoutY="26.0" prefHeight="299.0" prefWidth="287.0">
+                          <columns>
+                            <TableColumn fx:id="matchColumn" prefWidth="163.0" text="Match" />
+                            <TableColumn fx:id="dateColumn" prefWidth="122.0" text="Date " />
+                          </columns>
+                        </TableView>
+                     </children></AnchorPane>
                </content>
             </Tab>
             <Tab text="Results">
                <content>
                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
                </content>
+            </Tab>
+            <Tab text="Standings">
+              <content>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+              </content>
             </Tab>
          </tabs>
       </TabPane>

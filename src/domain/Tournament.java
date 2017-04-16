@@ -56,9 +56,26 @@ public class Tournament {
             for (int j = i + 1; j < teamList.size(); j++) {
                 Team team2 = teamList.get(j);
                 String matchName = team1.getTeamName() + " vs " + team2.getTeamName();
-                matchList.add(new Match(matchName, team1, team2));
+                Match match = new Match(matchName, team1, team2);
+
+                try {
+                    Connection con = DBConnection.getConnection();
+                    Statement stmt = con.createStatement();
+                    String sql = "INSERT INTO matches VALUES('" +match.getMatchName() + "', '" + team1.getTeamName() + "', '" + team2.getTeamName() + "', NULL);";
+                    stmt.execute(sql);
+                }catch (SQLException e)
+                {
+                    e.printStackTrace();
+                }
+
+
+                matchList.add(match);
             }
         }
+    }
+
+    public List<Match> getMatchList() {
+        return this.matchList;
     }
 
     public List<Player> getPlayersWithoutTeam() {
