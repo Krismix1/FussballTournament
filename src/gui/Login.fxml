@@ -1,15 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="222.0" prefWidth="261.0" styleClass="persistent-prompt" stylesheets="@stylish.css" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.Login">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="222.0" prefWidth="261.0" styleClass="persistent-prompt" stylesheets="@stylish.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.Login">
    <children>
       <TextField fx:id="adminLogin" layoutX="27.0" layoutY="36.0" prefHeight="30.0" prefWidth="214.0" promptText="Admin" styleClass="persistent-prompt" />
       <PasswordField fx:id="adminPassword" layoutX="27.0" layoutY="84.0" maxWidth="230.0" prefHeight="30.0" prefWidth="214.0" promptText="Password" styleClass="persistent-prompt" />
       <Button fx:id="btnLogin" layoutX="152.0" layoutY="129.0" mnemonicParsing="false" onAction="#btnLoginAction" prefHeight="27.0" prefWidth="89.0" stylesheets="@Login.fxml" text="Login" />
-      <Button fx:id="playersLogin" layoutX="27.0" layoutY="170.0" mnemonicParsing="false" onAction="#btnPlayersLoginAction" prefHeight="27.0" prefWidth="214.0" stylesheets="@Login.fxml" text="Players Click Here" />
+      <Button fx:id="playersLogin" layoutX="27.0" layoutY="170.0" mnemonicParsing="false" onAction="#btnPlayersLoginAction" prefHeight="27.0" prefWidth="214.0" text="Players Click Here" />
    </children>
 </AnchorPane>

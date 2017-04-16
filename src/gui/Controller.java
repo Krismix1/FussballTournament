@@ -37,13 +37,17 @@ public class Controller {
     private TextField emailInput;
     @FXML
     private TextField dateBirthInput;
+    @FXML
+    private Button save;
 
 
     @FXML
     private void saveAction(ActionEvent actionEvent) {
+
         String name = nameInput.getText();
         String email = emailInput.getText();
         String birthday = dateBirthInput.getText();
+        save.defaultButtonProperty().bind(save.focusedProperty());
 
         try {
             String sql = "INSERT INTO players VALUES " +
@@ -202,6 +206,7 @@ public class Controller {
         List<Match> matchList = tournament.getMatchList();
         ObservableList<Match> data = FXCollections.observableArrayList(matchList);
         matchColumn.setCellValueFactory(new PropertyValueFactory<>("matchName"));
+        matchTable.getItems().clear();
         matchTable.setItems(data);
     }
 
