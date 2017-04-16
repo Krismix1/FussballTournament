@@ -37,13 +37,17 @@ public class Controller {
     private TextField emailInput;
     @FXML
     private TextField dateBirthInput;
+    @FXML
+    private Button save;
 
 
     @FXML
     private void saveAction(ActionEvent actionEvent) {
+
         String name = nameInput.getText();
         String email = emailInput.getText();
         String birthday = dateBirthInput.getText();
+<<<<<<< HEAD
         if (name.equalsIgnoreCase(""))
         {
             System.out.println("Enter player details and proceed");
@@ -64,6 +68,24 @@ public class Controller {
             } catch (SQLException e) {
                 e.printStackTrace();
             }
+=======
+        save.defaultButtonProperty().bind(save.focusedProperty());
+
+        try {
+            String sql = "INSERT INTO players VALUES " +
+                    "(NULL, '" + name + "', '" + email + "', '" + birthday + "')";
+
+            Connection con = DBConnection.getConnection();
+            Statement stmt = con.createStatement();
+            stmt.executeUpdate(sql);
+            con.close();
+            nameInput.setText("");
+            emailInput.setText("");
+            dateBirthInput.setText("");
+            displayInformation("Player saved!", null, "Player was saved!");
+        } catch (SQLException e) {
+            e.printStackTrace();
+>>>>>>> 547c99cb035f90f02bc6bc231c8d2af6b8cc471d
         }
     }
 
@@ -207,6 +229,7 @@ public class Controller {
         List<Match> matchList = tournament.getMatchList();
         ObservableList<Match> data = FXCollections.observableArrayList(matchList);
         matchColumn.setCellValueFactory(new PropertyValueFactory<>("matchName"));
+        matchTable.getItems().clear();
         matchTable.setItems(data);
     }
 

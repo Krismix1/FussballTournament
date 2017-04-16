@@ -63,12 +63,11 @@ public class Tournament {
                     Statement stmt = con.createStatement();
                     String sql = "INSERT INTO matches VALUES('" +match.getMatchName() + "', '" + team1.getTeamName() + "', '" + team2.getTeamName() + "', NULL);";
                     stmt.execute(sql);
+                    con.close();
                 }catch (SQLException e)
                 {
                     e.printStackTrace();
                 }
-
-
                 matchList.add(match);
             }
         }
