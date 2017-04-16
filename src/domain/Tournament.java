@@ -14,10 +14,21 @@ import java.util.List;
  * Created by ArcticMonkey on 4/9/2017.
  */
 public class Tournament {
+    private static Tournament instance;
+
 
     List<Match> matchList = new LinkedList<>();
     List<Team> teamList = new ArrayList<>();
     List<Player> playerList = new LinkedList<>();
+
+    private Tournament() {}
+
+    public static Tournament getInstance() {
+        if (instance == null) {
+            instance = new Tournament();
+        }
+        return instance;
+    }
 
     /**
      * Adds player to the tournament.
@@ -50,7 +61,7 @@ public class Tournament {
         }
     }
 
-    public static List<Player> getPlayersWithoutTeam() {
+    public List<Player> getPlayersWithoutTeam() {
         try {
             Connection con = DBConnection.getConnection();
             Statement stmt = con.createStatement();
@@ -77,19 +88,35 @@ public class Tournament {
         }
     }
 
-    public static List<Team> getTeamsList() {
+    public List<Team> getTeamsList() {
         try {
             Connection con = DBConnection.getConnection();
             Statement stmt = con.createStatement();
-            String sql = "SELECT team_name, player_one_id, player_two_id";
+            String sql = "SELECT team_name,name,birthday,email " +
+                    "FROM teams, players " +
+                    "where teams.player_one_id = players.player_id or " +
+                    "teams.player_two_id = players.player_id;";
             ResultSet rs = stmt.executeQuery(sql);
             List<Team> teamList = new LinkedList<>();
             while (rs.next()) {
+                String teamName = rs.getString(1);
+                String p1Name = rs.getString(2);
+                String p1Birthday = rs.getString(3);
+                String p1Email = rs.getString(4);
+                Player p1 = new Player(p1Name, p1Birthday, p1Email);
 
+                rs.next();
 
-               // teamList.add(new Team());
+                String p2Name = rs.getString(2);
+                String p2Birthday = rs.getString(3);
+                String p2Email = rs.getString(4);
+                Player p2 = new Player(p2Name, p2Birthday, p2Email);
+                //rs.getObject(1, Player.class);
+
+                teamList.add(new Team(p1, p2, teamName));
             }
             con.close();
+            this.teamList = teamList;
             return teamList;
         } catch (SQLException exception) {
             exception.printStackTrace();
@@ -97,7 +124,7 @@ public class Tournament {
         }
     }
 
-    public static void createAndSaveTeam(String teamName, Player p1, Player p2) throws NullPointerException, SQLException{
+    public void createAndSaveTeam(String teamName, Player p1, Player p2) throws NullPointerException, SQLException {
         String sql = "INSERT INTO `teams` (`team_name`, `player_one_id`, `player_two_id`) " +
                 "VALUES ('" + teamName + "', '" + p1.getPlayerID() + "', '" + p2.getPlayerID() + "')";
         Connection con = DBConnection.getConnection();

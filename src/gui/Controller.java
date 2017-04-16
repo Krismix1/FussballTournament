@@ -98,7 +98,6 @@ public class Controller {
     }*/
 
 
-
     @FXML
     private TextField nameInput;
     @FXML
@@ -150,8 +149,8 @@ public class Controller {
 
     @FXML
     private void registerTeamTabChanged() {
-        playersListView.setItems(FXCollections.observableArrayList(Tournament.getPlayersWithoutTeam()));
-        //teamTableView.setItems(FXCollections.observableList(Tournament.getTeamsList()));
+        playersListView.setItems(FXCollections.observableArrayList(Tournament.getInstance().getPlayersWithoutTeam()));
+        teamTableView.setItems(FXCollections.observableList(Tournament.getInstance().getTeamsList()));
 
         addProperties();
     }
@@ -178,9 +177,9 @@ public class Controller {
             }
         });
 
-        teamNameColumn.setCellValueFactory(new PropertyValueFactory<Team, String>("teamName"));
-        playerOneName.setCellValueFactory(new PropertyValueFactory<Player, String>("name"));
-        playerTwoName.setCellValueFactory(new PropertyValueFactory<Player, String>("name"));
+        teamNameColumn.setCellValueFactory(new PropertyValueFactory<>("teamName"));
+        playerOneName.setCellValueFactory(new PropertyValueFactory<>("playerName"));
+        playerTwoName.setCellValueFactory(new PropertyValueFactory<>("playerName"));
     }
 
     @FXML
@@ -193,7 +192,7 @@ public class Controller {
         //Check for team name, empty player 1 and player 2
 
         try {
-            Tournament.createAndSaveTeam(teamName, player1Selected, player2Selected);
+            Tournament.getInstance().createAndSaveTeam(teamName, player1Selected, player2Selected);
 
             registerTeamTabChanged();
 
