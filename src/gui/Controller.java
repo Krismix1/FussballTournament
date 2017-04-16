@@ -44,21 +44,26 @@ public class Controller {
         String name = nameInput.getText();
         String email = emailInput.getText();
         String birthday = dateBirthInput.getText();
+        if (name.equalsIgnoreCase(""))
+        {
+            System.out.println("Enter player details and proceed");
+        }else
+        {
+            try {
+                String sql = "INSERT INTO players VALUES " +
+                        "(NULL, '" + name + "', '" + email + "', '" + birthday + "')";
 
-        try {
-            String sql = "INSERT INTO players VALUES " +
-                    "(NULL, '" + name + "', '" + email + "', '" + birthday + "')";
-
-            Connection con = DBConnection.getConnection();
-            Statement stmt = con.createStatement();
-            stmt.executeUpdate(sql);
-            con.close();
-            nameInput.setText("");
-            emailInput.setText("");
-            dateBirthInput.setText("");
-            displayInformation("Player saved!", null, "Player was saved!");
-        } catch (SQLException e) {
-            e.printStackTrace();
+                Connection con = DBConnection.getConnection();
+                Statement stmt = con.createStatement();
+                stmt.executeUpdate(sql);
+                con.close();
+                nameInput.setText("");
+                emailInput.setText("");
+                dateBirthInput.setText("");
+                displayInformation("Player saved!", null, "Player was saved!");
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
 
