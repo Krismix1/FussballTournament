@@ -37,6 +37,8 @@ public class Controller {
     private TextField emailInput;
     @FXML
     private TextField dateBirthInput;
+    @FXML
+    private Button save;
 
 
     @FXML
@@ -44,21 +46,30 @@ public class Controller {
         String name = nameInput.getText();
         String email = emailInput.getText();
         String birthday = dateBirthInput.getText();
+        save.defaultButtonProperty().bind(save.focusedProperty());
 
-        try {
-            String sql = "INSERT INTO players VALUES " +
-                    "(NULL, '" + name + "', '" + email + "', '" + birthday + "')";
+        if (name.equalsIgnoreCase(""))
+        {
+            displayError("Error Dialog", null, "Please enter player details!");
 
-            Connection con = DBConnection.getConnection();
-            Statement stmt = con.createStatement();
-            stmt.executeUpdate(sql);
-            con.close();
-            nameInput.setText("");
-            emailInput.setText("");
-            dateBirthInput.setText("");
-            displayInformation("Player saved!", null, "Player was saved!");
-        } catch (SQLException e) {
-            e.printStackTrace();
+        }else
+        {
+            try {
+                String sql = "INSERT INTO players VALUES " +
+                        "(NULL, '" + name + "', '" + email + "', '" + birthday + "')";
+
+                Connection con = DBConnection.getConnection();
+                Statement stmt = con.createStatement();
+                stmt.executeUpdate(sql);
+                con.close();
+                nameInput.setText("");
+                emailInput.setText("");
+                dateBirthInput.setText("");
+
+                displayInformation("Player saved!", null, "Player was saved!");
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
 
