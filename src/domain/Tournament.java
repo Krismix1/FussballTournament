@@ -139,9 +139,10 @@ public class Tournament {
         }
     }
 
-    public void createAndSaveTeam(String teamName, Player p1, Player p2) throws NullPointerException, SQLException {
+    public void createAndSaveTeam(Team t) throws NullPointerException, SQLException {
+        // TODO: 16-Apr-17 Check if team name already exists in the teams table 
         String sql = "INSERT INTO `teams` (`team_name`, `player_one_id`, `player_two_id`) " +
-                "VALUES ('" + teamName + "', '" + p1.getPlayerID() + "', '" + p2.getPlayerID() + "')";
+                "VALUES ('" + t.getTeamName() + "', '" + t.getFirstPlayer().getPlayerID() + "', '" + t.getSecondPlayer().getPlayerID() + "')";
         Connection con = DBConnection.getConnection();
         Statement stmt = con.createStatement();
         stmt.executeUpdate(sql);
