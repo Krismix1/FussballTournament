@@ -220,6 +220,7 @@ public class Controller {
 
         player1TextField.clear();
         player1Selected = null;
+
     }
     @FXML
     private void btnClear1(){
