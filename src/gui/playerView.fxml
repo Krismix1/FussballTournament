@@ -29,16 +29,16 @@
                         </AnchorPane>
                     </content>
                 </Tab>
-                <Tab text="Results">
+                <Tab fx:id="result" text="Results">
                     <content>
                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
                         <TableView prefHeight="279.0" prefWidth="442.0">
                           <columns>
-                            <TableColumn prefWidth="150.0" text="Team 1" />
+                            <TableColumn fx:id="team1Column" prefWidth="150.0" text="Team 1" />
                             <TableColumn prefWidth="70.0" text="Score" />
                               <TableColumn prefWidth="70.0" text="Score " />
-                              <TableColumn prefWidth="150.0" text="Team 2" />
+                              <TableColumn fx:id="team2Column" prefWidth="150.0" text="Team 2" />
                           </columns>
                         </TableView>
                      </children></AnchorPane>
@@ -50,9 +50,9 @@
                      <children>
                         <TableView prefHeight="563.0" prefWidth="862.0">
                            <columns>
-                              <TableColumn prefWidth="125.0" text="Team" />
-                              <TableColumn prefWidth="120.0" text="Player 1" />
-                              <TableColumn prefWidth="162.0" text="Player 2" />
+                              <TableColumn prefWidth="150.0" text="Team" />
+                              <TableColumn prefWidth="150.0" text="Player 1" />
+                              <TableColumn prefWidth="150.0" text="Player 2" />
                               <TableColumn minWidth="0.0" prefWidth="68.0" text="Points" />
                               <TableColumn prefWidth="90.0" text="Goals" />
                               <TableColumn prefWidth="54.0" text="MP" />
