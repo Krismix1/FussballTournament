@@ -1,8 +1,6 @@
 package domain;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.PrintStream;
+import java.io.*;
 import java.util.Scanner;
 
 /**
@@ -14,7 +12,8 @@ public class Team {
      * The names is composed from the DEFAULT_NAME and a number which is auto-incremented
      * every time a team with no name is created.
      */
-    public static final String DEFAULT_NAME = "Team #"; // FIXME: 10-Apr-17 Fucks up when project restarts
+    public static final String DEFAULT_NAME = "Team #";
+    private static final String ERROR_TEAM_NAME = "Error"; // The name to be assigned if the createDefaultName() failed
 
     private static int teamDefaultNameIndex = 1;
     private static final File NAME_INDEX_FILE = new File("teamNameIndex.txt");
@@ -66,10 +65,15 @@ public class Team {
      * Creates a name for teams which don't specify a name.
      * It uses the DEFAULT_NAME followed by a number. After generation,
      * the number is incremented, so that the names are unique for each team.
+     *
      * @return the name generated
      */
     private String createDefaultName() {
-        try (Scanner input = new Scanner(NAME_INDEX_FILE)) {
+        try {
+            if (!NAME_INDEX_FILE.exists()) {
+                NAME_INDEX_FILE.createNewFile();
+            }
+            Scanner input = new Scanner(NAME_INDEX_FILE);
             if (input.hasNextInt()) {
                 teamDefaultNameIndex = input.nextInt();
             }
@@ -77,9 +81,9 @@ public class Team {
             PrintStream output = new PrintStream(NAME_INDEX_FILE);
             output.print(teamDefaultNameIndex + 1);// writes the next available number
             return DEFAULT_NAME + teamDefaultNameIndex;
-        } catch (FileNotFoundException e) {
+        } catch (IOException e) {
             e.printStackTrace();
-            return "Error";
+            return ERROR_TEAM_NAME;
         }
     }
 
