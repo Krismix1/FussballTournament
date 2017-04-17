@@ -47,15 +47,15 @@ public class Controller {
     private void saveAction(ActionEvent actionEvent) {
         String name = nameInput.getText();
         String email = emailInput.getText();
-        String birthday = dateBirthInput.getValue().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
         save.defaultButtonProperty().bind(save.focusedProperty());
 
-        if (name.isEmpty() || birthday.isEmpty())
+        if (name.isEmpty() || dateBirthInput.getValue() == null)
         {
             displayError("Error Dialog", null, "Please enter player details!");
 
         }else
         {
+            String birthday = dateBirthInput.getValue().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
             try {
                 String sql = "INSERT INTO players VALUES(NULL, '" + name + "',";
                 if (email.isEmpty()) {
