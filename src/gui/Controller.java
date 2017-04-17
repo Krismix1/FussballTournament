@@ -7,6 +7,8 @@ import domain.Team;
 import domain.Tournament;
 
 import javafx.beans.value.ObservableValue;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.util.Callback;
 import technicalservices.DBConnection;
 
@@ -39,6 +41,9 @@ public class Controller {
     private TextField dateBirthInput;
     @FXML
     private Button save;
+    @FXML
+    private Button clear, clear1;
+
 
 
     @FXML
@@ -198,6 +203,15 @@ public class Controller {
         alert.showAndWait();
     }
 
+    @FXML
+    private void btnClear() {
+
+        player1TextField.clear();
+    }
+    @FXML
+    private void btnClear1(){
+        player2TextField.clear();
+    }
     @FXML
     private TableView matchTable;
     @FXML
