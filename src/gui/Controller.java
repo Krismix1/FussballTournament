@@ -160,6 +160,7 @@ public class Controller {
     private TextField teamNameTextField;
 
     private static final int PRIMARY_KEY_TAKEN_ERROR = 1062;
+
     @FXML
     private void registerTeam() {
         String teamName = teamNameTextField.getText();
@@ -233,6 +234,14 @@ public class Controller {
         alert.showAndWait();
     }
 
+    private void displayWarning(String title, String header, String content){
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setTitle(title);
+        alert.setHeaderText(header);
+        alert.setContentText(content);
+        alert.showAndWait();
+    }
+
     @FXML
     private void btnClear() {
 
@@ -247,7 +256,7 @@ public class Controller {
     }
 
     @FXML
-    private TableView matchTable;
+    private TableView<Match> matchTable;
     @FXML
     TableColumn<Match, String> matchColumn;
     @FXML
@@ -255,12 +264,21 @@ public class Controller {
 
     public void schedule() {
         Tournament tournament = Tournament.getInstance();
-        tournament.getTeamsList();
 
-        tournament.createMatches();
         List<Match> matchList = tournament.getMatchList();
         ObservableList<Match> data = FXCollections.observableArrayList(matchList);
         matchColumn.setCellValueFactory(new PropertyValueFactory<>("matchName"));
         matchTable.setItems(data);
+    }
+
+    @FXML
+    private void startTournament() {
+        if (Tournament.getInstance().isStarted()) {
+            displayError("Tournament start", null, "Tournament is already started.");
+        }
+        else {
+            Tournament.getInstance().startTournament();
+            displayInformation("Tournament start", null, "Tournament successfully started.");
+        }
     }
 }

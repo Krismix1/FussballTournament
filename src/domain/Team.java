@@ -1,6 +1,9 @@
 package domain;
 
-import java.io.*;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintStream;
 import java.util.Scanner;
 
 /**
