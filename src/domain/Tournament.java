@@ -7,6 +7,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -50,25 +51,32 @@ public class Tournament {
      * Creates the matches for the tournament.
      * Each team is assigned to play a match against all other remaining teams.
      */
-    public void createMatches() {
+    private void createMatches() {
         for (int i = 0; i < teamList.size() - 1; i++) {
             Team team1 = teamList.get(i);
             for (int j = i + 1; j < teamList.size(); j++) {
                 Team team2 = teamList.get(j);
                 String matchName = team1.getTeamName() + " vs " + team2.getTeamName();
                 Match match = new Match(matchName, team1, team2);
-
-                try {
-                    Connection con = DBConnection.getConnection();
-                    Statement stmt = con.createStatement();
-                    String sql = "INSERT INTO matches VALUES('" +match.getMatchName() + "', '" + team1.getTeamName() + "', '" + team2.getTeamName() + "', NULL);";
-                    stmt.execute(sql);
-                    con.close();
-                }catch (SQLException e)
-                {
-                    e.printStackTrace();
-                }
                 matchList.add(match);
+            }
+        }
+    }
+
+    private void saveMatchesToDB() {
+        Collections.shuffle(matchList);
+        for (Match match : matchList) {
+            Team team1 = match.getTeamOne();
+            Team team2 = match.getTeamTwo();
+            try {
+                Connection con = DBConnection.getConnection();
+                Statement stmt = con.createStatement();
+                String sql = "INSERT INTO matches VALUES('" +match.getMatchName() + "', '" + team1.getTeamName() + "', '" + team2.getTeamName() + "', NULL);";
+                stmt.execute(sql);
+                con.close();
+            }catch (SQLException e)
+            {
+                e.printStackTrace();
             }
         }
     }
@@ -147,6 +155,18 @@ public class Tournament {
         Statement stmt = con.createStatement();
         stmt.executeUpdate(sql);
         con.close();
+    }
+
+    private boolean isStarted = false;
+
+    public boolean isStarted() {
+        return isStarted;
+    }
+
+    public void startTournament() {
+        isStarted = true;
+        createMatches();
+        saveMatchesToDB();
     }
 }
 

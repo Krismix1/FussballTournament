@@ -46,4 +46,12 @@ public class Match {
     public String getMatchName() {
         return matchName;
     }
+
+    public Team getTeamOne() {
+        return team1;
+    }
+
+    public Team getTeamTwo() {
+        return team2;
+    }
 }
