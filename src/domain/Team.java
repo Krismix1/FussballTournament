@@ -1,5 +1,10 @@
 package domain;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintStream;
+import java.util.Scanner;
+
 /**
  * Created by Cristian Betivu on 4/9/2017.
  */
@@ -12,6 +17,7 @@ public class Team {
     public static final String DEFAULT_NAME = "Team #"; // FIXME: 10-Apr-17 Fucks up when project restarts
 
     private static int teamDefaultNameIndex = 1;
+    private static final File NAME_INDEX_FILE = new File("teamNameIndex.txt");
 
     private String teamName;
     private Player firstPlayer;
@@ -31,11 +37,15 @@ public class Team {
 
     /**
      * Creates a new team with given players and given name.
-     * @param firstPlayer first player of the team
+     *
+     * @param firstPlayer  first player of the team
      * @param secondPlayer second player of the team
-     * @param teamName the name of the team
+     * @param teamName     the name of the team
      */
     public Team(Player firstPlayer, Player secondPlayer, String teamName) {
+        if (teamName.isEmpty()) {
+            teamName = createDefaultName();
+        }
         this.teamName = teamName;
         this.firstPlayer = firstPlayer;
         this.secondPlayer = secondPlayer;
@@ -44,9 +54,10 @@ public class Team {
     /**
      * Creates a new team with given players and default name.
      * The name is "{@value domain.Team#DEFAULT_NAME}" followed by a number.
-     * @see Team#DEFAULT_NAME
-     * @param firstPlayer first player of the team
+     *
+     * @param firstPlayer  first player of the team
      * @param secondPlayer second player of the team
+     * @see Team#DEFAULT_NAME
      */
     public Team(Player firstPlayer, Player secondPlayer) {
         this.firstPlayer = firstPlayer;
@@ -61,11 +72,23 @@ public class Team {
      * @return the name generated
      */
     private String createDefaultName() {
-        return DEFAULT_NAME + teamDefaultNameIndex++;
+        try (Scanner input = new Scanner(NAME_INDEX_FILE)) {
+            if (input.hasNextInt()) {
+                teamDefaultNameIndex = input.nextInt();
+            }
+            input.close();
+            PrintStream output = new PrintStream(NAME_INDEX_FILE);
+            output.print(teamDefaultNameIndex + 1);// writes the next available number
+            return DEFAULT_NAME + teamDefaultNameIndex;
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            return "Error";
+        }
     }
 
     /**
      * Adds points to the score of the team.
+     *
      * @param pointsScored how many points the team earned at the end of the match
      */
     public void addPointsScored(int pointsScored) {
@@ -74,6 +97,7 @@ public class Team {
 
     /**
      * Sets team's points to the given value.
+     *
      * @param points the number of points
      */
     public void setPointsScored(int points) {
@@ -82,6 +106,7 @@ public class Team {
 
     /**
      * Returns the number of points the team has.
+     *
      * @return the number of points
      */
     public int getPointsScored() {
@@ -90,6 +115,7 @@ public class Team {
 
     /**
      * Returns the name of the team.
+     *
      * @return the name of the team.
      */
     public String getTeamName() {
@@ -98,6 +124,7 @@ public class Team {
 
     /**
      * Assign a value to the name of the team.
+     *
      * @param teamName the name of the team.
      */
     public void setTeamName(String teamName) {
@@ -106,8 +133,9 @@ public class Team {
 
     /**
      * Registers a new player to the team.
-     * @throws IllegalStateException if more than 2 members are tried to be registered.
+     *
      * @param player the player to register
+     * @throws IllegalStateException if more than 2 members are tried to be registered.
      */
     public void registerPlayer(Player player) {
         if (firstPlayer == null) {
@@ -123,11 +151,12 @@ public class Team {
 
     /**
      * Substitutes players in the team with a new one.
+     *
      * @param oldPlayer the player to substitute
      * @param newPlayer the new player to add. This value can't be null.
      * @throws Exception if the player to substitute is not found or if the new player is null.
      */
-    public void substitutePlayer(Player oldPlayer, Player newPlayer) throws Exception{
+    public void substitutePlayer(Player oldPlayer, Player newPlayer) throws Exception {
         if (newPlayer != null) {
             if (firstPlayer.equals(oldPlayer)) {
                 firstPlayer = newPlayer;
@@ -143,6 +172,7 @@ public class Team {
 
     /**
      * Returns how many matches the team played.
+     *
      * @return the number of played matches
      */
     public int getMatchesPlayed() {
@@ -151,8 +181,9 @@ public class Team {
 
     /**
      * Sets the number of played matches for the team.
-     * @throws IllegalArgumentException if the number entered is negative.
+     *
      * @param matchesPlayed the number of matches played.
+     * @throws IllegalArgumentException if the number entered is negative.
      */
     public void setMatchesPlayed(int matchesPlayed) {
         if (matchesPlayed >= 0) {
@@ -164,8 +195,9 @@ public class Team {
 
     /**
      * Adds the given value to the number of played matches.
-     * @throws IllegalArgumentException if the matches played value is negative.
+     *
      * @param matchesPlayed the number of matches to add.
+     * @throws IllegalArgumentException if the matches played value is negative.
      */
     public void addMatchesPlayed(int matchesPlayed) {
         if (matchesPlayed >= 0) {// FIXME: 4/9/2017 consider checking sum greater than 0
@@ -178,6 +210,7 @@ public class Team {
 
     /**
      * Returns how many goals the team scored.
+     *
      * @return the number of how many goals the team scored.
      */
     public int getGoalsFor() {
@@ -186,6 +219,7 @@ public class Team {
 
     /**
      * Sets the value of how many goals the team scored.
+     *
      * @param goals the number of goals scored by the team.
      */
     public void setGoalsFor(int goals) {
@@ -194,8 +228,9 @@ public class Team {
 
     /**
      * Adds goals to the number of goals scored by the team.
-     * @throws IllegalArgumentException if the number of goals to add is negative.
+     *
      * @param goals the number of goals to add.
+     * @throws IllegalArgumentException if the number of goals to add is negative.
      */
     public void addGoalsFor(int goals) {
         if (goals >= 0) {// FIXME: 4/9/2017 consider checking sum greater than 0
@@ -208,6 +243,7 @@ public class Team {
 
     /**
      * Returns the number of goals scored by the team.
+     *
      * @return the number of goals scored.
      */
     public int getGoalsAgainst() {
@@ -216,6 +252,7 @@ public class Team {
 
     /**
      * Sets the number of goals scored against current team.
+     *
      * @param goals the number of goals scored against current team.
      */
     public void setGoalsAgainst(int goals) {
@@ -224,8 +261,9 @@ public class Team {
 
     /**
      * Adds goals to the number of goals scored against the team.
-     * @throws IllegalArgumentException if the number of goals to add is negative.
+     *
      * @param goals the number of goals to add.
+     * @throws IllegalArgumentException if the number of goals to add is negative.
      */
     public void addGoalsAgainst(int goals) {
         if (goals >= 0) {// FIXME: 4/9/2017 consider checking sum greater than 0
@@ -234,5 +272,13 @@ public class Team {
             throw new IllegalArgumentException("Goals scored against team can't be negative!");
             //this.goalsFor = 0;
         }
+    }
+
+    public Player getFirstPlayer() {
+        return firstPlayer;
+    }
+
+    public Player getSecondPlayer() {
+        return secondPlayer;
     }
 }

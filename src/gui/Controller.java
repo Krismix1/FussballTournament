@@ -141,7 +141,13 @@ public class Controller {
         //Check for team name, empty player 1 and player 2
 
         try {
-            Tournament.getInstance().createAndSaveTeam(teamName, player1Selected, player2Selected);
+            Team t;
+            if (teamName.isEmpty()) {
+                t = new Team(player1Selected, player2Selected);
+            } else {
+                t = new Team(player1Selected, player2Selected, teamName);
+            }
+            Tournament.getInstance().createAndSaveTeam(t);
 
             registerTeamTabChanged();
 

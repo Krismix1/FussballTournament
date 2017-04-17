@@ -4,6 +4,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
@@ -37,7 +39,11 @@ public class Login {
                 Scene scene = new Scene(root, 900, 575);
                 Main.mainStage.setScene(scene);
             } else {
-                System.out.println("wrong username or password");
+                Alert wrongCredentials = new Alert(Alert.AlertType.WARNING);
+                wrongCredentials.setTitle("Invalid login");
+                wrongCredentials.setHeaderText("Invalid username or password.");
+                wrongCredentials.setContentText(null);
+                wrongCredentials.showAndWait();
             }
             //Stage adminStage = new Stage();
             //adminStage.setScene(scene);
