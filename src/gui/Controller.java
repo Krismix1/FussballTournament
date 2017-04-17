@@ -43,9 +43,6 @@ public class Controller {
     private DatePicker dateBirthInput;
     @FXML
     private Button save;
-    @FXML
-    private Button clear, clear1;
-
 
 
     @FXML
@@ -54,18 +51,20 @@ public class Controller {
         String email = emailInput.getText();
         save.defaultButtonProperty().bind(save.focusedProperty());
 
-        if (name.isEmpty() || dateBirthInput.getValue() == null)
-        {
+        if (validEmail(email)) {
+            displayError("Invalid email", "Invalid email format", null);
+        }
+
+        if (name.isEmpty() || dateBirthInput.getValue() == null) {
             displayError("Error Dialog", null, "Please enter player details!");
 
-        }else
-        {
+        } else {
             String birthday = dateBirthInput.getValue().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
             try {
                 String sql = "INSERT INTO players VALUES(NULL, '" + name + "',";
                 if (email.isEmpty()) {
                     sql += " NULL, '" + birthday + "')";
-                }else {
+                } else {
                     sql += " '" + email + "', '" + birthday + "')";
                 }
 
@@ -73,8 +72,8 @@ public class Controller {
                 Statement stmt = con.createStatement();
                 stmt.executeUpdate(sql);
                 con.close();
-                nameInput.setText("");
-                emailInput.setText("");
+                nameInput.clear();
+                emailInput.clear();
                 dateBirthInput.setValue(null);
 
                 displayInformation("Player saved!", null, "Player was saved!");
@@ -84,10 +83,16 @@ public class Controller {
         }
     }
 
-    @FXML
-    private void btnBackAction(){
-        try {
+    // Will check if email has the '@' character only one time
+    // And if so, it checks if the string after '@' contains '.'
+    private boolean validEmail(String email) {
+        String[] emailParts = email.split("@");
+        return emailParts.length == 2 && emailParts[1].contains(".");
+    }
 
+    @FXML
+    private void btnBackAction() {
+        try {
             Parent root = FXMLLoader.load(getClass().getResource("/gui/Login.fxml"));
             Scene scene = new Scene(root, 900, 575);
             Main.mainStage.setScene(scene);
@@ -95,8 +100,6 @@ public class Controller {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-
     }
 
     @FXML
@@ -156,6 +159,7 @@ public class Controller {
     @FXML
     private TextField teamNameTextField;
 
+    private static final int PRIMARY_KEY_TAKEN_ERROR = 1062;
     @FXML
     private void registerTeam() {
         String teamName = teamNameTextField.getText();
@@ -181,7 +185,13 @@ public class Controller {
             player1TextField.clear();
             player2TextField.clear();
         } catch (SQLException e) {
-            displayError("Error Dialog", null, "Ooops, there was an error!\n Try again");
+            // Code #1062 defines Duplicate entry value for primary key
+            // That said, the team name is already used.
+            if (e.getErrorCode() == PRIMARY_KEY_TAKEN_ERROR) {
+                displayError("Error Dialog", null, "Team name is already used. Try a new name!");
+            } else {
+                displayError("Error Dialog", null, "Ooops, there was an error!\n Try again");
+            }
             e.printStackTrace();
         } catch (NullPointerException nullPointer) {
             displayError("Error Dialog", null, "Ooops, you need to select the players first!");
@@ -206,6 +216,14 @@ public class Controller {
         alert.showAndWait();
     }
 
+    /**
+     * Display an information alert with the given information.
+     *
+     * @param title   the title of the information window.
+     * @param header  the message which will be showed in the header. If headers is not wanted,
+     *                a null value can be sent as parameter.
+     * @param content the message of the information window.
+     */
     private void displayInformation(String title, String header, String content) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle(title);
@@ -221,11 +239,13 @@ public class Controller {
         player1TextField.clear();
         player1Selected = null;
     }
+
     @FXML
-    private void btnClear1(){
+    private void btnClear1() {
         player2TextField.clear();
         player2Selected = null;
     }
+
     @FXML
     private TableView matchTable;
     @FXML
@@ -243,7 +263,4 @@ public class Controller {
         matchColumn.setCellValueFactory(new PropertyValueFactory<>("matchName"));
         matchTable.setItems(data);
     }
-
 }
-
-
