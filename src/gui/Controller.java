@@ -46,7 +46,8 @@ public class Controller {
         String birthday = dateBirthInput.getText();
         if (name.equalsIgnoreCase(""))
         {
-            System.out.println("Enter player details and proceed!!!!!");
+            displayError("Error Dialog", null, "Please enter player details!");
+
         }else
         {
             try {
