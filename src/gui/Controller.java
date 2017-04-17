@@ -37,6 +37,8 @@ public class Controller {
     private TextField emailInput;
     @FXML
     private TextField dateBirthInput;
+    @FXML
+    private Button save;
 
 
     @FXML
@@ -44,6 +46,8 @@ public class Controller {
         String name = nameInput.getText();
         String email = emailInput.getText();
         String birthday = dateBirthInput.getText();
+        save.defaultButtonProperty().bind(save.focusedProperty());
+
         if (name.equalsIgnoreCase(""))
         {
             System.out.println("Enter player details and proceed");
@@ -60,6 +64,7 @@ public class Controller {
                 nameInput.setText("");
                 emailInput.setText("");
                 dateBirthInput.setText("");
+
                 displayInformation("Player saved!", null, "Player was saved!");
             } catch (SQLException e) {
                 e.printStackTrace();
