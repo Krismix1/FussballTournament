@@ -1,16 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.Controller">
+<AnchorPane xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.Controller">
     <children>
         <TabPane prefHeight="379.0" prefWidth="582.0" tabClosingPolicy="UNAVAILABLE">
             <tabs>
@@ -24,7 +21,7 @@
                                         <TableColumn fx:id="dateColumn" prefWidth="122.0" text="Date " />
                                     </columns>
                                 </TableView>
-                                <Button fx:id="logoutBtn" layoutX="449.0" layoutY="268.0" mnemonicParsing="false" onAction="#btnBackAction" text="logout" />
+                                <Button fx:id="logoutBtn" layoutX="449.0" layoutY="268.0" mnemonicParsing="false" onAction="#btnBackAction" text="Logout" />
                             </children>
                         </AnchorPane>
                     </content>
