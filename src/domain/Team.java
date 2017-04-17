@@ -43,9 +43,6 @@ public class Team {
      * @param teamName     the name of the team
      */
     public Team(Player firstPlayer, Player secondPlayer, String teamName) {
-        if (teamName.isEmpty()) {
-            teamName = createDefaultName();
-        }
         this.teamName = teamName;
         this.firstPlayer = firstPlayer;
         this.secondPlayer = secondPlayer;

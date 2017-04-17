@@ -27,6 +27,8 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 public class Controller {
@@ -36,7 +38,7 @@ public class Controller {
     @FXML
     private TextField emailInput;
     @FXML
-    private TextField dateBirthInput;
+    private DatePicker dateBirthInput;
     @FXML
     private Button save;
 
@@ -45,18 +47,22 @@ public class Controller {
     private void saveAction(ActionEvent actionEvent) {
         String name = nameInput.getText();
         String email = emailInput.getText();
-        String birthday = dateBirthInput.getText();
+        String birthday = dateBirthInput.getValue().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
         save.defaultButtonProperty().bind(save.focusedProperty());
 
-        if (name.equalsIgnoreCase(""))
+        if (name.isEmpty() || birthday.isEmpty())
         {
             displayError("Error Dialog", null, "Please enter player details!");
 
         }else
         {
             try {
-                String sql = "INSERT INTO players VALUES " +
-                        "(NULL, '" + name + "', '" + email + "', '" + birthday + "')";
+                String sql = "INSERT INTO players VALUES(NULL, '" + name + "',";
+                if (email.isEmpty()) {
+                    sql += " NULL, '" + birthday + "')";
+                }else {
+                    sql += " '" + email + "', '" + birthday + "')";
+                }
 
                 Connection con = DBConnection.getConnection();
                 Statement stmt = con.createStatement();
@@ -64,7 +70,7 @@ public class Controller {
                 con.close();
                 nameInput.setText("");
                 emailInput.setText("");
-                dateBirthInput.setText("");
+                dateBirthInput.setValue(null);
 
                 displayInformation("Player saved!", null, "Player was saved!");
             } catch (SQLException e) {
