@@ -47,10 +47,18 @@ public class Match {
         return matchName;
     }
 
+    /**
+     * Returns the first team that is participating in the match.
+     * @return the first team of the match
+     */
     public Team getTeamOne() {
         return team1;
     }
 
+    /**
+     * Returns the second team that is participating in the match.
+     * @return the second team of the match
+     */
     public Team getTeamTwo() {
         return team2;
     }

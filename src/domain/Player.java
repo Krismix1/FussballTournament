@@ -8,14 +8,15 @@ public class Player {
     private int player_id;
     private String playerName;
     private int matchesPlayed;
-    private String dob; // DD.MM.YYYY, change to LocalDate
+    private String dob; // MM.DD.YYYY, change to LocalDate
     private String email;
 
 
     /**
-     * Creates a new player with given name and date of birth.
+     * Creates a new player with given name, date of birth and email.
      * @param playerName player name
      * @param dob date of birth of the player
+     * @param email email of the player
      */
     public Player(String playerName, String dob, String email) {
         this.playerName = playerName;
@@ -23,6 +24,13 @@ public class Player {
         this.email = email;
     }
 
+    /**
+     * Creates a new player with given name, date of birth, email and ID.
+     * @param playerName player name
+     * @param dob date of birth of the player
+     * @param email email of the player
+     * @param id the ID of the player, which represents the primary key for this player in the database
+     */
     public Player(String playerName, String dob, String email,int id) {
         this.playerName = playerName;
         this.dob = dob;
@@ -114,6 +122,10 @@ public class Player {
         this.email = email;
     }
 
+    /**
+     * Returns player's ID.
+     * @return player's ID.
+     */
     public int getPlayerID() {
         return player_id;
     }

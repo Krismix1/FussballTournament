@@ -15,15 +15,14 @@ import java.util.List;
  * Created by ArcticMonkey on 4/9/2017.
  */
 public class Tournament {
-    private static Tournament instance;
 
+    private List<Match> matchList = new LinkedList<>();
+    private List<Team> teamList = new ArrayList<>();
+    private List<Player> playerList = new LinkedList<>();
 
-    List<Match> matchList = new LinkedList<>();
-    List<Team> teamList = new ArrayList<>();
-    List<Player> playerList = new LinkedList<>();
-
+    // Assuring that the class is a singleton
     private Tournament() {}
-
+    private static Tournament instance;
     public static Tournament getInstance() {
         if (instance == null) {
             instance = new Tournament();
@@ -32,8 +31,9 @@ public class Tournament {
     }
 
     /**
-     * Adds player to the player list.
-     * @param p the player to be added.
+     * Adds player to the database.
+     * @param p the player to be saved.
+     * @return true if player is successfully saved or false otherwise
      */
     public boolean registerPlayer(Player p) {
         try {
@@ -56,11 +56,16 @@ public class Tournament {
     }
 
     /**
-     * Adds team to the tournament.
+     * Saves team to the database.
      * @param t the team to be added.
      */
-    public void registerTeam(Team t) {
-        teamList.add(t);
+    public void registerTeam(Team t) throws NullPointerException, SQLException {
+        String sql = "INSERT INTO `teams` (`team_name`, `player_one_id`, `player_two_id`) " +
+                "VALUES ('" + t.getTeamName() + "', '" + t.getFirstPlayer().getPlayerID() + "', '" + t.getSecondPlayer().getPlayerID() + "')";
+        Connection con = DBConnection.getConnection();
+        Statement stmt = con.createStatement();
+        stmt.executeUpdate(sql);
+        con.close();
     }
 
     /**
@@ -79,6 +84,11 @@ public class Tournament {
         }
     }
 
+    /**
+     * Shuffles the matches created and insert each match in the database.
+     * For each match, a new connection is created and then destroyed. Think of a better way to store them,
+     * because this takes a lot of time. Also the shuffle thing is pointless because the DBMS reorders the data.
+     */
     private void saveMatchesToDB() {
         Collections.shuffle(matchList);
         for (Match match : matchList) {
@@ -97,10 +107,18 @@ public class Tournament {
         }
     }
 
+    /**
+     * Returns the list of the matches for the tournament
+     * @return the list with the matches
+     */
     public List<Match> getMatchList() {
         return this.matchList;
     }
 
+    /**
+     * Finds and returns all the players that are not part of any team.
+     * @return the list with players without a team.
+     */
     public List<Player> getPlayersWithoutTeam() {
         try {
             Connection con = DBConnection.getConnection();
@@ -128,6 +146,10 @@ public class Tournament {
         }
     }
 
+    /**
+     * Reads and returns the list of teams from the database.
+     * @return the list with teams
+     */
     public List<Team> getTeamsList() {
         try {
             Connection con = DBConnection.getConnection();
@@ -163,22 +185,20 @@ public class Tournament {
         }
     }
 
-    public void createAndSaveTeam(Team t) throws NullPointerException, SQLException {
-        // TODO: 16-Apr-17 Check if team name already exists in the teams table 
-        String sql = "INSERT INTO `teams` (`team_name`, `player_one_id`, `player_two_id`) " +
-                "VALUES ('" + t.getTeamName() + "', '" + t.getFirstPlayer().getPlayerID() + "', '" + t.getSecondPlayer().getPlayerID() + "')";
-        Connection con = DBConnection.getConnection();
-        Statement stmt = con.createStatement();
-        stmt.executeUpdate(sql);
-        con.close();
-    }
-
+    // Will store state of the tournament: false - not started, true - started.
     private boolean isStarted = false;
 
+    /**
+     * Returns if the tournament has been started or not.
+     * @return true if tournament was started, false otherwise
+     */
     public boolean isStarted() {
         return isStarted;
     }
 
+    /**
+     * Starts the tournament, does all required actions like creating and registering matches
+     */
     public void startTournament() {
         isStarted = true;
         createMatches();

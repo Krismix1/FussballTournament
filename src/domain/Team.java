@@ -29,10 +29,11 @@ public class Team {
     private int goalsFor;
     private int goalsAgainst;
 
+    // Used for displaying player name in the TableView, should be removed if another way to do it is found
     public String getFirstPlayerName() {
         return firstPlayer.getPlayerName();
     }
-
+    // Used for displaying player name in the TableView, should be removed if another way to do it is found
     public String getSecondPlayerName() {
         return secondPlayer.getPlayerName();
     }
@@ -278,10 +279,18 @@ public class Team {
         }
     }
 
+    /**
+     * Returns the first player of the team.
+     * @return the first player of the team
+     */
     public Player getFirstPlayer() {
         return firstPlayer;
     }
 
+    /**
+     * Returns the second player of the team.
+     * @return the second player of the team
+     */
     public Player getSecondPlayer() {
         return secondPlayer;
     }

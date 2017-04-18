@@ -35,6 +35,10 @@ import java.util.List;
 
 public class Controller {
 
+    ///////////////////////////////////////////////////REGISTER PLAYER TAB////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////REGISTER PLAYER TAB////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////REGISTER PLAYER TAB////////////////////////////////////////////////////////
+
     @FXML
     private TextField nameInput;
     @FXML
@@ -42,17 +46,21 @@ public class Controller {
     @FXML
     private DatePicker dateBirthInput;
     @FXML
-    private Button save;
+    private Button savePlayerBtn;
 
 
+    /**
+     * The save player button action. Will check the entered information for all required fields, valid email if provided.
+     * If succeeds, sends a request to the Tournament class to save the player to the database.
+     */
     @FXML
-    private void saveAction(ActionEvent actionEvent) {
+    private void savePlayer(ActionEvent actionEvent) {
         String name = nameInput.getText();
         String email = emailInput.getText();
         if (email.length() <= 0) {
             email = null;
         }
-        save.defaultButtonProperty().bind(save.focusedProperty());
+        savePlayerBtn.defaultButtonProperty().bind(savePlayerBtn.focusedProperty());
 
         if (name.isEmpty() || dateBirthInput.getValue() == null) {
             displayError("Error Dialog", null, "Please enter player details!");
@@ -87,6 +95,9 @@ public class Controller {
         return true; // empty email
     }
 
+    /**
+     * The logout button action. Gets the user to the login scene of the program.
+     */
     @FXML
     private void btnBackAction() {
         try {
@@ -99,15 +110,14 @@ public class Controller {
         }
     }
 
+
+    ///////////////////////////////////////////////////REGISTER TEAM TAB////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////REGISTER TEAM TAB////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////REGISTER TEAM TAB////////////////////////////////////////////////////////
+
+
     @FXML
     private ListView<Player> playersListView;
-    @FXML
-    private TextField player1TextField;
-    @FXML
-    private TextField player2TextField;
-
-    private Player player1Selected;
-    private Player player2Selected;
     @FXML
     private TableView<Team> teamTableView;
     @FXML
@@ -116,54 +126,69 @@ public class Controller {
     private TableColumn<Team, String> playerOneName;
     @FXML
     private TableColumn<Team, String> playerTwoName;
+    @FXML
+    private TextField teamNameTextField;
 
+    /**
+     * This methods gets called when the selected changes to or from the 'Register Team' tab.
+     * It gets and displays the players without a team and the teams that are registered in the database.
+     */
     @FXML
     private void registerTeamTabChanged() {
         playersListView.setItems(FXCollections.observableArrayList(Tournament.getInstance().getPlayersWithoutTeam()));
         teamTableView.setItems(FXCollections.observableArrayList(Tournament.getInstance().getTeamsList()));
 
-        addProperties();
+        addPropertiesForTeamTable();
     }
 
-    private void addProperties() {
-        playersListView.setOnMouseClicked(new EventHandler<MouseEvent>() {
-
-            @Override
-            public void handle(MouseEvent click) {
-
-                if (click.getClickCount() == 2 && click.getButton().equals(MouseButton.PRIMARY)) {
-                    Player p = playersListView.getSelectionModel()
-                            .getSelectedItem();
-                    if (p != null) {
-                        if (player1TextField.getText().isEmpty()) {
-                            player1Selected = p;
-                            player1TextField.setText(p.getPlayerName());
-                        } else if (player2TextField.getText().isEmpty()) {
-                            player2TextField.setText(p.getPlayerName());
-                            player2Selected = p;
-                        }
-                    } else System.out.println("select item");
-                }
-            }
-        });
-
+    // Helper method to add properties to the team TableView
+    private void addPropertiesForTeamTable() {
         teamNameColumn.setCellValueFactory(new PropertyValueFactory<>("teamName"));
         playerOneName.setCellValueFactory(new PropertyValueFactory<>("firstPlayerName"));
         playerTwoName.setCellValueFactory(new PropertyValueFactory<>("secondPlayerName"));
-
     }
 
+    private Player player1Selected; // stores the reference to the first player of the team which gets selected
+    private Player player2Selected; // stores the reference to the second player of the team which gets selected
     @FXML
-    private TextField teamNameTextField;
+    private TextField player1TextField; // this field is non-editable so that user doesn't type in a random player name
+    @FXML
+    private TextField player2TextField; // this field is non-editable so that user doesn't type in a random player name
 
+    /**
+     * This method handles double click on player ListView.
+     * When this methods gets called, in case of a double left click on a item,
+     * it sets the player1Selected and player2Selected to the proper player reference.
+     */
+    @FXML
+    private void playersListItemClicked(MouseEvent click) {
+        if (click.getClickCount() == 2 && click.getButton().equals(MouseButton.PRIMARY)) {
+            Player p = playersListView.getSelectionModel()
+                    .getSelectedItem();
+            if (p != null) {
+                if (player1TextField.getText().isEmpty()) {
+                    player1Selected = p;
+                    player1TextField.setText(p.getPlayerName());
+                } else if (player2TextField.getText().isEmpty()) {
+                    player2TextField.setText(p.getPlayerName());
+                    player2Selected = p;
+                }
+            } else System.out.println("select item");
+        }
+    }
+
+    /**
+     * Code #1062 defines Duplicate entry value for primary key.
+     */
     private static final int PRIMARY_KEY_TAKEN_ERROR = 1062;
 
+    /**
+     * Saves a new team with the entered information by the user.
+     * If team name is not provided, a team with default name will be saved.
+     */
     @FXML
     private void registerTeam() {
         String teamName = teamNameTextField.getText();
-
-        //Check for team name, empty player 1 and player 2
-
         try {
             Team t;
             if (teamName.isEmpty()) {
@@ -171,7 +196,7 @@ public class Controller {
             } else {
                 t = new Team(player1Selected, player2Selected, teamName);
             }
-            Tournament.getInstance().createAndSaveTeam(t);
+            Tournament.getInstance().registerTeam(t);
 
             registerTeamTabChanged();
 
@@ -198,8 +223,74 @@ public class Controller {
     }
 
     /**
+     * Clears the first selected player. This method is needed because the TextField is not editable through
+     * keyboard inputs.
+     */
+    @FXML
+    private void btnClear() {
+        player1TextField.clear();
+        player1Selected = null;
+    }
+
+    /**
+     * Clears the second selected player. This method is needed because the TextField is not editable through
+     * keyboard inputs.
+     */
+    @FXML
+    private void btnClear1() {
+        player2TextField.clear();
+        player2Selected = null;
+    }
+
+    /**
+     * Method to handle the Start tournament button click.
+     */
+    @FXML
+    private void startTournament() {
+        if (Tournament.getInstance().isStarted()) {
+            displayError("Tournament start", null, "Tournament has already started.");
+        } else {
+            Tournament.getInstance().startTournament();
+            displayInformation("Tournament start", null, "Tournament successfully started.");
+        }
+    }
+
+    ///////////////////////////////////////////////////PLAYER VIEW////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////PLAYER VIEW////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////PLAYER VIEW////////////////////////////////////////////////////////
+
+    ///////////////////////////////////////////////////SCHEDULE TAB////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////SCHEDULE TAB////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////SCHEDULE TAB////////////////////////////////////////////////////////
+
+
+    @FXML
+    private TableView<Match> matchTable;
+    @FXML
+    TableColumn<Match, String> matchColumn;
+    @FXML
+    TableColumn<Match, String> dateColumn; // FIXME: 14.04.2017 how to store date?
+
+    /**
+     * Gets and displays the tournament schedule of the matches that are left to be played.
+     * This method gets called when the selected tab changes to or from the 'Schedule' tab
+     */
+    @FXML
+    private void displayMatchSchedule() {
+        Tournament tournament = Tournament.getInstance();
+
+        List<Match> matchList = tournament.getMatchList();
+        ObservableList<Match> data = FXCollections.observableArrayList(matchList);
+        matchColumn.setCellValueFactory(new PropertyValueFactory<>("matchName"));
+        matchTable.setItems(data);
+    }
+
+
+    ///////////////////////////////////////////////////HELPER METHODS////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////HELPER METHODS////////////////////////////////////////////////////////
+
+    /**
      * Display an error alert with the given information.
-     *
      * @param title   the title of the error window.
      * @param header  the message which will be showed in the header. If headers is not wanted,
      *                a null value can be sent as parameter.
@@ -216,7 +307,6 @@ public class Controller {
 
     /**
      * Display an information alert with the given information.
-     *
      * @param title   the title of the information window.
      * @param header  the message which will be showed in the header. If headers is not wanted,
      *                a null value can be sent as parameter.
@@ -231,51 +321,18 @@ public class Controller {
         alert.showAndWait();
     }
 
+    /**
+     * Display a warning alert with the given information.
+     * @param title   the title of the warning window.
+     * @param header  the message which will be showed in the header. If headers is not wanted,
+     *                a null value can be sent as parameter.
+     * @param content the message of the warning window.
+     */
     private void displayWarning(String title, String header, String content) {
         Alert alert = new Alert(Alert.AlertType.WARNING);
         alert.setTitle(title);
         alert.setHeaderText(header);
         alert.setContentText(content);
         alert.showAndWait();
-    }
-
-    @FXML
-    private void btnClear() {
-
-        player1TextField.clear();
-        player1Selected = null;
-
-    }
-
-    @FXML
-    private void btnClear1() {
-        player2TextField.clear();
-        player2Selected = null;
-    }
-
-    @FXML
-    private TableView<Match> matchTable;
-    @FXML
-    TableColumn<Match, String> matchColumn;
-    @FXML
-    TableColumn<Match, String> dateColumn; // FIXME: 14.04.2017 how to store date?
-
-    public void schedule() {
-        Tournament tournament = Tournament.getInstance();
-
-        List<Match> matchList = tournament.getMatchList();
-        ObservableList<Match> data = FXCollections.observableArrayList(matchList);
-        matchColumn.setCellValueFactory(new PropertyValueFactory<>("matchName"));
-        matchTable.setItems(data);
-    }
-
-    @FXML
-    private void startTournament() {
-        if (Tournament.getInstance().isStarted()) {
-            displayError("Tournament start", null, "Tournament has already started.");
-        } else {
-            Tournament.getInstance().startTournament();
-            displayInformation("Tournament start", null, "Tournament successfully started.");
-        }
     }
 }
