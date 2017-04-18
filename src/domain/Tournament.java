@@ -32,11 +32,27 @@ public class Tournament {
     }
 
     /**
-     * Adds player to the tournament.
+     * Adds player to the player list.
      * @param p the player to be added.
      */
-    public void registerPlayer(Player p) {
-        playerList.add(p);
+    public boolean registerPlayer(Player p) {
+        try {
+            String sql = "INSERT INTO players VALUES(NULL, '" + p.getPlayerName() + "',";
+            if (p.getEmail() == null) {
+                sql += " NULL, '" + p.getDateOfBirth() + "')";
+            } else {
+                sql += " '" + p.getEmail() + "', '" + p.getDateOfBirth() + "')";
+            }
+
+            Connection con = DBConnection.getConnection();
+            Statement stmt = con.createStatement();
+            stmt.executeUpdate(sql);
+            con.close();
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     /**

@@ -49,45 +49,42 @@ public class Controller {
     private void saveAction(ActionEvent actionEvent) {
         String name = nameInput.getText();
         String email = emailInput.getText();
-        save.defaultButtonProperty().bind(save.focusedProperty());
-
-        if (validEmail(email)) {
-            displayError("Invalid email", "Invalid email format", null);
+        if (email.length() <= 0) {
+            email = null;
         }
+        save.defaultButtonProperty().bind(save.focusedProperty());
 
         if (name.isEmpty() || dateBirthInput.getValue() == null) {
             displayError("Error Dialog", null, "Please enter player details!");
-
+            return;
+        }
+        if (!validEmail(email)) {
+            displayError("Invalid email", null, "Invalid email format.");
+            return;
+        }
+        if (dateBirthInput.getValue().compareTo(LocalDate.now()) >= 0) {
+            displayError("Wrong birthday date", null, "Enter a valid date.");
+            return;
+        }
+        String birthday = dateBirthInput.getValue().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        if (Tournament.getInstance().registerPlayer(new Player(name, birthday, email))) {
+            nameInput.clear();
+            emailInput.clear();
+            dateBirthInput.setValue(null);
+            displayInformation("Player saved!", null, "Player was saved!");
         } else {
-            String birthday = dateBirthInput.getValue().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-            try {
-                String sql = "INSERT INTO players VALUES(NULL, '" + name + "',";
-                if (email.isEmpty()) {
-                    sql += " NULL, '" + birthday + "')";
-                } else {
-                    sql += " '" + email + "', '" + birthday + "')";
-                }
-
-                Connection con = DBConnection.getConnection();
-                Statement stmt = con.createStatement();
-                stmt.executeUpdate(sql);
-                con.close();
-                nameInput.clear();
-                emailInput.clear();
-                dateBirthInput.setValue(null);
-
-                displayInformation("Player saved!", null, "Player was saved!");
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+            displayError("Player registration", null, "An error occurred. Please try again.");
         }
     }
 
     // Will check if email has the '@' character only one time
     // And if so, it checks if the string after '@' contains '.'
     private boolean validEmail(String email) {
-        String[] emailParts = email.split("@");
-        return emailParts.length == 2 && emailParts[1].contains(".");
+        if (email != null) {
+            String[] emailParts = email.split("@");
+            return emailParts.length == 2 && emailParts[1].contains(".");
+        }
+        return true; // empty email
     }
 
     @FXML
@@ -234,7 +231,7 @@ public class Controller {
         alert.showAndWait();
     }
 
-    private void displayWarning(String title, String header, String content){
+    private void displayWarning(String title, String header, String content) {
         Alert alert = new Alert(Alert.AlertType.WARNING);
         alert.setTitle(title);
         alert.setHeaderText(header);
@@ -275,9 +272,8 @@ public class Controller {
     @FXML
     private void startTournament() {
         if (Tournament.getInstance().isStarted()) {
-            displayError("Tournament start", null, "Tournament is already started.");
-        }
-        else {
+            displayError("Tournament start", null, "Tournament has already started.");
+        } else {
             Tournament.getInstance().startTournament();
             displayInformation("Tournament start", null, "Tournament successfully started.");
         }
