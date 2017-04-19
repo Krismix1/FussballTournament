@@ -1,10 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.RowConstraints?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="608.0" prefWidth="862.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.Controller">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="608.0" prefWidth="862.0" xmlns="http://javafx.com/javafx/8.0.112" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.Controller">
     <children>
         <TabPane prefHeight="608.0" prefWidth="862.0" tabClosingPolicy="UNAVAILABLE">
             <tabs>
@@ -39,19 +50,19 @@
                                         <RowConstraints maxHeight="401.0" minHeight="10.0" prefHeight="52.0" vgrow="SOMETIMES" />
                                     </rowConstraints>
                                 </GridPane>
-                        <TableView fx:id="playersTable" layoutX="488.0" layoutY="44.0" onMouseClicked="#select" prefHeight="506.0" prefWidth="371.0">
+                        <TableView fx:id="playersTable" layoutX="488.0" layoutY="44.0" onMouseClicked="#selectPlayer" prefHeight="506.0" prefWidth="371.0">
                           <columns>
                             <TableColumn fx:id="nameColumn" prefWidth="109.0" text="Name" />
                             <TableColumn fx:id="emailColumn" prefWidth="158.0" text="Email" />
                               <TableColumn fx:id="dobColumn" prefWidth="103.0" text="Date of Birth" />
                           </columns>
                         </TableView>
-                        <Button layoutX="252.0" layoutY="277.0" mnemonicParsing="false" onAction="#edit" text="Edit" />
+                        <Button layoutX="252.0" layoutY="277.0" mnemonicParsing="false" onAction="#editPlayer" text="Edit" />
                             </children>
                         </AnchorPane>
                     </content>
                 </Tab>
-                <Tab onSelectionChanged="#registerTeamTabChanged" text="Register teams">
+                <Tab onSelectionChanged="#loadTeamsAndPlayers" text="Register teams">
                     <content>
                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                             <children>
@@ -64,7 +75,7 @@
                                 <TextField fx:id="player1TextField" editable="false" layoutX="139.0" layoutY="392.0" />
                                 <TextField fx:id="player2TextField" editable="false" layoutX="139.0" layoutY="443.0" />
                                 <Label layoutX="23.0" layoutY="14.0" text="Available players" />
-                                <TableView fx:id="teamTableView" layoutX="410.0" layoutY="50.0" prefHeight="433.0" prefWidth="427.0">
+                                <TableView fx:id="teamTableView" layoutX="410.0" layoutY="50.0" onMouseClicked="#selectTeam" prefHeight="433.0" prefWidth="427.0">
                                     <columns>
                                         <TableColumn fx:id="teamNameColumn" prefWidth="134.0" text="Team name" />
                                         <TableColumn fx:id="playerOneName" prefWidth="151.0" text="Player one" />
@@ -76,6 +87,7 @@
 
                                 <Button layoutX="726.0" layoutY="492.0" mnemonicParsing="false" onAction="#startTournament" prefHeight="33.0" prefWidth="111.0" text="Start Tournament" />
                         <Label layoutX="410.0" layoutY="14.0" text="Formed teams" />
+                        <Button layoutX="113.0" layoutY="496.0" mnemonicParsing="false" onAction="#deleteTeam" text="Delete" />
                             </children>
                         </AnchorPane>
                     </content>

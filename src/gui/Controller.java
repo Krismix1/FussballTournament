@@ -150,7 +150,7 @@ public class Controller {
     private Player selectedPlayer;
 
     @FXML
-    private void select() {
+    private void selectPlayer() {
         selectedPlayer = playersTable.getSelectionModel().getSelectedItem();
         if(selectedPlayer != null) {
             String nameTbl = selectedPlayer.getPlayerName();
@@ -193,7 +193,7 @@ public class Controller {
     }
 
     @FXML
-    private void edit(){
+    private void editPlayer(){
 
         String name = nameInput.getText();
         String email = emailInput.getText();
@@ -243,7 +243,7 @@ public class Controller {
      * It gets and displays the players without a team and the teams that are registered in the database.
      */
     @FXML
-    private void registerTeamTabChanged() {
+    private void loadTeamsAndPlayers() {
         playersListView.setItems(FXCollections.observableArrayList(Tournament.getInstance().getPlayersWithoutTeam()));
         teamTableView.setItems(FXCollections.observableArrayList(Tournament.getInstance().getTeamsList()));
 
@@ -307,7 +307,7 @@ public class Controller {
             }
             Tournament.getInstance().registerTeam(t);
 
-            registerTeamTabChanged();
+            loadTeamsAndPlayers();
 
             displayInformation("Team creation", null, "Team created!");
             player1Selected = null;
@@ -363,6 +363,51 @@ public class Controller {
             displayInformation("Tournament start", null, "Tournament successfully started.");
         }
     }
+    private Team selectedTeam;
+
+    @FXML
+    private void selectTeam() {
+        selectedTeam = teamTableView.getSelectionModel().getSelectedItem();
+        if(selectedTeam != null) {
+            String teamName = selectedTeam.getTeamName();
+            String player1 = selectedTeam.getFirstPlayerName();
+            String player2 = selectedTeam.getSecondPlayerName();
+            teamNameTextField.setText(teamName);
+            player1TextField.setText(player1);
+            player2TextField.setText(player2);
+        }
+    }
+
+    @FXML
+    private void deleteTeam(){ // TODO: 19.04.2017 add confirmation message where it states in which team the player is in
+        if(selectedTeam != null) {
+            if(displayConfirmation("Oops!",
+                    "Are you sure you want to delete " + selectedTeam.getTeamName() + "?", "Team will be deleted")) {
+
+                String id = selectedTeam.getTeamName();
+                try {
+                    Connection con = DBConnection.getConnection();
+                    String sql = "DELETE FROM teams WHERE team_name = ?";
+                    PreparedStatement pstmt = con.prepareStatement(sql);
+                    pstmt.setString(1, id);
+                    pstmt.executeUpdate();
+                    con.close();
+                    loadTeamsAndPlayers();
+
+                } catch (SQLException e) {
+                    //System.out.println("SQL statement is not executed!");
+                    System.out.println(e);
+                }
+                teamNameTextField.setText("");
+                player1TextField.setText("");
+                player2TextField.setText("");
+                selectedTeam = null;
+            }
+        }else{
+            displayInformation("Oops!", "No Team selected", "Please select team to delete!");
+        }
+    }
+
 
     ///////////////////////////////////////////////////PLAYER VIEW////////////////////////////////////////////////////////
     ///////////////////////////////////////////////////PLAYER VIEW////////////////////////////////////////////////////////
