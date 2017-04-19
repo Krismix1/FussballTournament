@@ -46,7 +46,6 @@ public class Controller {
     @FXML
     private Button savePlayerBtn;
 
-
     /**
      * The save player button action. Will check the entered information for all required fields, valid email if provided.
      * If succeeds, sends a request to the Tournament class to save the player to the database.
@@ -128,10 +127,11 @@ public class Controller {
             ResultSet rs = stmt.executeQuery(sql);
 
             while (rs.next()) {
+                int id = rs.getInt("player_id");
                 String name = rs.getString("name");
                 String email = rs.getString("email");
                 String pBirthday = rs.getString("birthday");
-                playerList.add(new Player(name, pBirthday, email));
+                playerList.add(new Player(name, pBirthday, email, id));
             }
 
             con.close();
@@ -147,19 +147,33 @@ public class Controller {
         playersTable.setItems(players);
     }
 
+    private Player selectedPlayer;
+
     @FXML
-    private void deletePlayer(){
-        Player selectedPlayer = playersTable.getSelectionModel().getSelectedItem();
+    private void select() {
+        selectedPlayer = playersTable.getSelectionModel().getSelectedItem();
+        if(selectedPlayer != null) {
+            String nameTbl = selectedPlayer.getPlayerName();
+            String emailTbl = selectedPlayer.getEmail();
+            String dob = selectedPlayer.getDateOfBirth();
+            nameInput.setText(nameTbl);
+            emailInput.setText(emailTbl);
+            dateBirthInput.setValue(LocalDate.parse(String.valueOf(dob)));
+        }
+    }
+
+    @FXML
+    private void deletePlayer(){ // TODO: 19.04.2017 add confirmation message where it states in which team the player is in
         if(selectedPlayer != null) {
             if(displayConfirmation("Oops!",
-                    "Are you sure you want to delete the player?", "Player will be deleted")) {
+                    "Are you sure you want to delete " + selectedPlayer.getPlayerName() + "?", "Player will be deleted")) {
 
-                String name = selectedPlayer.getPlayerName();
+                int id = selectedPlayer.getPlayerID();
                 try {
                     Connection con = DBConnection.getConnection();
-                    String sql = "DELETE FROM players WHERE name = ?";
+                    String sql = "DELETE FROM players WHERE player_id = ?";
                     PreparedStatement pstmt = con.prepareStatement(sql);
-                    pstmt.setString(1, name);
+                    pstmt.setInt(1, id);
                     pstmt.executeUpdate();
                     con.close();
                     showData();
@@ -168,16 +182,48 @@ public class Controller {
                     //System.out.println("SQL statement is not executed!");
                     System.out.println(e);
                 }
+                nameInput.setText("");
+                emailInput.setText("");
+                dateBirthInput.setValue(null);
+                selectedPlayer = null;
             }
         }else{
             displayInformation("Oops!", "No Player selected", "Please select player to delete!");
         }
     }
 
-    ///////////////////////////////////////////////////REGISTER TEAM TAB////////////////////////////////////////////////////////
-    ///////////////////////////////////////////////////REGISTER TEAM TAB////////////////////////////////////////////////////////
-    ///////////////////////////////////////////////////REGISTER TEAM TAB////////////////////////////////////////////////////////
+    @FXML
+    private void edit(){
 
+        String name = nameInput.getText();
+        String email = emailInput.getText();
+        LocalDate dob = dateBirthInput.getValue();
+
+        try {
+            Connection con = DBConnection.getConnection();
+            String sql = "UPDATE players SET `name` = ?,  email = ?, birthday = ? WHERE player_id = ?";
+            PreparedStatement pstmt = con.prepareStatement(sql);
+            pstmt.setString(1, name);
+            pstmt.setString(2, email);
+            pstmt.setDate(3, Date.valueOf(dob));
+            pstmt.setInt(4, selectedPlayer.getPlayerID());
+            pstmt.executeUpdate();
+
+            con.close();
+        } catch (SQLException e) {
+            System.out.println("SQL statement is not executed!");
+            System.out.println(e);
+        }
+        nameInput.setText("");
+        emailInput.setText("");
+        dateBirthInput.setValue(null);
+        selectedPlayer = null;
+        showData();
+    }
+
+    ///////////////////////////////////////////////////REGISTER TEAM TAB////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////REGISTER TEAM TAB////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////REGISTER TEAM TAB////////////////////////////////////////////////////////
 
     @FXML
     private ListView<Player> playersListView;
@@ -362,7 +408,7 @@ public class Controller {
     private void displayError(String title, String header, String content) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle(title);
-        alert.setHeaderText(null);
+        alert.setHeaderText(header);
         alert.setContentText(content);
 
         alert.showAndWait();
@@ -378,7 +424,7 @@ public class Controller {
     private void displayInformation(String title, String header, String content) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle(title);
-        alert.setHeaderText(null);
+        alert.setHeaderText(header);
         alert.setContentText(content);
 
         alert.showAndWait();

@@ -39,14 +39,14 @@
                                         <RowConstraints maxHeight="401.0" minHeight="10.0" prefHeight="52.0" vgrow="SOMETIMES" />
                                     </rowConstraints>
                                 </GridPane>
-                        <TableView fx:id="playersTable" layoutX="488.0" layoutY="44.0" prefHeight="506.0" prefWidth="371.0">
+                        <TableView fx:id="playersTable" layoutX="488.0" layoutY="44.0" onMouseClicked="#select" prefHeight="506.0" prefWidth="371.0">
                           <columns>
                             <TableColumn fx:id="nameColumn" prefWidth="109.0" text="Name" />
                             <TableColumn fx:id="emailColumn" prefWidth="158.0" text="Email" />
                               <TableColumn fx:id="dobColumn" prefWidth="103.0" text="Date of Birth" />
                           </columns>
                         </TableView>
-                        <Button layoutX="252.0" layoutY="277.0" mnemonicParsing="false" onAction="#showData" text="Show" />
+                        <Button layoutX="252.0" layoutY="277.0" mnemonicParsing="false" onAction="#edit" text="Edit" />
                             </children>
                         </AnchorPane>
                     </content>
