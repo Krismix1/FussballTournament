@@ -1,15 +1,13 @@
 package gui;
 
 
+import com.sun.prism.impl.Disposer;
 import domain.Match;
 import domain.Player;
 import domain.Team;
 import domain.Tournament;
 
-import javafx.beans.value.ObservableValue;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.util.Callback;
+import javafx.stage.Modality;
 import technicalservices.DBConnection;
 
 import javafx.collections.FXCollections;
@@ -26,12 +24,12 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 
 public class Controller {
 
@@ -80,6 +78,7 @@ public class Controller {
             emailInput.clear();
             dateBirthInput.setValue(null);
             displayInformation("Player saved!", null, "Player was saved!");
+            showData();
         } else {
             displayError("Player registration", null, "An error occurred. Please try again.");
         }
@@ -110,6 +109,70 @@ public class Controller {
         }
     }
 
+    @FXML
+    private TableColumn<Player, String> nameColumn;
+    @FXML
+    private TableColumn<Player, String> emailColumn;
+    @FXML
+    private TableColumn<Player, String> dobColumn;
+    @FXML
+    private TableView<Player> playersTable;
+
+    @FXML
+    private void showData(){
+        List<Player> playerList = new LinkedList<>();
+        try {
+            Connection con = DBConnection.getConnection();
+            Statement stmt = con.createStatement();
+            String sql = "SELECT * FROM players ";
+            ResultSet rs = stmt.executeQuery(sql);
+
+            while (rs.next()) {
+                String name = rs.getString("name");
+                String email = rs.getString("email");
+                String pBirthday = rs.getString("birthday");
+                playerList.add(new Player(name, pBirthday, email));
+            }
+
+            con.close();
+        } catch(SQLException e) {
+            System.out.println(e);
+            e.printStackTrace();
+        }
+
+        ObservableList<Player> players = FXCollections.observableArrayList(playerList);
+        nameColumn.setCellValueFactory(new PropertyValueFactory<>("playerName"));
+        emailColumn.setCellValueFactory(new PropertyValueFactory<>("email"));
+        dobColumn.setCellValueFactory(new PropertyValueFactory<>("dateOfBirth"));
+        playersTable.setItems(players);
+    }
+
+    @FXML
+    private void deletePlayer(){
+        Player selectedPlayer = playersTable.getSelectionModel().getSelectedItem();
+        if(selectedPlayer != null) {
+            if(displayConfirmation("Oops!",
+                    "Are you sure you want to delete the player?", "Player will be deleted")) {
+
+                String name = selectedPlayer.getPlayerName();
+                try {
+                    Connection con = DBConnection.getConnection();
+                    String sql = "DELETE FROM players WHERE name = ?";
+                    PreparedStatement pstmt = con.prepareStatement(sql);
+                    pstmt.setString(1, name);
+                    pstmt.executeUpdate();
+                    con.close();
+                    showData();
+
+                } catch (SQLException e) {
+                    //System.out.println("SQL statement is not executed!");
+                    System.out.println(e);
+                }
+            }
+        }else{
+            displayInformation("Oops!", "No Player selected", "Please select player to delete!");
+        }
+    }
 
     ///////////////////////////////////////////////////REGISTER TEAM TAB////////////////////////////////////////////////////////
     ///////////////////////////////////////////////////REGISTER TEAM TAB////////////////////////////////////////////////////////
@@ -334,5 +397,19 @@ public class Controller {
         alert.setHeaderText(header);
         alert.setContentText(content);
         alert.showAndWait();
+    }
+
+    private boolean displayConfirmation(String title, String header, String content) {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(header);
+        alert.setContentText(content);
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            return true;
+        }else{
+            return false;
+        }
     }
 }
