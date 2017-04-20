@@ -17,6 +17,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import technicalservices.DBConnection;
 
 import java.io.IOException;
 import java.sql.*;
@@ -341,6 +342,33 @@ public class Controller {
         } else {
             displayInformation("Oops!", "No Team selected", "Please select team to delete!");
         }
+    }
+    @FXML
+    private void editTeam(){
+        String teamName = selectedTeam.getTeamName();
+        String name = teamNameTextField.getText();
+        if (!name.equals(teamNameColumn.getText()))
+        {
+            try {
+                Tournament.getInstance().editTeamDB(name,teamName);
+            }  catch (SQLException e) {
+            // Code #1062 defines Duplicate entry value for primary key
+            // That said, the team name is already used.
+            if (e.getErrorCode() == PRIMARY_KEY_TAKEN_ERROR) {
+                displayError("Error Dialog", null, "Team name is already used. Try a new name!");
+            } else {
+                displayError("Error Dialog", null, "Ooops, there was an error!\n Try again");
+            }
+            }
+
+        }else {
+            displayWarning("Oops", "Ops", "Team name should be unique");
+        }
+        teamNameTextField.setText("");
+        player1TextField.setText("");
+        player2TextField.setText("");
+        selectedTeam = null;
+        loadTeamsAndPlayers();
     }
 
 ///////////////////////////////////////////////////STATISTICS TAB////////////////////////////////////////////////////////

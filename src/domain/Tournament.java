@@ -293,6 +293,18 @@ public class Tournament {
         }
     }
 
+    public void editTeamDB(String s1, String s2)throws SQLException{
+
+            Connection con = DBConnection.getConnection();
+            String sql = "UPDATE teams SET `team_name` = ? WHERE team_name = ?";
+            PreparedStatement pstmt = con.prepareStatement(sql);
+            pstmt.setString(1, s1);
+            pstmt.setString(2, s2);
+            pstmt.executeUpdate();
+
+            con.close();
+    }
+
     public void deleteTeamD(String id){
         try {
             Connection con = DBConnection.getConnection();
