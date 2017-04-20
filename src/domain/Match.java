@@ -1,12 +1,14 @@
 package domain;
 
+import java.time.LocalDate;
+
 /**
  * Created by ArcticMonkey on 4/9/2017.
  */
 
 public class Match {
     private String matchName;
-    private String matchDate;
+    private LocalDate matchDate;
     private Team team1;
     private Team team2;
     private int goals1, goals2;
@@ -69,7 +71,7 @@ public class Match {
      * Returns the date when the match is registered to be played.
      * @return the date when the match should be played.
      */
-    public String getMatchDate() {
+    public LocalDate getMatchDate() {
         return matchDate;
     }
 
@@ -93,7 +95,7 @@ public class Match {
      * Sets the date of the match.
      * @param matchDate the date when the match is played.
      */
-    public void setMatchDate(String matchDate) {
+    public void setMatchDate(LocalDate matchDate) {
         this.matchDate = matchDate;
     }
 
