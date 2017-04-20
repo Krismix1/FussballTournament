@@ -1,19 +1,18 @@
 package gui;
 
 
-import com.sun.prism.impl.Disposer;
+
 import domain.Match;
 import domain.Player;
 import domain.Team;
 import domain.Tournament;
 
-import javafx.stage.Modality;
+
 import technicalservices.DBConnection;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -71,8 +70,8 @@ public class Controller {
             displayError("Wrong birthday date", null, "Enter a valid date.");
             return;
         }
-        String birthday = dateBirthInput.getValue().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-        if (Tournament.getInstance().registerPlayer(new Player(name, birthday, email))) {
+        LocalDate birthday = dateBirthInput.getValue();
+        if (Tournament.getInstance().registerPlayer(new Player(name,birthday, email))) {
             nameInput.clear();
             emailInput.clear();
             dateBirthInput.setValue(null);
@@ -119,28 +118,7 @@ public class Controller {
 
     @FXML
     private void showData(){
-        List<Player> playerList = new LinkedList<>();
-        try {
-            Connection con = DBConnection.getConnection();
-            Statement stmt = con.createStatement();
-            String sql = "SELECT * FROM players ";
-            ResultSet rs = stmt.executeQuery(sql);
-
-            while (rs.next()) {
-                int id = rs.getInt("player_id");
-                String name = rs.getString("name");
-                String email = rs.getString("email");
-                String pBirthday = rs.getString("birthday");
-                playerList.add(new Player(name, pBirthday, email, id));
-            }
-
-            con.close();
-        } catch(SQLException e) {
-            System.out.println(e);
-            e.printStackTrace();
-        }
-
-        ObservableList<Player> players = FXCollections.observableArrayList(playerList);
+        ObservableList<Player> players = FXCollections.observableArrayList(Tournament.getInstance().getPlayersFromDB());
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("playerName"));
         emailColumn.setCellValueFactory(new PropertyValueFactory<>("email"));
         dobColumn.setCellValueFactory(new PropertyValueFactory<>("dateOfBirth"));
@@ -155,10 +133,10 @@ public class Controller {
         if(selectedPlayer != null) {
             String nameTbl = selectedPlayer.getPlayerName();
             String emailTbl = selectedPlayer.getEmail();
-            String dob = selectedPlayer.getDateOfBirth();
+            LocalDate dob = selectedPlayer.getDateOfBirth();
             nameInput.setText(nameTbl);
             emailInput.setText(emailTbl);
-            dateBirthInput.setValue(LocalDate.parse(String.valueOf(dob)));
+            dateBirthInput.setValue(dob);
         }
     }
 
@@ -166,22 +144,10 @@ public class Controller {
     private void deletePlayer(){ // TODO: 19.04.2017 add confirmation message where it states in which team the player is in
         if(selectedPlayer != null) {
             if(displayConfirmation("Oops!",
-                    "Are you sure you want to delete " + selectedPlayer.getPlayerName() + "?", "Player will be deleted")) {
-
+                    "Are you sure you want to delete player " + selectedPlayer.getPlayerName() + "?", null)) {
                 int id = selectedPlayer.getPlayerID();
-                try {
-                    Connection con = DBConnection.getConnection();
-                    String sql = "DELETE FROM players WHERE player_id = ?";
-                    PreparedStatement pstmt = con.prepareStatement(sql);
-                    pstmt.setInt(1, id);
-                    pstmt.executeUpdate();
-                    con.close();
-                    showData();
-
-                } catch (SQLException e) {
-                    //System.out.println("SQL statement is not executed!");
-                    System.out.println(e);
-                }
+                Tournament.getInstance().deletePlayerFromDB(id);
+                showData();
                 nameInput.setText("");
                 emailInput.setText("");
                 dateBirthInput.setValue(null);
@@ -194,26 +160,11 @@ public class Controller {
 
     @FXML
     private void editPlayer(){
-
         String name = nameInput.getText();
         String email = emailInput.getText();
         LocalDate dob = dateBirthInput.getValue();
-
-        try {
-            Connection con = DBConnection.getConnection();
-            String sql = "UPDATE players SET `name` = ?,  email = ?, birthday = ? WHERE player_id = ?";
-            PreparedStatement pstmt = con.prepareStatement(sql);
-            pstmt.setString(1, name);
-            pstmt.setString(2, email);
-            pstmt.setDate(3, Date.valueOf(dob));
-            pstmt.setInt(4, selectedPlayer.getPlayerID());
-            pstmt.executeUpdate();
-
-            con.close();
-        } catch (SQLException e) {
-            System.out.println("SQL statement is not executed!");
-            System.out.println(e);
-        }
+        int id = selectedPlayer.getPlayerID();
+        Tournament.getInstance().editPlayerDB(new Player(name,dob,email, id));
         nameInput.setText("");
         emailInput.setText("");
         dateBirthInput.setValue(null);
@@ -382,22 +333,10 @@ public class Controller {
     private void deleteTeam(){ // TODO: 19.04.2017 add confirmation message where it states in which team the player is in
         if(selectedTeam != null) {
             if(displayConfirmation("Oops!",
-                    "Are you sure you want to delete " + selectedTeam.getTeamName() + "?", "Team will be deleted")) {
-
+                    "Are you sure you want to delete team " + selectedTeam.getTeamName() + "?", null)) {
                 String id = selectedTeam.getTeamName();
-                try {
-                    Connection con = DBConnection.getConnection();
-                    String sql = "DELETE FROM teams WHERE team_name = ?";
-                    PreparedStatement pstmt = con.prepareStatement(sql);
-                    pstmt.setString(1, id);
-                    pstmt.executeUpdate();
-                    con.close();
-                    loadTeamsAndPlayers();
-
-                } catch (SQLException e) {
-                    //System.out.println("SQL statement is not executed!");
-                    System.out.println(e);
-                }
+                Tournament.getInstance().deleteTeamD(id);
+                loadTeamsAndPlayers();
                 teamNameTextField.setText("");
                 player1TextField.setText("");
                 player2TextField.setText("");
@@ -494,7 +433,7 @@ public class Controller {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle(title);
         alert.setHeaderText(header);
-        alert.setContentText(content);
+        alert.setContentText(null);
 
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {

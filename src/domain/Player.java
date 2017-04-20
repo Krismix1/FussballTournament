@@ -1,5 +1,7 @@
 package domain;
 
+import java.time.LocalDate;
+
 /**
  * Created by ArcticMonkey on 4/9/2017.
  */
@@ -8,7 +10,7 @@ public class Player {
     private int player_id;
     private String playerName;
     private int matchesPlayed;
-    private String dob; // MM.DD.YYYY, change to LocalDate
+    private LocalDate dob; // MM.DD.YYYY, change to LocalDate
     private String email;
 
 
@@ -18,7 +20,7 @@ public class Player {
      * @param dob date of birth of the player
      * @param email email of the player
      */
-    public Player(String playerName, String dob, String email) {
+    public Player(String playerName, LocalDate dob, String email) {
         this.playerName = playerName;
         this.dob = dob;
         this.email = email;
@@ -31,7 +33,7 @@ public class Player {
      * @param email email of the player
      * @param id the ID of the player, which represents the primary key for this player in the database
      */
-    public Player(String playerName, String dob, String email,int id) {
+    public Player(String playerName, LocalDate dob, String email,int id) {
         this.playerName = playerName;
         this.dob = dob;
         this.email = email;
@@ -78,7 +80,7 @@ public class Player {
      * Sets player's date of birth.
      * @param dob the date of birth of the player.
      */
-    public void setDateOfBirth(String dob) {
+    public void setDateOfBirth(LocalDate dob) {
         this.dob = dob;
     }
 
@@ -102,7 +104,7 @@ public class Player {
      * Gets the date of birth of the player.
      * @return the date of birth of the player.
      */
-    public String getDateOfBirth() {
+    public LocalDate getDateOfBirth() {
         return dob;
     }
 

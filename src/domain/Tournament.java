@@ -2,10 +2,8 @@ package domain;
 
 import technicalservices.DBConnection;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -134,7 +132,7 @@ public class Tournament {
             while (rs.next()) {
                 int id = rs.getInt(1);
                 String name = rs.getString(2);
-                String dob = rs.getString(3);
+                LocalDate dob = LocalDate.parse(String.valueOf(rs.getString(3)));
                 String email = rs.getString(4);
                 playerList.add(new Player(name, dob, email, id));
             }
@@ -163,14 +161,13 @@ public class Tournament {
             while (rs.next()) {
                 String teamName = rs.getString(1);
                 String p1Name = rs.getString(2);
-                String p1Birthday = rs.getString(3);
+                LocalDate p1Birthday = LocalDate.parse(String.valueOf(rs.getString(3)));
                 String p1Email = rs.getString(4);
                 Player p1 = new Player(p1Name, p1Birthday, p1Email);
 
                 rs.next();
-
                 String p2Name = rs.getString(2);
-                String p2Birthday = rs.getString(3);
+                LocalDate p2Birthday = LocalDate.parse(String.valueOf(rs.getString(3)));
                 String p2Email = rs.getString(4);
                 Player p2 = new Player(p2Name, p2Birthday, p2Email);
                 //rs.getObject(1, Player.class);
@@ -182,6 +179,78 @@ public class Tournament {
         } catch (SQLException exception) {
             exception.printStackTrace();
             return null;
+        }
+    }
+
+    public List<Player> getPlayersFromDB(){
+        List<Player> playerList = new LinkedList<>();
+        try {
+            Connection con = DBConnection.getConnection();
+            Statement stmt = con.createStatement();
+            String sql = "SELECT * FROM players ";
+            ResultSet rs = stmt.executeQuery(sql);
+
+            while (rs.next()) {
+                int id = rs.getInt("player_id");
+                String name = rs.getString("name");
+                String email = rs.getString("email");
+                LocalDate pBirthday = LocalDate.parse(String.valueOf(rs.getString("birthday")));
+                playerList.add(new Player(name, pBirthday, email, id));
+            }
+            con.close();
+            return playerList;
+        } catch(SQLException e) {
+            System.out.println(e);
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public void deletePlayerFromDB(int id){
+        try {
+            Connection con = DBConnection.getConnection();
+            String sql = "DELETE FROM players WHERE player_id = ?";
+            PreparedStatement pstmt = con.prepareStatement(sql);
+            pstmt.setInt(1, id);
+            pstmt.executeUpdate();
+            con.close();
+
+        } catch (SQLException e) {
+            //System.out.println("SQL statement is not executed!");
+            System.out.println(e);
+        }
+    }
+
+    public void editPlayerDB(Player p){
+        try {
+            Connection con = DBConnection.getConnection();
+            String sql = "UPDATE players SET `name` = ?,  email = ?, birthday = ? WHERE player_id = ?";
+            PreparedStatement pstmt = con.prepareStatement(sql);
+            pstmt.setString(1, p.getPlayerName());
+            pstmt.setString(2, p.getEmail());
+            pstmt.setDate(3, Date.valueOf(p.getDateOfBirth()));
+            pstmt.setInt(4, p.getPlayerID());
+            pstmt.executeUpdate();
+
+            con.close();
+        } catch (SQLException e) {
+            System.out.println("SQL statement is not executed!");
+            System.out.println(e);
+        }
+    }
+
+    public void deleteTeamD(String id){
+        try {
+            Connection con = DBConnection.getConnection();
+            String sql = "DELETE FROM teams WHERE team_name = ?";
+            PreparedStatement pstmt = con.prepareStatement(sql);
+            pstmt.setString(1, id);
+            pstmt.executeUpdate();
+            con.close();
+
+        } catch (SQLException e) {
+            //System.out.println("SQL statement is not executed!");
+            System.out.println(e);
         }
     }
 
