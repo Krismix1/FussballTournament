@@ -22,6 +22,7 @@ public class Login {
     /**
      * Checks the entered username and password for the administrator. If the information is correct,
      * it grants access to the administration part of the system.
+     *
      * @param username the admin account username
      * @param password the admin account password
      * @return true if information is correct, false otherwise
@@ -41,11 +42,11 @@ public class Login {
      * otherwise displays an error to inform of wrong username or/and password.
      */
     @FXML
-    private void btnLoginAction(){
+    private void btnLoginAction() {
         String admin = adminLogin.getText();
         String pass = adminPassword.getText();
         try {
-            if (grantAccess(admin,pass)) {
+            if (grantAccess(admin, pass)) {
                 Parent root = FXMLLoader.load(getClass().getResource("/gui/mainScene.fxml"));
                 Scene scene = new Scene(root, 900, 575);
                 Main.mainStage.setScene(scene);
@@ -65,7 +66,7 @@ public class Login {
      * The action for the players login button. Loads the playerView.fxml file.
      */
     @FXML
-    private void btnPlayersLoginAction(){
+    private void btnPlayersLoginAction() {
         try {
             Parent playerRoot = FXMLLoader.load(getClass().getResource("/gui/playerView.fxml"));
             Scene playerScene = new Scene(playerRoot, 900, 575);

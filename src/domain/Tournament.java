@@ -19,7 +19,8 @@ public class Tournament {
     private List<Player> playerList = new LinkedList<>();
 
     // Assuring that the class is a singleton
-    private Tournament() {}
+    private Tournament() {
+    }
 
     private static Tournament instance;
 
@@ -32,6 +33,7 @@ public class Tournament {
 
     /**
      * Adds player to the database.
+     *
      * @param p the player to be saved.
      * @return true if player is successfully saved or false otherwise
      */
@@ -57,6 +59,7 @@ public class Tournament {
 
     /**
      * Saves team to the database.
+     *
      * @param t the team to be added.
      */
     public void registerTeam(Team t) throws NullPointerException, SQLException {
@@ -100,7 +103,8 @@ public class Tournament {
                 Connection con = DBConnection.getConnection();
                 Statement stmt = con.createStatement();
                 String sql = "INSERT INTO matches VALUES('" + match.getMatchName() + "', '" + team1.getTeamName() +
-                        "', '" + team2.getTeamName() + "', '" + match.getMatchDate() + "');";
+                        "', '" + team2.getTeamName() + "', '" + match.getMatchDate() + "'," + match.getTeamOneGoals() +
+                        ", " + match.getTeamTwoGoals() + ",FALSE );";
                 stmt.execute(sql);
                 con.close();
             } catch (SQLException e) {
@@ -111,6 +115,7 @@ public class Tournament {
 
     /**
      * Returns the list of the matches for the tournament
+     *
      * @return the list with the matches
      */
     public List<Match> getDueMatches() {
@@ -169,6 +174,7 @@ public class Tournament {
 
     /**
      * Finds and returns all the players that are not part of any team.
+     *
      * @return the list with players without a team.
      */
     public List<Player> getPlayersWithoutTeam() {
@@ -200,6 +206,7 @@ public class Tournament {
 
     /**
      * Reads and returns the list of teams from the database.
+     *
      * @return the list with teams
      */
     public List<Team> getTeamsList() {
@@ -236,7 +243,7 @@ public class Tournament {
         }
     }
 
-    public List<Player> getPlayersFromDB(){
+    public List<Player> getPlayersFromDB() {
         List<Player> playerList = new LinkedList<>();
         try {
             Connection con = DBConnection.getConnection();
@@ -253,14 +260,14 @@ public class Tournament {
             }
             con.close();
             return playerList;
-        } catch(SQLException e) {
+        } catch (SQLException e) {
             System.out.println(e);
             e.printStackTrace();
             return null;
         }
     }
 
-    public void deletePlayerFromDB(int id){
+    public void deletePlayerFromDB(int id) {
         try {
             Connection con = DBConnection.getConnection();
             String sql = "DELETE FROM players WHERE player_id = ?";
@@ -275,7 +282,7 @@ public class Tournament {
         }
     }
 
-    public void editPlayerDB(Player p){
+    public void editPlayerDB(Player p) {
         try {
             Connection con = DBConnection.getConnection();
             String sql = "UPDATE players SET `name` = ?,  email = ?, birthday = ? WHERE player_id = ?";
@@ -293,19 +300,19 @@ public class Tournament {
         }
     }
 
-    public void editTeamDB(String s1, String s2)throws SQLException{
+    public void editTeamDB(String s1, String s2) throws SQLException {
 
-            Connection con = DBConnection.getConnection();
-            String sql = "UPDATE teams SET `team_name` = ? WHERE team_name = ?";
-            PreparedStatement pstmt = con.prepareStatement(sql);
-            pstmt.setString(1, s1);
-            pstmt.setString(2, s2);
-            pstmt.executeUpdate();
+        Connection con = DBConnection.getConnection();
+        String sql = "UPDATE teams SET `team_name` = ? WHERE team_name = ?";
+        PreparedStatement pstmt = con.prepareStatement(sql);
+        pstmt.setString(1, s1);
+        pstmt.setString(2, s2);
+        pstmt.executeUpdate();
 
-            con.close();
+        con.close();
     }
 
-    public void deleteTeamD(String id){
+    public void deleteTeamD(String id) {
         try {
             Connection con = DBConnection.getConnection();
             String sql = "DELETE FROM teams WHERE team_name = ?";
@@ -325,6 +332,7 @@ public class Tournament {
 
     /**
      * Returns if the tournament has been started or not.
+     *
      * @return true if tournament was started, false otherwise
      */
     public boolean isStarted() {

@@ -16,9 +16,10 @@ public class Player {
 
     /**
      * Creates a new player with given name, date of birth and email.
+     *
      * @param playerName player name
-     * @param dob date of birth of the player
-     * @param email email of the player
+     * @param dob        date of birth of the player
+     * @param email      email of the player
      */
     public Player(String playerName, LocalDate dob, String email) {
         this.playerName = playerName;
@@ -28,13 +29,14 @@ public class Player {
 
     /**
      * Creates a new player with given name, date of birth, email and ID.
+     *
      * @param playerName player name
-     * @param dob date of birth of the player
-     * @param email email of the player
-     * @param id the ID of the player, which represents the primary key for this player in the database
+     * @param dob        date of birth of the player
+     * @param email      email of the player
+     * @param id         the ID of the player, which represents the primary key for this player in the database
      */
 
-    public Player(String playerName, LocalDate dob, String email,int id) {
+    public Player(String playerName, LocalDate dob, String email, int id) {
         this.playerName = playerName;
         this.dob = dob;
         this.email = email;
@@ -43,6 +45,7 @@ public class Player {
 
     /**
      * Sets amount of matches played for the player.
+     *
      * @param matchesPlayed the number of matches played by the player
      * @throws IllegalArgumentException if the number of matches played is negative
      */
@@ -57,6 +60,7 @@ public class Player {
 
     /**
      * Adds to amount of matches played for the player.
+     *
      * @param matchesPlayed the number of how many matches to add
      * @throws IllegalArgumentException if the value of the parameters is negative
      */
@@ -71,6 +75,7 @@ public class Player {
 
     /**
      * Sets player name.
+     *
      * @param playerName the name of the player.
      */
     public void setPlayerName(String playerName) {// FIXME: 4/9/2017 name should not be empty yea
@@ -79,6 +84,7 @@ public class Player {
 
     /**
      * Sets player's date of birth.
+     *
      * @param dob the date of birth of the player.
      */
     public void setDateOfBirth(LocalDate dob) {
@@ -87,6 +93,7 @@ public class Player {
 
     /**
      * Gets player's name.
+     *
      * @return the name of the player.
      */
     public String getPlayerName() {
@@ -95,6 +102,7 @@ public class Player {
 
     /**
      * Gets the number of matches played by the player.
+     *
      * @return the number of matches played.
      */
     public int getMatchesPlayed() {
@@ -103,6 +111,7 @@ public class Player {
 
     /**
      * Gets the date of birth of the player.
+     *
      * @return the date of birth of the player.
      */
     public LocalDate getDateOfBirth() {
@@ -111,6 +120,7 @@ public class Player {
 
     /**
      * Returns the email of the player.
+     *
      * @return the email of the player.
      */
     public String getEmail() {
@@ -119,6 +129,7 @@ public class Player {
 
     /**
      * Sets the email for the player.
+     *
      * @param email player's email.
      */
     public void setEmail(String email) {
@@ -127,6 +138,7 @@ public class Player {
 
     /**
      * Returns player's ID.
+     *
      * @return player's ID.
      */
     public int getPlayerID() {
