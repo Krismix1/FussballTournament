@@ -26,8 +26,12 @@ public class Team {
     private Player secondPlayer;
     private int pointsScored;
     private int matchesPlayed;
+    private int matchesLost;
     private int goalsFor;
     private int goalsAgainst;
+    private int matchesWon;
+
+
 
     public Team(String teamName) {
         this.teamName = teamName;
@@ -225,10 +229,18 @@ public class Team {
         }
     }
 
+    public int getMatchesLost(){
+        return matchesLost;
+    }
+
+    public int getMatchesWon(){
+        return matchesWon;
+    }
     /**
      * Returns the number of goals scored by the team.
      * @return the number of goals scored.
      */
+
     public int getGoalsAgainst() {
         return goalsAgainst;
     }

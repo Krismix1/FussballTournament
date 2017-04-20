@@ -33,9 +33,9 @@
                                         <Label text="Name:" />
                               <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="3">
                                  <children>
-                                              <Button layoutX="225.0" layoutY="11.0" mnemonicParsing="false" onAction="#btnBackAction" text="Logout" textAlignment="CENTER" />
-                                              <Button fx:id="savePlayerBtn" layoutX="30.0" layoutY="11.0" mnemonicParsing="false" onAction="#savePlayer" text="Save" />
-                                    <Button layoutX="121.0" layoutY="11.0" mnemonicParsing="false" onAction="#deletePlayer" text="Delete" />
+                                    <Button layoutY="16.0" mnemonicParsing="false" onAction="#deletePlayer" text="Delete" />
+                                    <Button layoutX="139.0" layoutY="16.0" mnemonicParsing="false" onAction="#editPlayer" text="Edit" />
+                                              <Button fx:id="savePlayerBtn" layoutX="272.0" layoutY="16.0" mnemonicParsing="false" onAction="#savePlayer" text="Save" />
                                  </children>
                               </AnchorPane>
                                     </children>
@@ -57,7 +57,7 @@
                               <TableColumn fx:id="dobColumn" prefWidth="103.0" text="Date of Birth" />
                           </columns>
                         </TableView>
-                        <Button layoutX="252.0" layoutY="277.0" mnemonicParsing="false" onAction="#editPlayer" text="Edit" />
+                                  <Button layoutX="392.0" layoutY="523.0" mnemonicParsing="false" onAction="#btnBackAction" text="Logout" textAlignment="CENTER" />
                             </children>
                         </AnchorPane>
                     </content>
@@ -92,20 +92,20 @@
                         </AnchorPane>
                     </content>
                 </Tab>
-                <Tab onSelectionChanged="#btnCreateStatistics" text="Statistics">
+                <Tab onSelectionChanged="#btnCreateStanding" text="Standings">
                     <content>
                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                             <children>
-                                <TableView fx:id="teamsStatisticsTable" layoutX="-1.0" prefHeight="563.0" prefWidth="862.0">
+                                <TableView fx:id="teamsStandingTable" layoutX="14.0" prefHeight="563.0" prefWidth="862.0">
                                     <columns>
-                                        <TableColumn fx:id="statisticsTeam" prefWidth="125.0" text="Team" />
-                                        <TableColumn fx:id="statisticsPlayer1" prefWidth="120.0" text="Player 1" />
-                                        <TableColumn fx:id="statisticsPlayer2" prefWidth="162.0" text="Player 2" />
-                                        <TableColumn fx:id="finalPoints" minWidth="0.0" prefWidth="68.0" text="Points" />
-                                        <TableColumn fx:id="finalGoals" prefWidth="90.0" text="Goals" />
-                                        <TableColumn fx:id="finalMatchPoints" prefWidth="54.0" text="MP" />
-                                        <TableColumn fx:id="finalWins" prefWidth="66.0" text="Wins" />
-                                        <TableColumn prefWidth="58.0" text="Losses" />
+                                        <TableColumn fx:id="standingTeam" prefWidth="125.0" text="Team" />
+                                        <TableColumn fx:id="standingPlayer1" prefWidth="120.0" text="Player 1" />
+                                        <TableColumn fx:id="standingPlayer2" prefWidth="162.0" text="Player 2" />
+                                        <TableColumn fx:id="standingGoals" prefWidth="90.0" text="Goals" />
+                                        <TableColumn fx:id="standingMatchPlayed" prefWidth="54.0" text="MP" />
+                                        <TableColumn fx:id="standingWins" prefWidth="66.0" text="Wins" />
+                                        <TableColumn fx:id="standingLosses" prefWidth="58.0" text="Losses" />
+                                        <TableColumn fx:id="standingPoints" minWidth="0.0" prefWidth="68.0" text="Points" />
                                     </columns>
                                 </TableView>
                             </children>
