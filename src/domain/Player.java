@@ -31,7 +31,7 @@ public class Player {
      * @param email email of the player
      * @param id the ID of the player, which represents the primary key for this player in the database
      */
-    public Player(String playerName, String dob, String email,int id) {
+    public Player(String playerName, String dob, String email, int id) {
         this.playerName = playerName;
         this.dob = dob;
         this.email = email;
@@ -40,8 +40,8 @@ public class Player {
 
     /**
      * Sets amount of matches played for the player.
-     * @throws IllegalArgumentException if the number of matches played is negative
      * @param matchesPlayed the number of matches played by the player
+     * @throws IllegalArgumentException if the number of matches played is negative
      */
     public void setMatchesPlayed(int matchesPlayed) {
         if (matchesPlayed >= 0) {
@@ -54,8 +54,8 @@ public class Player {
 
     /**
      * Adds to amount of matches played for the player.
-     * @throws IllegalArgumentException if the value of the parameters is negative
      * @param matchesPlayed the number of how many matches to add
+     * @throws IllegalArgumentException if the value of the parameters is negative
      */
     public void addMatchesPlayed(int matchesPlayed) {
         if (matchesPlayed >= 0) {// FIXME: 4/9/2017 consider checking sum greater than 0
@@ -130,6 +130,7 @@ public class Player {
         return player_id;
     }
 
+    @Override
     public String toString() {
         //return String.format("%s %s %s",playerName, dob, email);
         return this.playerName;

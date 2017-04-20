@@ -29,18 +29,12 @@ public class Team {
     private int goalsFor;
     private int goalsAgainst;
 
-    // Used for displaying player name in the TableView, should be removed if another way to do it is found
-    public String getFirstPlayerName() {
-        return firstPlayer.getPlayerName();
-    }
-    // Used for displaying player name in the TableView, should be removed if another way to do it is found
-    public String getSecondPlayerName() {
-        return secondPlayer.getPlayerName();
+    public Team(String teamName) {
+        this.teamName = teamName;
     }
 
     /**
      * Creates a new team with given players and given name.
-     *
      * @param firstPlayer  first player of the team
      * @param secondPlayer second player of the team
      * @param teamName     the name of the team
@@ -54,7 +48,6 @@ public class Team {
     /**
      * Creates a new team with given players and default name.
      * The name is "{@value domain.Team#DEFAULT_NAME}" followed by a number.
-     *
      * @param firstPlayer  first player of the team
      * @param secondPlayer second player of the team
      * @see Team#DEFAULT_NAME
@@ -69,7 +62,6 @@ public class Team {
      * Creates a name for teams which don't specify a name.
      * It uses the DEFAULT_NAME followed by a number. After generation,
      * the number is incremented, so that the names are unique for each team.
-     *
      * @return the name generated
      */
     private String createDefaultName() {
@@ -93,7 +85,6 @@ public class Team {
 
     /**
      * Adds points to the score of the team.
-     *
      * @param pointsScored how many points the team earned at the end of the match
      */
     public void addPointsScored(int pointsScored) {
@@ -102,7 +93,6 @@ public class Team {
 
     /**
      * Sets team's points to the given value.
-     *
      * @param points the number of points
      */
     public void setPointsScored(int points) {
@@ -111,7 +101,6 @@ public class Team {
 
     /**
      * Returns the number of points the team has.
-     *
      * @return the number of points
      */
     public int getPointsScored() {
@@ -120,7 +109,6 @@ public class Team {
 
     /**
      * Returns the name of the team.
-     *
      * @return the name of the team.
      */
     public String getTeamName() {
@@ -129,7 +117,6 @@ public class Team {
 
     /**
      * Assign a value to the name of the team.
-     *
      * @param teamName the name of the team.
      */
     public void setTeamName(String teamName) {
@@ -138,7 +125,6 @@ public class Team {
 
     /**
      * Registers a new player to the team.
-     *
      * @param player the player to register
      * @throws IllegalStateException if more than 2 members are tried to be registered.
      */
@@ -156,7 +142,6 @@ public class Team {
 
     /**
      * Substitutes players in the team with a new one.
-     *
      * @param oldPlayer the player to substitute
      * @param newPlayer the new player to add. This value can't be null.
      * @throws Exception if the player to substitute is not found or if the new player is null.
@@ -177,7 +162,6 @@ public class Team {
 
     /**
      * Returns how many matches the team played.
-     *
      * @return the number of played matches
      */
     public int getMatchesPlayed() {
@@ -186,7 +170,6 @@ public class Team {
 
     /**
      * Sets the number of played matches for the team.
-     *
      * @param matchesPlayed the number of matches played.
      * @throws IllegalArgumentException if the number entered is negative.
      */
@@ -200,7 +183,6 @@ public class Team {
 
     /**
      * Adds the given value to the number of played matches.
-     *
      * @param matchesPlayed the number of matches to add.
      * @throws IllegalArgumentException if the matches played value is negative.
      */
@@ -215,7 +197,6 @@ public class Team {
 
     /**
      * Returns how many goals the team scored.
-     *
      * @return the number of how many goals the team scored.
      */
     public int getGoalsFor() {
@@ -224,7 +205,6 @@ public class Team {
 
     /**
      * Sets the value of how many goals the team scored.
-     *
      * @param goals the number of goals scored by the team.
      */
     public void setGoalsFor(int goals) {
@@ -233,7 +213,6 @@ public class Team {
 
     /**
      * Adds goals to the number of goals scored by the team.
-     *
      * @param goals the number of goals to add.
      * @throws IllegalArgumentException if the number of goals to add is negative.
      */
@@ -248,7 +227,6 @@ public class Team {
 
     /**
      * Returns the number of goals scored by the team.
-     *
      * @return the number of goals scored.
      */
     public int getGoalsAgainst() {
@@ -257,7 +235,6 @@ public class Team {
 
     /**
      * Sets the number of goals scored against current team.
-     *
      * @param goals the number of goals scored against current team.
      */
     public void setGoalsAgainst(int goals) {
@@ -266,7 +243,6 @@ public class Team {
 
     /**
      * Adds goals to the number of goals scored against the team.
-     *
      * @param goals the number of goals to add.
      * @throws IllegalArgumentException if the number of goals to add is negative.
      */
@@ -293,5 +269,10 @@ public class Team {
      */
     public Player getSecondPlayer() {
         return secondPlayer;
+    }
+
+    @Override
+    public String toString() {
+        return teamName;
     }
 }

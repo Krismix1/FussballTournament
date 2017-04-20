@@ -11,6 +11,8 @@ public class Match {
     private Team team2;
     private int goals1, goals2;
 
+    public Match(){}
+
     /**
      * Creates a new match with given matchName and two teams.
      * @param matchName name of match
@@ -61,5 +63,53 @@ public class Match {
      */
     public Team getTeamTwo() {
         return team2;
+    }
+
+    /**
+     * Returns the date when the match is registered to be played.
+     * @return the date when the match should be played.
+     */
+    public String getMatchDate() {
+        return matchDate;
+    }
+
+    public int getTeamOneGoals() {
+        return goals1;
+    }
+
+    public int getTeamTwoGoals() {
+        return goals2;
+    }
+
+    /**
+     * Sets the name of the match.
+     * @param matchName the name of the match.
+     */
+    public void setMatchName(String matchName) {
+        this.matchName = matchName;
+    }
+
+    /**
+     * Sets the date of the match.
+     * @param matchDate the date when the match is played.
+     */
+    public void setMatchDate(String matchDate) {
+        this.matchDate = matchDate;
+    }
+
+    public void setTeamOne(Team team1) {
+        this.team1 = team1;
+    }
+
+    public void setTeamTwo(Team team2) {
+        this.team2 = team2;
+    }
+
+    public void setGoalsForTeamOne(int goals) {
+        this.goals1 = goals1;
+    }
+
+    public void setGoalsForTeamTwo(int goals) {
+        this.goals2 = goals2;
     }
 }

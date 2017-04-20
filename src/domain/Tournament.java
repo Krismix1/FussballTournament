@@ -6,6 +6,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -22,7 +23,9 @@ public class Tournament {
 
     // Assuring that the class is a singleton
     private Tournament() {}
+
     private static Tournament instance;
+
     public static Tournament getInstance() {
         if (instance == null) {
             instance = new Tournament();
@@ -79,6 +82,8 @@ public class Tournament {
                 Team team2 = teamList.get(j);
                 String matchName = team1.getTeamName() + " vs " + team2.getTeamName();
                 Match match = new Match(matchName, team1, team2);
+                String matchDate = java.sql.Date.valueOf(LocalDate.now()).toString();
+                match.setMatchDate(matchDate);
                 matchList.add(match);
             }
         }
@@ -97,11 +102,11 @@ public class Tournament {
             try {
                 Connection con = DBConnection.getConnection();
                 Statement stmt = con.createStatement();
-                String sql = "INSERT INTO matches VALUES('" +match.getMatchName() + "', '" + team1.getTeamName() + "', '" + team2.getTeamName() + "', NULL);";
+                String sql = "INSERT INTO matches VALUES('" + match.getMatchName() + "', '" + team1.getTeamName() +
+                        "', '" + team2.getTeamName() + "', '" + match.getMatchDate() + "');";
                 stmt.execute(sql);
                 con.close();
-            }catch (SQLException e)
-            {
+            } catch (SQLException e) {
                 e.printStackTrace();
             }
         }
@@ -111,8 +116,58 @@ public class Tournament {
      * Returns the list of the matches for the tournament
      * @return the list with the matches
      */
-    public List<Match> getMatchList() {
-        return this.matchList;
+    public List<Match> getDueMatches() {
+        try {
+            List<Match> matches = new LinkedList<>(); // TODO: 19-Apr-17 LinkedList?
+            Connection con = DBConnection.getConnection();
+            Statement stmt = con.createStatement();
+            String sql = "SELECT * FROM matches WHERE match_played = 0"; // Finds all matches that need to be played
+            // 0 means it wasn't played it, 1 means it was played
+            ResultSet resultSet = stmt.executeQuery(sql);
+            while (resultSet.next()) {
+                String matchName = resultSet.getString(1);
+                String matchDate = resultSet.getDate(4) == null ? null : resultSet.getDate(4).toString();
+                Match match = new Match();
+                match.setMatchName(matchName);
+                match.setMatchDate(matchDate);
+                matches.add(match);
+            }
+            con.close();
+            return matches;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public List<Match> getMatchesResults() {
+        try {
+            List<Match> matches = new LinkedList<>(); // TODO: 19-Apr-17 LinkedList?
+            Connection con = DBConnection.getConnection();
+            Statement stmt = con.createStatement();
+            String sql = "SELECT * FROM matches WHERE match_played = 1"; // Finds all matches that were played
+            // 0 means it wasn't played it, 1 means it was played
+            ResultSet rs = stmt.executeQuery(sql);
+            while (rs.next()) {
+                String teamOneName = rs.getString(2);
+                String teamTwoName = rs.getString(3);
+                int teamOneGoals = rs.getInt(5);
+                int teamTwoGoals = rs.getInt(6);
+
+                Match match = new Match();
+                match.setGoalsForTeamOne(teamOneGoals);
+                match.setGoalsForTeamTwo(teamTwoGoals);
+                match.setTeamOne(new Team(teamOneName));
+                match.setTeamTwo(new Team(teamTwoName));
+
+                matches.add(match);
+            }
+            con.close();
+            return matches;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     /**
@@ -141,7 +196,7 @@ public class Tournament {
             con.close();
             return playerList;
         } catch (SQLException e) {
-            System.out.println(e);
+            e.printStackTrace();
             return null;
         }
     }

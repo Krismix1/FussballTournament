@@ -1,19 +1,16 @@
 package gui;
 
 
-import com.sun.prism.impl.Disposer;
 import domain.Match;
 import domain.Player;
 import domain.Team;
 import domain.Tournament;
 
-import javafx.stage.Modality;
 import technicalservices.DBConnection;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -118,7 +115,7 @@ public class Controller {
     private TableView<Player> playersTable;
 
     @FXML
-    private void showData(){
+    private void showData() {
         List<Player> playerList = new LinkedList<>();
         try {
             Connection con = DBConnection.getConnection();
@@ -135,7 +132,7 @@ public class Controller {
             }
 
             con.close();
-        } catch(SQLException e) {
+        } catch (SQLException e) {
             System.out.println(e);
             e.printStackTrace();
         }
@@ -152,7 +149,7 @@ public class Controller {
     @FXML
     private void selectPlayer() {
         selectedPlayer = playersTable.getSelectionModel().getSelectedItem();
-        if(selectedPlayer != null) {
+        if (selectedPlayer != null) {
             String nameTbl = selectedPlayer.getPlayerName();
             String emailTbl = selectedPlayer.getEmail();
             String dob = selectedPlayer.getDateOfBirth();
@@ -163,9 +160,9 @@ public class Controller {
     }
 
     @FXML
-    private void deletePlayer(){ // TODO: 19.04.2017 add confirmation message where it states in which team the player is in
-        if(selectedPlayer != null) {
-            if(displayConfirmation("Oops!",
+    private void deletePlayer() { // TODO: 19.04.2017 add confirmation message where it states in which team the player is in
+        if (selectedPlayer != null) {
+            if (displayConfirmation("Oops!",
                     "Are you sure you want to delete " + selectedPlayer.getPlayerName() + "?", "Player will be deleted")) {
 
                 int id = selectedPlayer.getPlayerID();
@@ -187,13 +184,13 @@ public class Controller {
                 dateBirthInput.setValue(null);
                 selectedPlayer = null;
             }
-        }else{
+        } else {
             displayInformation("Oops!", "No Player selected", "Please select player to delete!");
         }
     }
 
     @FXML
-    private void editPlayer(){
+    private void editPlayer() {
 
         String name = nameInput.getText();
         String email = emailInput.getText();
@@ -232,9 +229,9 @@ public class Controller {
     @FXML
     private TableColumn<Team, String> teamNameColumn;
     @FXML
-    private TableColumn<Team, String> playerOneName;
+    private TableColumn<Team, Player> playerOneName;
     @FXML
-    private TableColumn<Team, String> playerTwoName;
+    private TableColumn<Team, Player> playerTwoName;
     @FXML
     private TextField teamNameTextField;
 
@@ -253,8 +250,8 @@ public class Controller {
     // Helper method to add properties to the team TableView
     private void addPropertiesForTeamTable() {
         teamNameColumn.setCellValueFactory(new PropertyValueFactory<>("teamName"));
-        playerOneName.setCellValueFactory(new PropertyValueFactory<>("firstPlayerName"));
-        playerTwoName.setCellValueFactory(new PropertyValueFactory<>("secondPlayerName"));
+        playerOneName.setCellValueFactory(new PropertyValueFactory<>("firstPlayer"));
+        playerTwoName.setCellValueFactory(new PropertyValueFactory<>("secondPlayer"));
     }
 
     private Player player1Selected; // stores the reference to the first player of the team which gets selected
@@ -363,47 +360,48 @@ public class Controller {
             displayInformation("Tournament start", null, "Tournament successfully started.");
         }
     }
+
     private Team selectedTeam;
 
     @FXML
     private void selectTeam() {
         selectedTeam = teamTableView.getSelectionModel().getSelectedItem();
-        if(selectedTeam != null) {
+        if (selectedTeam != null) {
             String teamName = selectedTeam.getTeamName();
-            String player1 = selectedTeam.getFirstPlayerName();
-            String player2 = selectedTeam.getSecondPlayerName();
+            Player player1 = selectedTeam.getFirstPlayer();
+            Player player2 = selectedTeam.getSecondPlayer();
             teamNameTextField.setText(teamName);
-            player1TextField.setText(player1);
-            player2TextField.setText(player2);
+            player1TextField.setText(player1.getPlayerName());
+            player2TextField.setText(player2.getPlayerName());
         }
     }
 
     @FXML
-    private void deleteTeam(){ // TODO: 19.04.2017 add confirmation message where it states in which team the player is in
-        if(selectedTeam != null) {
-            if(displayConfirmation("Oops!",
+    private void deleteTeam() { // TODO: 19.04.2017 add confirmation message where it states in which team the player is in
+        if (selectedTeam != null) {
+            if (displayConfirmation("Oops!",
                     "Are you sure you want to delete " + selectedTeam.getTeamName() + "?", "Team will be deleted")) {
 
-                String id = selectedTeam.getTeamName();
+                String teamName = selectedTeam.getTeamName();
                 try {
                     Connection con = DBConnection.getConnection();
                     String sql = "DELETE FROM teams WHERE team_name = ?";
                     PreparedStatement pstmt = con.prepareStatement(sql);
-                    pstmt.setString(1, id);
+                    pstmt.setString(1, teamName);
                     pstmt.executeUpdate();
                     con.close();
                     loadTeamsAndPlayers();
 
                 } catch (SQLException e) {
                     //System.out.println("SQL statement is not executed!");
-                    System.out.println(e);
+                    e.printStackTrace();
                 }
                 teamNameTextField.setText("");
                 player1TextField.setText("");
                 player2TextField.setText("");
                 selectedTeam = null;
             }
-        }else{
+        } else {
             displayInformation("Oops!", "No Team selected", "Please select team to delete!");
         }
     }
@@ -423,7 +421,7 @@ public class Controller {
     @FXML
     TableColumn<Match, String> matchColumn;
     @FXML
-    TableColumn<Match, String> dateColumn; // FIXME: 14.04.2017 how to store date?
+    TableColumn<Match, String> dateColumn;
 
     /**
      * Gets and displays the tournament schedule of the matches that are left to be played.
@@ -433,10 +431,39 @@ public class Controller {
     private void displayMatchSchedule() {
         Tournament tournament = Tournament.getInstance();
 
-        List<Match> matchList = tournament.getMatchList();
+        List<Match> matchList = tournament.getDueMatches();
         ObservableList<Match> data = FXCollections.observableArrayList(matchList);
         matchColumn.setCellValueFactory(new PropertyValueFactory<>("matchName"));
+        dateColumn.setCellValueFactory(new PropertyValueFactory<>("matchDate"));
         matchTable.setItems(data);
+    }
+
+    ///////////////////////////////////////////////////RESULT TAB////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////RESULT TAB////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////RESULT TAB////////////////////////////////////////////////////////
+
+
+    @FXML
+    private TableView<Match> matchesResultsTable;
+    @FXML
+    private TableColumn<Match, Team> teamOneColumn;
+    @FXML
+    private TableColumn<Match, Team> teamTwoColumn;
+    @FXML
+    private TableColumn<Match, Integer> teamOneScoreColumn;
+    @FXML
+    private TableColumn<Match, Integer> teamTwoScoreColumn;
+
+    @FXML
+    private void showMatchesResult() {
+        List<Match> matchList = Tournament.getInstance().getMatchesResults();
+        ObservableList<Match> data = FXCollections.observableArrayList(matchList);
+        matchesResultsTable.setItems(data);
+
+        teamOneColumn.setCellValueFactory(new PropertyValueFactory<>("teamOne"));
+        teamTwoColumn.setCellValueFactory(new PropertyValueFactory<>("teamTwo"));
+        teamOneScoreColumn.setCellValueFactory(new PropertyValueFactory<>("teamOneGoals"));
+        teamTwoScoreColumn.setCellValueFactory(new PropertyValueFactory<>("teamTwoGoals"));
     }
 
 
@@ -445,6 +472,7 @@ public class Controller {
 
     /**
      * Display an error alert with the given information.
+     *
      * @param title   the title of the error window.
      * @param header  the message which will be showed in the header. If headers is not wanted,
      *                a null value can be sent as parameter.
@@ -461,6 +489,7 @@ public class Controller {
 
     /**
      * Display an information alert with the given information.
+     *
      * @param title   the title of the information window.
      * @param header  the message which will be showed in the header. If headers is not wanted,
      *                a null value can be sent as parameter.
@@ -477,6 +506,7 @@ public class Controller {
 
     /**
      * Display a warning alert with the given information.
+     *
      * @param title   the title of the warning window.
      * @param header  the message which will be showed in the header. If headers is not wanted,
      *                a null value can be sent as parameter.
@@ -499,7 +529,7 @@ public class Controller {
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
             return true;
-        }else{
+        } else {
             return false;
         }
     }
