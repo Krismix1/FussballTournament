@@ -376,24 +376,40 @@ public class Controller {
 ///////////////////////////////////////////////////STATISTICS TAB////////////////////////////////////////////////////////
 
     @FXML
-    private TableView<Team> teamsStatisticsTable;
+    private TableView<Team> teamsStandingTable;
     @FXML
-    private TableColumn<Team, String> statisticsTeam;
+    private TableColumn<Team, String> standingTeam;
     @FXML
-    private TableColumn<Team, Player> statisticsPlayer1;
+    private TableColumn<Team, Player> standingPlayer1;
     @FXML
-    private TableColumn<Team, Player> statisticsPlayer2;
+    private TableColumn<Team, Player> standingPlayer2;
+    @FXML
+    private TableColumn<Team, Integer> standingPoints;
+    @FXML
+    private TableColumn<Team, Integer> standingGoals;
+    @FXML
+    private TableColumn<Team, Integer> standingMatchPlayed;
+    @FXML
+    private TableColumn<Team, Integer>  standingWins;
+    @FXML
+    private TableColumn<Team, Integer> standingLosses;
 
     @FXML
-    private void btnCreateStatistics() {
+    private void btnCreateStanding() {
 
         List<Team> statisticsList = Tournament.getInstance().getTeamsList();
         ObservableList<Team> stats = FXCollections.observableArrayList(statisticsList);
 
-        statisticsTeam.setCellValueFactory(new PropertyValueFactory<>("teamName"));
-        statisticsPlayer1.setCellValueFactory(new PropertyValueFactory<>("firstPlayer"));
-        statisticsPlayer2.setCellValueFactory(new PropertyValueFactory<>("secondPlayer"));
-        teamsStatisticsTable.setItems(stats);
+        standingTeam.setCellValueFactory(new PropertyValueFactory<>("teamName"));
+        standingPlayer1.setCellValueFactory(new PropertyValueFactory<>("firstPlayer"));
+        standingPlayer2.setCellValueFactory(new PropertyValueFactory<>("secondPlayer"));
+        standingPoints.setCellValueFactory(new PropertyValueFactory<>("pointsScored"));
+        standingGoals.setCellValueFactory(new PropertyValueFactory<>("goalsFor"));
+        standingMatchPlayed.setCellValueFactory(new PropertyValueFactory<>("matchesPlayed"));
+        standingWins.setCellValueFactory(new PropertyValueFactory<>("matchesWon"));
+        standingLosses.setCellValueFactory(new PropertyValueFactory<>("matchesLost"));
+
+        teamsStandingTable.setItems(stats);
     }
 
     ///////////////////////////////////////////////////PLAYER VIEW////////////////////////////////////////////////////////
