@@ -34,6 +34,28 @@ public class Controller {
 
     ///////////////////////////////////////////////////REGISTER PLAYER TAB////////////////////////////////////////////////////////
     ///////////////////////////////////////////////////REGISTER PLAYER TAB////////////////////////////////////////////////////////
+
+    @FXML
+    private TableView<Team> teamsStatisticsTable;
+    @FXML
+    private TableColumn<Team, String> statisticsTeam;
+    @FXML
+    private TableColumn<Team, Player> statisticsPlayer1;
+    @FXML
+    private TableColumn<Team, Player> statisticsPlayer2;
+    @FXML
+    private void btnCreateStatistics() {
+
+        List<Team> statisticsList = Tournament.getInstance().getTeamsList();
+        ObservableList<Team> stats = FXCollections.observableArrayList(statisticsList);
+
+        statisticsTeam.setCellValueFactory(new PropertyValueFactory<>("teamName"));
+        statisticsPlayer1.setCellValueFactory(new PropertyValueFactory<>("firstPlayer"));
+        statisticsPlayer2.setCellValueFactory(new PropertyValueFactory<>("secondPlayer"));
+        teamsStatisticsTable.setItems(stats);
+
+    }
+
     ///////////////////////////////////////////////////REGISTER PLAYER TAB////////////////////////////////////////////////////////
 
     @FXML
