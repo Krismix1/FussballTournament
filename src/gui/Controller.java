@@ -496,7 +496,7 @@ public class Controller {
     private TableColumn<Team, Integer> standingLosses;
 
     @FXML
-    private void btnCreateStanding() {
+    private void loadStandings() {
 
         List<Team> statisticsList = Tournament.getInstance().getTeamsList();
         ObservableList<Team> stats = FXCollections.observableArrayList(statisticsList);
