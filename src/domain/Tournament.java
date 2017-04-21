@@ -323,7 +323,40 @@ public class Tournament {
 
         } catch (SQLException e) {
             //System.out.println("SQL statement is not executed!");
-            System.out.println(e);
+            e.printStackTrace();
+        }
+    }
+
+    public boolean deleteMatch(Match match) {
+        try {
+            Connection con = DBConnection.getConnection();
+            String sql = "DELETE FROM matches WHERE match_name = ?";
+            PreparedStatement pstmt = con.prepareStatement(sql);
+            pstmt.setString(1, match.getMatchName());
+            pstmt.executeUpdate();
+            con.close();
+            return true;
+        } catch (SQLException e) {
+            //System.out.println("SQL statement is not executed!");
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean editMatch(Match oldMatch, LocalDate newDate) {
+        try {
+            Connection con = DBConnection.getConnection();
+            String sql = "UPDATE matches SET match_date = ? WHERE match_name = ?";
+            PreparedStatement pstmt = con.prepareStatement(sql);
+            pstmt.setDate(1, Date.valueOf(newDate));
+            pstmt.setString(2, oldMatch.getMatchName());
+            pstmt.executeUpdate();
+            con.close();
+            return true;
+        } catch (SQLException e) {
+            //System.out.println("SQL statement is not executed!");
+            e.printStackTrace();
+            return false;
         }
     }
 
