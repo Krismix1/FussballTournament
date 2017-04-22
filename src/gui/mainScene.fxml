@@ -15,7 +15,7 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="608.0" prefWidth="862.0" xmlns="http://javafx.com/javafx/8.0.112" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.Controller">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="608.0" prefWidth="862.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.Controller">
     <children>
         <TabPane prefHeight="608.0" prefWidth="862.0" tabClosingPolicy="UNAVAILABLE">
             <tabs>
@@ -114,18 +114,21 @@
                   </AnchorPane>
               </content>
             </Tab>
-            <Tab onSelectionChanged="#btnCreateResults" text="Results">
+            <Tab onSelectionChanged="#adminAddResults" text="Add Results">
               <content>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
-                        <TableView fx:id="matchesAdminResultsTable" layoutX="7.0" layoutY="-2.0" prefHeight="579.0" prefWidth="339.0">
-                          <columns>
-                            <TableColumn fx:id="teamOneColumn1" prefWidth="98.0" text="Team1" />
-                            <TableColumn fx:id="teamOneScoreColumn1" prefWidth="72.0" text="Score" />
-                              <TableColumn fx:id="teamTwoScoreColumn2" prefWidth="74.0" text="Score" />
-                              <TableColumn fx:id="teamTwoColumn2" prefWidth="95.0" text="Team2" />
-                          </columns>
+                        <Button layoutX="620.0" layoutY="188.0" mnemonicParsing="false" onAction="#addScores" text="Update results" />
+                        <TableView fx:id="matchesScheduleTable1" editable="true" onMouseClicked="#getMatchSelected" prefHeight="578.0" prefWidth="532.0">
+                           <columns>
+                              <TableColumn fx:id="adminMatchNameColumn1" prefWidth="364.0" resizable="false" text="Match" />
+                              <TableColumn fx:id="adminMatchDateColumn1" prefWidth="167.0" resizable="false" text="Date" />
+                           </columns>
                         </TableView>
+                        <TextField fx:id="teamOneScore" layoutX="578.0" layoutY="87.0" prefHeight="25.0" prefWidth="42.0" />
+                        <TextField fx:id="teamTwoScore" layoutX="713.0" layoutY="87.0" prefHeight="25.0" prefWidth="42.0" />
+                        <Label layoutX="580.0" layoutY="65.0" text="Team 1" />
+                        <Label layoutX="713.0" layoutY="65.0" text="Team 2 " />
                      </children>
                   </AnchorPane>
               </content>

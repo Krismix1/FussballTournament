@@ -147,7 +147,7 @@ public class Tournament {
             List<Match> matches = new LinkedList<>(); // TODO: 19-Apr-17 LinkedList?
             Connection con = DBConnection.getConnection();
             Statement stmt = con.createStatement();
-            String sql = "SELECT * FROM matches WHERE match_played = 1"; // Finds all matches that were played
+            String sql = "SELECT * FROM matches WHERE match_played = 0"; // Finds all matches that were played
             // 0 means it wasn't played it, 1 means it was played
             ResultSet rs = stmt.executeQuery(sql);
             while (rs.next()) {

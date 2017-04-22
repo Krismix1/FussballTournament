@@ -389,7 +389,6 @@ public class Controller {
     @FXML
     TableColumn<Match, Team> adminMatchDateColumn;
 
-
     @FXML
     private void adminLoadSchedule() {
         List<Match> matchList = Tournament.getInstance().getDueMatches();
@@ -398,6 +397,67 @@ public class Controller {
         adminMatchDateColumn.setCellValueFactory(new PropertyValueFactory<>("matchDate"));
         matchesScheduleTable.setItems(data);
     }
+
+    @FXML
+    TableView<Match> matchesScheduleTable1;
+    @FXML
+    TableColumn<Match, Team> adminMatchNameColumn1;
+    @FXML
+    TableColumn<Match, Team> adminMatchDateColumn1;
+
+    @FXML
+    private void adminAddResults() {
+        List<Match> matchList = Tournament.getInstance().getDueMatches();
+        ObservableList<Match> data = FXCollections.observableArrayList(matchList);
+        adminMatchNameColumn1.setCellValueFactory(new PropertyValueFactory<>("matchName"));
+        adminMatchDateColumn1.setCellValueFactory(new PropertyValueFactory<>("matchDate"));
+        matchesScheduleTable1.setItems(data);
+    }
+
+    @FXML
+    private TextField teamOneScore;
+
+    @FXML
+    private TextField teamTwoScore;
+
+    @FXML
+    private void getMatchSelected() {
+        selectedMatch = matchesScheduleTable1.getSelectionModel().getSelectedItem();
+        if (selectedMatch != null) {
+            teamOneScore.setText("0");
+            teamTwoScore.setText("0");
+        }else {
+            displayWarning("Oops", "No match selected", "Please select match!");
+        }
+    }
+
+    @FXML
+    private void addScores() {
+            int score1 = Integer.parseInt(teamOneScore.getText());
+            int score2 = Integer.parseInt(teamTwoScore.getText());
+            selectedMatch.setGoalsForTeamOne(score1);
+            selectedMatch.setGoalsForTeamTwo(score2);
+            String name = selectedMatch.getMatchName();
+            try {
+                Connection con = DBConnection.getConnection();
+                String sql = "UPDATE matches SET `team_one_goals` = ?, `team_two_goals` = ? WHERE match_name = ?";
+                PreparedStatement pstmt = con.prepareStatement(sql);
+                pstmt.setInt(1, score1);
+                pstmt.setInt(2, score2);
+                pstmt.setString(3, name);
+                pstmt.executeUpdate();
+
+                con.close();
+            } catch (SQLException e) {
+                System.out.println("SQL statement is not executed!");
+                System.out.println(e);
+            }
+            teamOneScore.setText("");
+            teamTwoScore.setText("");
+            selectedMatch = null;
+
+        }
+
 
     private Match selectedMatch;
     @FXML
@@ -469,6 +529,7 @@ public class Controller {
         teamTwoColumn2.setCellValueFactory(new PropertyValueFactory<>("teamTwo"));
         teamOneScoreColumn1.setCellValueFactory(new PropertyValueFactory<>("teamOneGoals"));
         teamTwoScoreColumn2.setCellValueFactory(new PropertyValueFactory<>("teamTwoGoals"));
+
 
     }
 
