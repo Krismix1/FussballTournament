@@ -7,7 +7,7 @@
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.Controller">
+<AnchorPane xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.PlayerController">
     <children>
         <TabPane prefHeight="379.0" prefWidth="657.0" tabClosingPolicy="UNAVAILABLE">
             <tabs>
@@ -42,7 +42,7 @@
                         </AnchorPane>
                     </content>
                 </Tab>
-                <Tab onSelectionChanged="#btnCreateStanding" text="Standings">
+                <Tab onSelectionChanged="#tabCreateStandings" text="Standings">
                     <content>
                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
