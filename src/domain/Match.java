@@ -13,9 +13,6 @@ public class Match {
     private Team team2;
     private int goals1, goals2;
 
-    public Match() {
-    }
-
     /**
      * Creates a new match with given matchName and two teams.
      *

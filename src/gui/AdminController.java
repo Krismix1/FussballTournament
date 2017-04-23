@@ -377,7 +377,7 @@ public class AdminController {
     TableColumn<Match, Team> matchDateColumn;
 
     @FXML
-    private void adminLoadSchedule() {
+    private void loadSchedule() {
         List<Match> matchList = Tournament.getInstance().getDueMatches();
         ObservableList<Match> data = FXCollections.observableArrayList(matchList);
         matchNameColumn.setCellValueFactory(new PropertyValueFactory<>("matchName"));
@@ -401,7 +401,7 @@ public class AdminController {
         } else {
             SceneManager.getInstance().displayError("Delete match", "Please, first select a match to be deleted.", null);
         }
-        adminLoadSchedule();
+        loadSchedule();
     }
 
     /**
@@ -422,7 +422,7 @@ public class AdminController {
     private void editMatch() {
         // TODO: 21-Apr-17 Check if date is >= today
         if (selectedMatch != null) {
-            if (Tournament.getInstance().editMatch(selectedMatch, editMatchDatePicker.getValue())) {
+            if (Tournament.getInstance().editMatchDate(selectedMatch, editMatchDatePicker.getValue())) {
                 SceneManager.getInstance().displayInformation("Edit match date", "Match date was successfully changed", null);
                 selectedMatch = null;
                 editMatchDatePicker.setValue(null);
@@ -432,7 +432,7 @@ public class AdminController {
         } else {
             SceneManager.getInstance().displayError("Edit match", "Please, first select a match to be edited.", null);
         }
-        adminLoadSchedule();
+        loadSchedule();
     }
 
 
@@ -450,33 +450,11 @@ public class AdminController {
                 if(score1 >= 0 && score2 >= 0) {
                     selectedMatch.setGoalsForTeamOne(score1);
                     selectedMatch.setGoalsForTeamTwo(score2);
-                    
-                    String name = selectedMatch.getMatchName();
-                    try {
-                        Connection con = DBConnection.getConnection();
-                        String sql = "UPDATE matches SET `team_one_goals` = ?, `team_two_goals` = ?, `match_played` = ? WHERE match_name = ?";
-                        PreparedStatement pstmt = con.prepareStatement(sql);
-                        pstmt.setInt(1, score1);
-                        pstmt.setInt(2, score2);
-                        pstmt.setInt(3, 1);
-                        pstmt.setString(4, name);
-                        pstmt.executeUpdate();
 
-                        con.close();
-                    } catch (SQLException e) {
-                        e.printStackTrace();
-                    }
                     if (score1 > score2) {
-                        selectedMatch.getTeamOne().updateGoalDifference(score1 - score2);
-                        selectedMatch.getTeamOne().incrementMatchesWon();
-                        selectedMatch.getTeamTwo().updateGoalDifference(score2 - score1);
-                        selectedMatch.getTeamTwo().incrementMatchesLost();
+                        Tournament.getInstance().registerMatchPlayed(selectedMatch, selectedMatch.getTeamOne(), selectedMatch.getTeamTwo());
                     } else {
-                        selectedMatch.getTeamTwo().updateGoalDifference(score2 - score1);
-                        selectedMatch.getTeamTwo().incrementMatchesWon();
-                        selectedMatch.getTeamOne().updateGoalDifference(score1 - score2);
-                        selectedMatch.getTeamOne().incrementMatchesLost();
-                        // teamsStandingTable.setItems(stats);
+                        Tournament.getInstance().registerMatchPlayed(selectedMatch, selectedMatch.getTeamTwo(), selectedMatch.getTeamOne());
                     }
                     teamOneScore.setText("");
                     teamTwoScore.setText("");
@@ -487,6 +465,7 @@ public class AdminController {
             } catch (NumberFormatException e) {
                 SceneManager.getInstance().displayError("Oops!", "The entered input is not a number!", null);
             }
+            loadSchedule();
         } else {
             SceneManager.getInstance().displayError("Oops", "Please select a match first!",null);
         }

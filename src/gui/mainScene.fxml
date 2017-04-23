@@ -82,7 +82,7 @@
                         </AnchorPane>
                     </content>
                 </Tab>
-                <Tab onSelectionChanged="#adminLoadSchedule" text="Schedule ">
+                <Tab onSelectionChanged="#loadSchedule" text="Schedule ">
                     <content>
                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                             <children>

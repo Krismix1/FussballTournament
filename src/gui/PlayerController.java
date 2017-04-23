@@ -12,6 +12,8 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 
 import java.io.IOException;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -100,7 +102,7 @@ public class PlayerController {
 
     @FXML
     private void loadStandings() {
-        List<Team> statisticsList = Tournament.getInstance().getTeamsList();
+        Collection<Team> statisticsList = Tournament.getInstance().getTeamsList();
         ObservableList<Team> stats = FXCollections.observableArrayList(statisticsList);
 
         standingTeam.setCellValueFactory(new PropertyValueFactory<>("teamName"));

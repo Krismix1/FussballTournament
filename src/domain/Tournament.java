@@ -3,11 +3,9 @@ package domain;
 import technicalservices.DBConnection;
 
 import java.sql.*;
+import java.sql.Date;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by ArcticMonkey on 4/9/2017.
@@ -16,7 +14,8 @@ public class Tournament {
 
     private List<Match> matchList = new LinkedList<>();
     private List<Team> teamList = new ArrayList<>();
-    private List<Player> playerList = new LinkedList<>();
+    private Map<String, Team> teamsMap = new HashMap<>();
+    private Map<String, Match> matchesMap = new HashMap<>();
 
     // Assuring that the class is a singleton
     private Tournament() {
@@ -29,6 +28,53 @@ public class Tournament {
             instance = new Tournament();
         }
         return instance;
+    }
+
+    // Will store state of the tournament: false - not started, true - started.
+    private boolean isStarted = false;
+
+    /**
+     * Returns if the tournament has been started or not.
+     *
+     * @return true if tournament was started, false otherwise
+     */
+    public boolean isStarted() {
+        return isStarted;
+    }
+
+    /**
+     * Starts the tournament, does all required actions like creating and registering matches
+     */
+    public void startTournament() {
+        isStarted = true;
+        createMatches();
+        saveMatchesToDB();
+        readAllMatches();
+    }
+
+    public void registerMatchPlayed(Match match, Team winner, Team loser) {
+        int teamOneGoals = match.getTeamOneGoals();
+        int teamTwoGoals = match.getTeamTwoGoals();
+        try {
+            Connection con = DBConnection.getConnection();
+            String sql = "UPDATE matches SET `team_one_goals` = ?, `team_two_goals` = ?, `match_played` = ? WHERE match_name = ?";
+            PreparedStatement pstmt = con.prepareStatement(sql);
+            pstmt.setInt(1, teamOneGoals);
+            pstmt.setInt(2, teamTwoGoals);
+            pstmt.setInt(3, 1);
+            pstmt.setString(4, match.getMatchName());
+            pstmt.executeUpdate();
+
+            con.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        winner.updateGoalDifference(teamOneGoals - teamTwoGoals);
+        winner.incrementMatchesWon();
+
+        loser.updateGoalDifference(teamTwoGoals - teamOneGoals);
+        loser.incrementMatchesLost();
     }
 
     /**
@@ -54,121 +100,6 @@ public class Tournament {
         } catch (SQLException e) {
             e.printStackTrace();
             return false;
-        }
-    }
-
-    /**
-     * Saves team to the database.
-     *
-     * @param t the team to be added.
-     */
-    public void registerTeam(Team t) throws NullPointerException, SQLException {
-        String sql = "INSERT INTO `teams` (`team_name`, `player_one_id`, `player_two_id`) " +
-                "VALUES ('" + t.getTeamName() + "', '" + t.getFirstPlayer().getPlayerID() + "', '" + t.getSecondPlayer().getPlayerID() + "')";
-        Connection con = DBConnection.getConnection();
-        Statement stmt = con.createStatement();
-        stmt.executeUpdate(sql);
-        con.close();
-    }
-
-    /**
-     * Creates the matches for the tournament.
-     * Each team is assigned to play a match against all other remaining teams.
-     */
-    private void createMatches() {
-        for (int i = 0; i < teamList.size() - 1; i++) {
-            Team team1 = teamList.get(i);
-            for (int j = i + 1; j < teamList.size(); j++) {
-                Team team2 = teamList.get(j);
-                String matchName = team1.getTeamName() + " vs " + team2.getTeamName();
-                Match match = new Match(matchName, team1, team2);
-                LocalDate matchDate = LocalDate.now();
-                match.setMatchDate(matchDate);
-                matchList.add(match);
-            }
-        }
-    }
-
-    /**
-     * Shuffles the matches created and insert each match in the database.
-     * For each match, a new connection is created and then destroyed. Think of a better way to store them,
-     * because this takes a lot of time. Also the shuffle thing is pointless because the DBMS reorders the data.
-     */
-    private void saveMatchesToDB() {
-        Collections.shuffle(matchList);
-        for (Match match : matchList) {
-            Team team1 = match.getTeamOne();
-            Team team2 = match.getTeamTwo();
-            try {
-                Connection con = DBConnection.getConnection();
-                Statement stmt = con.createStatement();
-                String sql = "INSERT INTO matches VALUES('" + match.getMatchName() + "', '" + team1.getTeamName() +
-                        "', '" + team2.getTeamName() + "', '" + match.getMatchDate() + "'," + match.getTeamOneGoals() +
-                        ", " + match.getTeamTwoGoals() + ",FALSE );";
-                stmt.execute(sql);
-                con.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    /**
-     * Returns the list of the matches for the tournament
-     *
-     * @return the list with the matches
-     */
-    public List<Match> getDueMatches() {
-        try {
-            List<Match> matches = new LinkedList<>(); // TODO: 19-Apr-17 LinkedList?
-            Connection con = DBConnection.getConnection();
-            Statement stmt = con.createStatement();
-            String sql = "SELECT * FROM matches WHERE match_played = 0"; // Finds all matches that need to be played
-            // 0 means it wasn't played it, 1 means it was played
-            ResultSet resultSet = stmt.executeQuery(sql);
-            while (resultSet.next()) {
-                String matchName = resultSet.getString(1);
-                LocalDate matchDate = resultSet.getDate(4).toLocalDate();
-                Match match = new Match();
-                match.setMatchName(matchName);
-                match.setMatchDate(matchDate);
-                matches.add(match);
-            }
-            con.close();
-            return matches;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    public List<Match> getMatchesResults() {
-        try {
-            List<Match> matches = new LinkedList<>(); // TODO: 19-Apr-17 LinkedList?
-            Connection con = DBConnection.getConnection();
-            Statement stmt = con.createStatement();
-            String sql = "SELECT * FROM matches WHERE match_played = 1"; // Finds all matches that were played
-            // 0 means it wasn't played it, 1 means it was played
-            ResultSet rs = stmt.executeQuery(sql);
-            while (rs.next()) {
-                String teamOneName = rs.getString(2);
-                String teamTwoName = rs.getString(3);
-                int teamOneGoals = rs.getInt(5);
-                int teamTwoGoals = rs.getInt(6);
-
-                Match match = new Match();
-                match.setGoalsForTeamOne(teamOneGoals);
-                match.setGoalsForTeamTwo(teamTwoGoals);
-                match.setTeamOne(new Team(teamOneName));
-                match.setTeamTwo(new Team(teamTwoName));
-
-                matches.add(match);
-            }
-            con.close();
-            return matches;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return null;
         }
     }
 
@@ -200,45 +131,6 @@ public class Tournament {
             return playerList;
         } catch (SQLException e) {
             e.printStackTrace();
-            return null;
-        }
-    }
-
-    /**
-     * Reads and returns the list of teams from the database.
-     *
-     * @return the list with teams
-     */
-    public List<Team> getTeamsList() {
-        try {
-            Connection con = DBConnection.getConnection();
-            Statement stmt = con.createStatement();
-            String sql = "SELECT team_name,name,birthday,email " +
-                    "FROM teams, players " +
-                    "where teams.player_one_id = players.player_id or " +
-                    "teams.player_two_id = players.player_id;";
-            ResultSet rs = stmt.executeQuery(sql);
-            List<Team> teamList = new LinkedList<>();
-            while (rs.next()) {
-                String teamName = rs.getString(1);
-                String p1Name = rs.getString(2);
-                LocalDate p1Birthday = rs.getDate(3).toLocalDate();
-                String p1Email = rs.getString(4);
-                Player p1 = new Player(p1Name, p1Birthday, p1Email);
-
-                rs.next();
-                String p2Name = rs.getString(2);
-                LocalDate p2Birthday = rs.getDate(3).toLocalDate();
-                String p2Email = rs.getString(4);
-                Player p2 = new Player(p2Name, p2Birthday, p2Email);
-                //rs.getObject(1, Player.class);
-                teamList.add(new Team(p1, p2, teamName));
-            }
-            con.close();
-            this.teamList = teamList;
-            return teamList;
-        } catch (SQLException exception) {
-            exception.printStackTrace();
             return null;
         }
     }
@@ -300,6 +192,60 @@ public class Tournament {
         }
     }
 
+    private void teamsHashMap() {
+        try {
+            Connection con = DBConnection.getConnection();
+            Statement stmt = con.createStatement();
+            String sql = "SELECT team_name,name,birthday,email " +
+                    "FROM teams, players " +
+                    "where teams.player_one_id = players.player_id or " +
+                    "teams.player_two_id = players.player_id;";
+            ResultSet rs = stmt.executeQuery(sql);
+            while (rs.next()) {
+                String teamName = rs.getString(1);
+                String p1Name = rs.getString(2);
+                LocalDate p1Birthday = rs.getDate(3).toLocalDate();
+                String p1Email = rs.getString(4);
+                Player p1 = new Player(p1Name, p1Birthday, p1Email);
+
+                rs.next();
+                String p2Name = rs.getString(2);
+                LocalDate p2Birthday = rs.getDate(3).toLocalDate();
+                String p2Email = rs.getString(4);
+                Player p2 = new Player(p2Name, p2Birthday, p2Email);
+
+                teamsMap.put(teamName, new Team(p1, p2, teamName));
+            }
+            con.close();
+        } catch (SQLException exception) {
+            exception.printStackTrace();
+        }
+    }
+
+    /**
+     * Saves team to the database.
+     *
+     * @param t the team to be added.
+     */
+    public void registerTeam(Team t) throws NullPointerException, SQLException {
+        String sql = "INSERT INTO `teams` (`team_name`, `player_one_id`, `player_two_id`) " +
+                "VALUES ('" + t.getTeamName() + "', '" + t.getFirstPlayer().getPlayerID() + "', '" + t.getSecondPlayer().getPlayerID() + "')";
+        Connection con = DBConnection.getConnection();
+        Statement stmt = con.createStatement();
+        stmt.executeUpdate(sql);
+        con.close();
+    }
+
+    /**
+     * Reads and returns the list of teams from the database.
+     *
+     * @return the list with teams
+     */
+    public Collection<Team> getTeamsList() {
+        teamsHashMap();
+        return teamsMap.values();
+    }
+
     public void editTeamDB(String s1, String s2) throws SQLException {
 
         Connection con = DBConnection.getConnection();
@@ -327,6 +273,137 @@ public class Tournament {
         }
     }
 
+    private void readAllMatches() {
+        try {
+            Connection con = DBConnection.getConnection();
+            Statement stmt = con.createStatement();
+            String sql = "SELECT * FROM matches"; // Finds all matches that were played
+            // 0 means it wasn't played it, 1 means it was played
+            ResultSet rs = stmt.executeQuery(sql);
+            while (rs.next()) {
+                String matchName = rs.getString(1);
+                String teamOneName = rs.getString(2);
+                String teamTwoName = rs.getString(3);
+                LocalDate matchDate = rs.getDate(4).toLocalDate();
+                int teamOneGoals = rs.getInt(5);
+                int teamTwoGoals = rs.getInt(6);
+
+                Team teamOne = teamsMap.get(teamOneName);
+                Team teamTwo = teamsMap.get(teamTwoName);
+
+
+                Match match = new Match(matchName, teamOne, teamTwo, teamOneGoals, teamTwoGoals);
+                match.setMatchDate(matchDate);
+
+                matchesMap.put(matchName, match);
+            }
+            con.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Creates the matches for the tournament.
+     * Each team is assigned to play a match against all other remaining teams.
+     */
+    private void createMatches() {
+        for (int i = 0; i < teamList.size() - 1; i++) {
+            Team team1 = teamList.get(i);
+            for (int j = i + 1; j < teamList.size(); j++) {
+                Team team2 = teamList.get(j);
+                String matchName = team1.getTeamName() + " vs " + team2.getTeamName();
+                Match match = new Match(matchName, team1, team2);
+                LocalDate matchDate = LocalDate.now();
+                match.setMatchDate(matchDate);
+                matchList.add(match);
+            }
+        }
+    }
+
+    /**
+     * Shuffles the matches created and insert each match in the database.
+     * For each match, a new connection is created and then destroyed. Think of a better way to store them,
+     * because this takes a lot of time. Also the shuffle thing is pointless because the DBMS reorders the data.
+     */
+    private void saveMatchesToDB() {
+        Collections.shuffle(matchList);
+        for (Match match : matchList) {
+            Team team1 = match.getTeamOne();
+            Team team2 = match.getTeamTwo();
+            try {
+                Connection con = DBConnection.getConnection();
+                Statement stmt = con.createStatement();
+                String sql = "INSERT INTO matches VALUES('" + match.getMatchName() + "', '" + team1.getTeamName() +
+                        "', '" + team2.getTeamName() + "', '" + match.getMatchDate() + "'," + match.getTeamOneGoals() +
+                        ", " + match.getTeamTwoGoals() + ",FALSE );";
+                stmt.execute(sql);
+                con.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    /**
+     * Returns the list of the matches for the tournament
+     *
+     * @return the list with the matches
+     */
+    public List<Match> getDueMatches() {
+        if (matchesMap.size() > 0 && isStarted) {
+            readAllMatches();
+            try {
+                List<Match> matches = new LinkedList<>(); // TODO: 19-Apr-17 LinkedList?
+                Connection con = DBConnection.getConnection();
+                Statement stmt = con.createStatement();
+                String sql = "SELECT match_name FROM matches WHERE match_played = 0"; // Finds all matches that need to be played
+                // 0 means it wasn't played it, 1 means it was played
+                ResultSet resultSet = stmt.executeQuery(sql);
+                while (resultSet.next()) {
+                    String matchName = resultSet.getString(1);
+
+                    Match match = matchesMap.get(matchName);
+
+                    matches.add(match);
+                }
+                con.close();
+                return matches;
+            } catch (SQLException e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
+        return null;
+    }
+
+    public List<Match> getMatchesResults() {
+        if (matchesMap.size() > 0 && isStarted) {
+            readAllMatches();
+            try {
+                List<Match> matches = new LinkedList<>(); // TODO: 19-Apr-17 LinkedList?
+                Connection con = DBConnection.getConnection();
+                Statement stmt = con.createStatement();
+                String sql = "SELECT match_name FROM matches WHERE match_played = 1"; // Finds all matches that were played
+                // 0 means it wasn't played it, 1 means it was played
+                ResultSet rs = stmt.executeQuery(sql);
+                while (rs.next()) {
+                    String matchName = rs.getString(1);
+
+                    Match match = matchesMap.get(matchName);
+
+                    matches.add(match);
+                }
+                con.close();
+                return matches;
+            } catch (SQLException e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
+        return null;
+    }
+
     public boolean deleteMatch(Match match) {
         try {
             Connection con = DBConnection.getConnection();
@@ -337,13 +414,12 @@ public class Tournament {
             con.close();
             return true;
         } catch (SQLException e) {
-            //System.out.println("SQL statement is not executed!");
             e.printStackTrace();
             return false;
         }
     }
 
-    public boolean editMatch(Match oldMatch, LocalDate newDate) {
+    public boolean editMatchDate(Match oldMatch, LocalDate newDate) {
         try {
             Connection con = DBConnection.getConnection();
             String sql = "UPDATE matches SET match_date = ? WHERE match_name = ?";
@@ -354,31 +430,9 @@ public class Tournament {
             con.close();
             return true;
         } catch (SQLException e) {
-            //System.out.println("SQL statement is not executed!");
             e.printStackTrace();
             return false;
         }
-    }
-
-    // Will store state of the tournament: false - not started, true - started.
-    private boolean isStarted = false;
-
-    /**
-     * Returns if the tournament has been started or not.
-     *
-     * @return true if tournament was started, false otherwise
-     */
-    public boolean isStarted() {
-        return isStarted;
-    }
-
-    /**
-     * Starts the tournament, does all required actions like creating and registering matches
-     */
-    public void startTournament() {
-        isStarted = true;
-        createMatches();
-        saveMatchesToDB();
     }
 }
 

@@ -30,10 +30,6 @@ public class Team {
     private int goalDifference;
 
 
-    public Team(String teamName) {
-        this.teamName = teamName;
-    }
-
     /**
      * Creates a new team with given players and given name.
      *
