@@ -24,10 +24,9 @@ public class Team {
     private String teamName;
     private Player firstPlayer;
     private Player secondPlayer;
-    private int pointsScored;
     private int matchesPlayed;
     private int matchesLost;
-    private int matchesWon;
+    private int matchesWon;   // Point amount is the same as matchesWon, that's why we refer to this field when need to get points.
     private int goalDifference;
 
 
@@ -86,24 +85,6 @@ public class Team {
             e.printStackTrace();
             return ERROR_TEAM_NAME;
         }
-    }
-
-
-
-    /**
-     * Increments team's points
-     */
-    public void incrementPointsScored() {
-        this.pointsScored ++;
-    }
-
-    /**
-     * Returns the number of points the team has.
-     *
-     * @return the number of points
-     */
-    public int getPointsScored() {
-        return pointsScored;
     }
 
     /**
@@ -173,17 +154,17 @@ public class Team {
     }
 
     /**
-     * Increments the number of played matches for the team.
+     * Returns the goal difference.
+     * @return
      */
-    public void incrementMatchesPlayed() {
-
-            this.matchesPlayed++;
-
-    }
-
     public int getGoalDifference() {
         return goalDifference;
     }
+
+    /**
+     * Updates the goal difference for the team.
+     * @param diff
+     */
     public void updateGoalDifference(int diff){
         this.goalDifference +=diff;
     }
@@ -196,12 +177,20 @@ public class Team {
         return matchesWon;
     }
 
+    /**
+     * Increments matches lost and matches played for the team.
+     */
     public void incrementMatchesLost() {
         this.matchesLost++;
+        this.matchesPlayed++;
     }
 
+    /**
+     * Increments matches won and matches played for the team.
+     */
     public void incrementMatchesWon() {
         this.matchesWon++;
+        this.matchesPlayed++;
     }
 
     /**

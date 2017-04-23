@@ -423,6 +423,7 @@ public class Controller {
     @FXML
     private void getMatchSelected() {
         selectedMatch = matchesScheduleTable1.getSelectionModel().getSelectedItem();
+        System.out.println("test");
         if (selectedMatch != null) {
             teamOneScore.setText("0");
             teamTwoScore.setText("0");
@@ -456,21 +457,15 @@ public class Controller {
             }
             if (score1>score2){
                 selectedMatch.getTeamOne().updateGoalDifference(score1 - score2);
-                selectedMatch.getTeamOne().incrementMatchesPlayed();
                 selectedMatch.getTeamOne().incrementMatchesWon();
-                selectedMatch.getTeamOne().incrementPointsScored();
                     selectedMatch.getTeamTwo().updateGoalDifference(score2 - score1);
-                    selectedMatch.getTeamTwo().incrementMatchesPlayed();
                     selectedMatch.getTeamTwo().incrementMatchesLost();
             }else{
                 selectedMatch.getTeamTwo().updateGoalDifference(score2 - score1);
-                selectedMatch.getTeamTwo().incrementMatchesPlayed();
                 selectedMatch.getTeamTwo().incrementMatchesWon();
-                selectedMatch.getTeamTwo().incrementPointsScored();
                     selectedMatch.getTeamOne().updateGoalDifference(score1 - score2);
-                    selectedMatch.getTeamOne().incrementMatchesPlayed();
                     selectedMatch.getTeamOne().incrementMatchesLost();
-                teamsStandingTable.setItems(stats);
+               // teamsStandingTable.setItems(stats);
             }
             teamOneScore.setText("");
             teamTwoScore.setText("");
