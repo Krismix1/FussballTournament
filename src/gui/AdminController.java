@@ -444,41 +444,49 @@ public class AdminController {
     @FXML
     private void addScores() {
         if (selectedMatch != null) {
-            int score1 = Integer.parseInt(teamOneScore.getText());
-            int score2 = Integer.parseInt(teamTwoScore.getText());
-            selectedMatch.setGoalsForTeamOne(score1);
-            selectedMatch.setGoalsForTeamTwo(score2);
-
-            String name = selectedMatch.getMatchName();
             try {
-                Connection con = DBConnection.getConnection();
-                String sql = "UPDATE matches SET `team_one_goals` = ?, `team_two_goals` = ?, `match_played` = ? WHERE match_name = ?";
-                PreparedStatement pstmt = con.prepareStatement(sql);
-                pstmt.setInt(1, score1);
-                pstmt.setInt(2, score2);
-                pstmt.setInt(3, 1);
-                pstmt.setString(4, name);
-                pstmt.executeUpdate();
+                int score1 = Integer.parseInt(teamOneScore.getText());
+                int score2 = Integer.parseInt(teamTwoScore.getText());
+                if(score1 >= 0 && score2 >= 0) {
+                    selectedMatch.setGoalsForTeamOne(score1);
+                    selectedMatch.setGoalsForTeamTwo(score2);
+                    
+                    String name = selectedMatch.getMatchName();
+                    try {
+                        Connection con = DBConnection.getConnection();
+                        String sql = "UPDATE matches SET `team_one_goals` = ?, `team_two_goals` = ?, `match_played` = ? WHERE match_name = ?";
+                        PreparedStatement pstmt = con.prepareStatement(sql);
+                        pstmt.setInt(1, score1);
+                        pstmt.setInt(2, score2);
+                        pstmt.setInt(3, 1);
+                        pstmt.setString(4, name);
+                        pstmt.executeUpdate();
 
-                con.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
+                        con.close();
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+                    if (score1 > score2) {
+                        selectedMatch.getTeamOne().updateGoalDifference(score1 - score2);
+                        selectedMatch.getTeamOne().incrementMatchesWon();
+                        selectedMatch.getTeamTwo().updateGoalDifference(score2 - score1);
+                        selectedMatch.getTeamTwo().incrementMatchesLost();
+                    } else {
+                        selectedMatch.getTeamTwo().updateGoalDifference(score2 - score1);
+                        selectedMatch.getTeamTwo().incrementMatchesWon();
+                        selectedMatch.getTeamOne().updateGoalDifference(score1 - score2);
+                        selectedMatch.getTeamOne().incrementMatchesLost();
+                        // teamsStandingTable.setItems(stats);
+                    }
+                    teamOneScore.setText("");
+                    teamTwoScore.setText("");
+                    selectedMatch = null;
+                }else{
+                    SceneManager.getInstance().displayWarning("Oops!", "Negative number entered!", "Please try again");
+                }
+            } catch (NumberFormatException e) {
+                SceneManager.getInstance().displayError("Oops!", "The entered input is not a number!", null);
             }
-            if (score1 > score2) {
-                selectedMatch.getTeamOne().updateGoalDifference(score1 - score2);
-                selectedMatch.getTeamOne().incrementMatchesWon();
-                selectedMatch.getTeamTwo().updateGoalDifference(score2 - score1);
-                selectedMatch.getTeamTwo().incrementMatchesLost();
-            } else {
-                selectedMatch.getTeamTwo().updateGoalDifference(score2 - score1);
-                selectedMatch.getTeamTwo().incrementMatchesWon();
-                selectedMatch.getTeamOne().updateGoalDifference(score1 - score2);
-                selectedMatch.getTeamOne().incrementMatchesLost();
-                // teamsStandingTable.setItems(stats);
-            }
-            teamOneScore.setText("");
-            teamTwoScore.setText("");
-            selectedMatch = null;
         } else {
             SceneManager.getInstance().displayError("Oops", "Please select a match first!",null);
         }
