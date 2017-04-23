@@ -437,14 +437,16 @@ public class Controller {
             int score2 = Integer.parseInt(teamTwoScore.getText());
             selectedMatch.setGoalsForTeamOne(score1);
             selectedMatch.setGoalsForTeamTwo(score2);
+
             String name = selectedMatch.getMatchName();
             try {
                 Connection con = DBConnection.getConnection();
-                String sql = "UPDATE matches SET `team_one_goals` = ?, `team_two_goals` = ? WHERE match_name = ?";
+                String sql = "UPDATE matches SET `team_one_goals` = ?, `team_two_goals` = ?, `match_played` = ? WHERE match_name = ?";
                 PreparedStatement pstmt = con.prepareStatement(sql);
                 pstmt.setInt(1, score1);
                 pstmt.setInt(2, score2);
-                pstmt.setString(3, name);
+                pstmt.setInt(3, 1);
+                pstmt.setString(4, name);
                 pstmt.executeUpdate();
 
                 con.close();
@@ -452,10 +454,27 @@ public class Controller {
                 System.out.println("SQL statement is not executed!");
                 System.out.println(e);
             }
+            if (score1>score2){
+                selectedMatch.getTeamOne().updateGoalDifference(score1 - score2);
+                selectedMatch.getTeamOne().incrementMatchesPlayed();
+                selectedMatch.getTeamOne().incrementMatchesWon();
+                selectedMatch.getTeamOne().incrementPointsScored();
+                    selectedMatch.getTeamTwo().updateGoalDifference(score2 - score1);
+                    selectedMatch.getTeamTwo().incrementMatchesPlayed();
+                    selectedMatch.getTeamTwo().incrementMatchesLost();
+            }else{
+                selectedMatch.getTeamTwo().updateGoalDifference(score2 - score1);
+                selectedMatch.getTeamTwo().incrementMatchesPlayed();
+                selectedMatch.getTeamTwo().incrementMatchesWon();
+                selectedMatch.getTeamTwo().incrementPointsScored();
+                    selectedMatch.getTeamOne().updateGoalDifference(score1 - score2);
+                    selectedMatch.getTeamOne().incrementMatchesPlayed();
+                    selectedMatch.getTeamOne().incrementMatchesLost();
+                teamsStandingTable.setItems(stats);
+            }
             teamOneScore.setText("");
             teamTwoScore.setText("");
             selectedMatch = null;
-
         }
 
 
@@ -556,20 +575,22 @@ public class Controller {
     @FXML
     private TableColumn<Team, Integer> standingLosses;
 
+    List<Team> statisticsList = Tournament.getInstance().getTeamsList();
+    ObservableList<Team> stats = FXCollections.observableArrayList(statisticsList);
+
     @FXML
     private void loadStandings() {
 
-        List<Team> statisticsList = Tournament.getInstance().getTeamsList();
-        ObservableList<Team> stats = FXCollections.observableArrayList(statisticsList);
+
 
         standingTeam.setCellValueFactory(new PropertyValueFactory<>("teamName"));
         standingPlayer1.setCellValueFactory(new PropertyValueFactory<>("firstPlayer"));
         standingPlayer2.setCellValueFactory(new PropertyValueFactory<>("secondPlayer"));
-        standingPoints.setCellValueFactory(new PropertyValueFactory<>("pointsScored"));
-        standingGoals.setCellValueFactory(new PropertyValueFactory<>("goalsFor"));
+        standingGoals.setCellValueFactory(new PropertyValueFactory<>("goalDifference"));
         standingMatchPlayed.setCellValueFactory(new PropertyValueFactory<>("matchesPlayed"));
         standingWins.setCellValueFactory(new PropertyValueFactory<>("matchesWon"));
         standingLosses.setCellValueFactory(new PropertyValueFactory<>("matchesLost"));
+        standingPoints.setCellValueFactory(new PropertyValueFactory<>("pointsScored"));
 
         teamsStandingTable.setItems(stats);
     }

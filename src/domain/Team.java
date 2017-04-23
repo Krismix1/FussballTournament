@@ -27,9 +27,8 @@ public class Team {
     private int pointsScored;
     private int matchesPlayed;
     private int matchesLost;
-    private int goalsFor;
-    private int goalsAgainst;
     private int matchesWon;
+    private int goalDifference;
 
 
     public Team(String teamName) {
@@ -89,22 +88,13 @@ public class Team {
         }
     }
 
-    /**
-     * Adds points to the score of the team.
-     *
-     * @param pointsScored how many points the team earned at the end of the match
-     */
-    public void addPointsScored(int pointsScored) {
-        this.pointsScored += pointsScored; // FIXME: 09-Apr-17 Check for value >= 0
-    }
+
 
     /**
-     * Sets team's points to the given value.
-     *
-     * @param points the number of points
+     * Increments team's points
      */
-    public void setPointsScored(int points) {
-        this.pointsScored = points; // FIXME: 09-Apr-17 Check for value >= 0
+    public void incrementPointsScored() {
+        this.pointsScored ++;
     }
 
     /**
@@ -183,65 +173,19 @@ public class Team {
     }
 
     /**
-     * Sets the number of played matches for the team.
-     *
-     * @param matchesPlayed the number of matches played.
-     * @throws IllegalArgumentException if the number entered is negative.
+     * Increments the number of played matches for the team.
      */
-    public void setMatchesPlayed(int matchesPlayed) {
-        if (matchesPlayed >= 0) {
-            this.matchesPlayed = matchesPlayed;
-        } else {
-            throw new IllegalArgumentException("Matches played can't be negative");
-        }
+    public void incrementMatchesPlayed() {
+
+            this.matchesPlayed++;
+
     }
 
-    /**
-     * Adds the given value to the number of played matches.
-     *
-     * @param matchesPlayed the number of matches to add.
-     * @throws IllegalArgumentException if the matches played value is negative.
-     */
-    public void addMatchesPlayed(int matchesPlayed) {
-        if (matchesPlayed >= 0) {// FIXME: 4/9/2017 consider checking sum greater than 0
-            this.matchesPlayed += matchesPlayed;
-        } else {
-            throw new IllegalArgumentException("Matches played can't be negative!");
-            //this.matchesPlayed = 0;
-        }
+    public int getGoalDifference() {
+        return goalDifference;
     }
-
-    /**
-     * Returns how many goals the team scored.
-     *
-     * @return the number of how many goals the team scored.
-     */
-    public int getGoalsFor() {
-        return goalsFor;
-    }
-
-    /**
-     * Sets the value of how many goals the team scored.
-     *
-     * @param goals the number of goals scored by the team.
-     */
-    public void setGoalsFor(int goals) {
-        this.goalsFor = goals;
-    }
-
-    /**
-     * Adds goals to the number of goals scored by the team.
-     *
-     * @param goals the number of goals to add.
-     * @throws IllegalArgumentException if the number of goals to add is negative.
-     */
-    public void addGoalsFor(int goals) {
-        if (goals >= 0) {// FIXME: 4/9/2017 consider checking sum greater than 0
-            this.goalsFor += goals;
-        } else {
-            throw new IllegalArgumentException("Goals scored for team can't be negative!");
-            //this.goalsFor = 0;
-        }
+    public void updateGoalDifference(int diff){
+        this.goalDifference +=diff;
     }
 
     public int getMatchesLost() {
@@ -252,38 +196,12 @@ public class Team {
         return matchesWon;
     }
 
-    /**
-     * Returns the number of goals scored by the team.
-     *
-     * @return the number of goals scored.
-     */
-
-    public int getGoalsAgainst() {
-        return goalsAgainst;
+    public void incrementMatchesLost() {
+        this.matchesLost++;
     }
 
-    /**
-     * Sets the number of goals scored against current team.
-     *
-     * @param goals the number of goals scored against current team.
-     */
-    public void setGoalsAgainst(int goals) {
-        this.goalsAgainst = goals;
-    }
-
-    /**
-     * Adds goals to the number of goals scored against the team.
-     *
-     * @param goals the number of goals to add.
-     * @throws IllegalArgumentException if the number of goals to add is negative.
-     */
-    public void addGoalsAgainst(int goals) {
-        if (goals >= 0) {// FIXME: 4/9/2017 consider checking sum greater than 0
-            this.goalsAgainst += goals;
-        } else {
-            throw new IllegalArgumentException("Goals scored against team can't be negative!");
-            //this.goalsFor = 0;
-        }
+    public void incrementMatchesWon() {
+        this.matchesWon++;
     }
 
     /**

@@ -142,10 +142,10 @@
                                         <TableColumn fx:id="standingTeam" prefWidth="125.0" text="Team" />
                                         <TableColumn fx:id="standingPlayer1" prefWidth="120.0" text="Player 1" />
                                         <TableColumn fx:id="standingPlayer2" prefWidth="162.0" text="Player 2" />
-                                        <TableColumn fx:id="standingGoals" prefWidth="90.0" text="Goals" />
                                         <TableColumn fx:id="standingMatchPlayed" prefWidth="54.0" text="MP" />
                                         <TableColumn fx:id="standingWins" prefWidth="66.0" text="Wins" />
                                         <TableColumn fx:id="standingLosses" prefWidth="58.0" text="Losses" />
+                                        <TableColumn fx:id="standingGoals" prefWidth="90.0" text="Goal Difference" />
                                         <TableColumn fx:id="standingPoints" minWidth="0.0" prefWidth="68.0" text="Points" />
                                     </columns>
                                 </TableView>
