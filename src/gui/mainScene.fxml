@@ -1,21 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.DatePicker?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ListView?>
-<?import javafx.scene.control.Tab?>
-<?import javafx.scene.control.TabPane?>
-<?import javafx.scene.control.TableColumn?>
-<?import javafx.scene.control.TableView?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.ColumnConstraints?>
-<?import javafx.scene.layout.GridPane?>
-<?import javafx.scene.layout.Pane?>
-<?import javafx.scene.layout.RowConstraints?>
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="608.0" prefWidth="862.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.Controller">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="608.0" prefWidth="862.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.AdminController">
     <children>
         <TabPane prefHeight="608.0" prefWidth="862.0" tabClosingPolicy="UNAVAILABLE">
             <tabs>
@@ -31,13 +20,13 @@
                                         <Label text="Email:" GridPane.rowIndex="1" />
                                         <Label text="Birthday:" GridPane.rowIndex="2" />
                                         <Label text="Name:" />
-                              <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="3">
-                                 <children>
-                                    <Button layoutX="139.0" layoutY="16.0" mnemonicParsing="false" onAction="#editPlayer" text="Edit" />
-                                              <Button fx:id="savePlayerBtn" layoutY="16.0" mnemonicParsing="false" onAction="#savePlayer" text="Save" />
-                                    <Button layoutX="261.0" layoutY="16.0" mnemonicParsing="false" onAction="#deletePlayer" text="Delete" />
-                                 </children>
-                              </AnchorPane>
+                                        <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                                            <children>
+                                                <Button layoutX="139.0" layoutY="16.0" mnemonicParsing="false" onAction="#editPlayer" text="Edit" />
+                                                <Button fx:id="savePlayerBtn" layoutY="16.0" mnemonicParsing="false" onAction="#savePlayer" text="Save" />
+                                                <Button layoutX="261.0" layoutY="16.0" mnemonicParsing="false" onAction="#deletePlayer" text="Delete" />
+                                            </children>
+                                        </AnchorPane>
                                     </children>
                                     <columnConstraints>
                                         <ColumnConstraints hgrow="SOMETIMES" maxWidth="633.0" minWidth="10.0" prefWidth="175.0" />
@@ -50,14 +39,14 @@
                                         <RowConstraints maxHeight="401.0" minHeight="10.0" prefHeight="52.0" vgrow="SOMETIMES" />
                                     </rowConstraints>
                                 </GridPane>
-                        <TableView fx:id="playersTable" layoutX="488.0" layoutY="44.0" onMouseClicked="#selectPlayer" prefHeight="506.0" prefWidth="371.0">
-                          <columns>
-                            <TableColumn fx:id="nameColumn" prefWidth="109.0" text="Name" />
-                            <TableColumn fx:id="emailColumn" prefWidth="158.0" text="Email" />
-                              <TableColumn fx:id="dobColumn" prefWidth="103.0" text="Date of Birth" />
-                          </columns>
-                        </TableView>
-                                  <Button layoutX="387.0" layoutY="385.0" mnemonicParsing="false" onAction="#btnBackAction" text="Logout" textAlignment="CENTER" />
+                                <TableView fx:id="playersTable" layoutX="488.0" layoutY="44.0" onMouseClicked="#selectPlayer" prefHeight="506.0" prefWidth="371.0">
+                                    <columns>
+                                        <TableColumn fx:id="nameColumn" prefWidth="109.0" text="Name" />
+                                        <TableColumn fx:id="emailColumn" prefWidth="158.0" text="Email" />
+                                        <TableColumn fx:id="dobColumn" prefWidth="103.0" text="Date of Birth" />
+                                    </columns>
+                                </TableView>
+                                <Button layoutX="387.0" layoutY="385.0" mnemonicParsing="false" onAction="#btnBackAction" text="Logout" textAlignment="CENTER" />
                             </children>
                         </AnchorPane>
                     </content>
@@ -86,52 +75,54 @@
                                 <Button layoutX="288.0" layoutY="443.0" mnemonicParsing="false" onAction="#btnClear1" prefHeight="15.0" prefWidth="29.0" text="x" />
 
                                 <Button layoutX="726.0" layoutY="492.0" mnemonicParsing="false" onAction="#startTournament" prefHeight="33.0" prefWidth="111.0" text="Start Tournament" />
-                        <Label layoutX="410.0" layoutY="14.0" text="Formed teams" />
-                        <Button layoutX="113.0" layoutY="496.0" mnemonicParsing="false" onAction="#deleteTeam" text="Delete" />
-                        <Button layoutX="30.0" layoutY="496.0" mnemonicParsing="false" onAction="#editTeam" text="Edit" />
+                                <Label layoutX="410.0" layoutY="14.0" text="Formed teams" />
+                                <Button layoutX="113.0" layoutY="496.0" mnemonicParsing="false" onAction="#deleteTeam" text="Delete" />
+                                <Button layoutX="30.0" layoutY="496.0" mnemonicParsing="false" onAction="#editTeam" text="Edit" />
                             </children>
                         </AnchorPane>
                     </content>
                 </Tab>
-            <Tab onSelectionChanged="#adminLoadSchedule" text="Schedule ">
-              <content>
-                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                     <children>
-                        <AnchorPane prefHeight="577.0" prefWidth="862.0">
-                           <children>
-                              <TableView fx:id="matchesScheduleTable" editable="true" onMouseClicked="#adminGetMatchSelected" prefHeight="578.0" prefWidth="532.0">
-                                <columns>
-                                  <TableColumn fx:id="adminMatchNameColumn" prefWidth="364.0" resizable="false" text="Match" />
-                                  <TableColumn fx:id="adminMatchDateColumn" prefWidth="167.0" resizable="false" text="Date" />
-                                </columns>
-                              </TableView>
-                              <Button layoutX="645.0" layoutY="316.0" mnemonicParsing="false" onAction="#btnDeleteMatch" text="Delete match" />
-                              <DatePicker fx:id="editMatchDatePicker" layoutX="578.0" layoutY="143.0" />
-                              <Button layoutX="656.0" layoutY="227.0" mnemonicParsing="false" onAction="#editMatch" text="Edit match" />
-                           </children>
+                <Tab onSelectionChanged="#adminLoadSchedule" text="Schedule ">
+                    <content>
+                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                            <children>
+                                <AnchorPane prefHeight="577.0" prefWidth="862.0">
+                                    <children>
+                                        <TableView fx:id="matchesScheduleTable" editable="true" onMouseClicked="#getMatchSelected" prefHeight="578.0" prefWidth="532.0">
+                                            <columns>
+                                                <TableColumn fx:id="matchNameColumn" prefWidth="364.0" resizable="false" text="Match" />
+                                                <TableColumn fx:id="matchDateColumn" prefWidth="167.0" resizable="false" text="Date" />
+                                            </columns>
+                                        </TableView>
+                                        <Button layoutX="615.0" layoutY="464.0" mnemonicParsing="false" onAction="#btnDeleteMatch" text="Delete match" />
+                                        <DatePicker fx:id="editMatchDatePicker" layoutX="549.0" layoutY="228.0" />
+                                        <Button layoutX="618.0" layoutY="305.0" mnemonicParsing="false" onAction="#editMatch" text="Update date" />
+                                        <TextField fx:id="teamOneScore" layoutX="578.0" layoutY="87.0" prefHeight="25.0" prefWidth="42.0" />
+                                        <TextField fx:id="teamTwoScore" layoutX="713.0" layoutY="87.0" prefHeight="25.0" prefWidth="42.0" />
+                                        <Label layoutX="580.0" layoutY="65.0" text="Team 1" />
+                                        <Label layoutX="713.0" layoutY="65.0" text="Team 2 " />
+                                        <Button layoutX="610.0" layoutY="160.0" mnemonicParsing="false" onAction="#addScores" text="Update results" />
+                                    </children>
+                                </AnchorPane>
+                            </children>
                         </AnchorPane>
-                     </children>
-                  </AnchorPane>
-              </content>
-            </Tab>
-            <Tab onSelectionChanged="#adminAddResults" text="Add Results">
-              <content>
-                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                    </content>
+                </Tab>
+            <Tab onSelectionChanged="#loadResults" text="Results">
+               <content>
+                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
-                        <Button layoutX="620.0" layoutY="188.0" mnemonicParsing="false" onAction="#addScores" text="Update results" />
-                        <TableView fx:id="matchesScheduleTable1" editable="true" onMouseClicked="#getMatchSelected" prefHeight="578.0" prefWidth="532.0">
-                           <columns>
-                              <TableColumn fx:id="adminMatchNameColumn1" prefWidth="364.0" resizable="false" text="Match" />
-                              <TableColumn fx:id="adminMatchDateColumn1" prefWidth="167.0" resizable="false" text="Date" />
-                           </columns>
+                        <TableView fx:id="matchesResultsTable" prefHeight="564.0" prefWidth="862.0">
+                          <columns>
+                            <TableColumn fx:id="teamOneColumn" prefWidth="292.0" text="Team one" />
+                            <TableColumn fx:id="teamOneScoreColumn" minWidth="0.0" prefWidth="135.0" text="Score" />
+                              <TableColumn fx:id="teamTwoScoreColumn" prefWidth="125.0" text="Score" />
+                              <TableColumn fx:id="teamTwoColumn" prefWidth="309.0" text="Team two" />
+                          </columns>
                         </TableView>
-                        <TextField fx:id="teamOneScore" layoutX="578.0" layoutY="87.0" prefHeight="25.0" prefWidth="42.0" />
-                        <TextField fx:id="teamTwoScore" layoutX="713.0" layoutY="87.0" prefHeight="25.0" prefWidth="42.0" />
-                        <Label layoutX="580.0" layoutY="65.0" text="Team 1" />
-                        <Label layoutX="713.0" layoutY="65.0" text="Team 2 " />
                      </children>
                   </AnchorPane>
-              </content>
+               </content>
             </Tab>
                 <Tab onSelectionChanged="#loadStandings" text="Standings">
                     <content>

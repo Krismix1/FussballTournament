@@ -7,7 +7,7 @@
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.Controller">
+<AnchorPane xmlns="http://javafx.com/javafx/8.0.101" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.PlayerController">
     <children>
         <TabPane prefHeight="608.0" prefWidth="862.0" tabClosingPolicy="UNAVAILABLE">
             <tabs>
@@ -45,20 +45,20 @@
                 <Tab onSelectionChanged="#loadStandings" text="Standings">
                     <content>
                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                     <children>
-                        <TableView fx:id="teamsStandingTable" layoutX="14.0" prefHeight="563.0" prefWidth="862.0">
-                           <columns>
-                              <TableColumn fx:id="standingTeam" prefWidth="82.33334350585938" text="Team" />
-                              <TableColumn fx:id="standingPlayer1" prefWidth="102.3333740234375" text="Player 1" />
-                              <TableColumn fx:id="standingPlayer2" prefWidth="91.66668701171875" text="Player 2" />
-                              <TableColumn fx:id="standingGoals" prefWidth="70.66668701171875" text="Goals" />
-                              <TableColumn fx:id="standingMatchPlayed" prefWidth="56.66668701171875" text="MP" />
-                              <TableColumn fx:id="standingWins" prefWidth="79.33331298828125" text="Wins" />
-                              <TableColumn fx:id="standingLosses" maxWidth="110.0" minWidth="-1.0" prefWidth="72.66668701171875" text="Losses" />
-                              <TableColumn fx:id="standingPoints" minWidth="0.0" prefWidth="86.0" text="Points" />
-                           </columns>
-                        </TableView>
-                     </children>
+                            <children>
+                                <TableView fx:id="teamsStandingTable" prefHeight="563.0" prefWidth="862.0">
+                                    <columns>
+                                        <TableColumn fx:id="standingTeam" prefWidth="82.33334350585938" text="Team" />
+                                        <TableColumn fx:id="standingPlayer1" prefWidth="102.3333740234375" text="Player 1" />
+                                        <TableColumn fx:id="standingPlayer2" prefWidth="91.66668701171875" text="Player 2" />
+                                        <TableColumn fx:id="standingGoals" prefWidth="70.66668701171875" text="Goals" />
+                                        <TableColumn fx:id="standingMatchPlayed" prefWidth="56.66668701171875" text="MP" />
+                                        <TableColumn fx:id="standingWins" prefWidth="79.33331298828125" text="Wins" />
+                                        <TableColumn fx:id="standingLosses" maxWidth="110.0" minWidth="-1.0" prefWidth="72.66668701171875" text="Losses" />
+                                        <TableColumn fx:id="standingPoints" minWidth="0.0" prefWidth="86.0" text="Points" />
+                                    </columns>
+                                </TableView>
+                            </children>
                         </AnchorPane>
                     </content>
                 </Tab>

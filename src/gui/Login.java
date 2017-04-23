@@ -27,7 +27,7 @@ public class Login {
      * @param password the admin account password
      * @return true if information is correct, false otherwise
      */
-    public boolean grantAccess(String username, String password) {
+    private boolean grantAccess(String username, String password) {
         return (ADMIN_USERNAME.equals(username) && ADMIN_PASSWORD.equals(password)) || username.isEmpty();
     }
 
@@ -47,9 +47,7 @@ public class Login {
         String pass = adminPassword.getText();
         try {
             if (grantAccess(admin, pass)) {
-                Parent root = FXMLLoader.load(getClass().getResource("/gui/mainScene.fxml"));
-                Scene scene = new Scene(root, 900, 575);
-                Main.mainStage.setScene(scene);
+                SceneManager.getInstance().loadAdministratorScene();
             } else {
                 Alert wrongCredentials = new Alert(Alert.AlertType.ERROR);
                 wrongCredentials.setTitle("Invalid login");
@@ -68,9 +66,7 @@ public class Login {
     @FXML
     private void btnPlayersLoginAction() {
         try {
-            Parent playerRoot = FXMLLoader.load(getClass().getResource("/gui/playerView.fxml"));
-            Scene playerScene = new Scene(playerRoot, 900, 575);
-            Main.mainStage.setScene(playerScene);
+            SceneManager.getInstance().loadPlayerScene();
         } catch (IOException e) {
             e.printStackTrace();
         }

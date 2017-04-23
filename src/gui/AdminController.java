@@ -10,9 +10,6 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseButton;
@@ -23,12 +20,9 @@ import java.io.IOException;
 import java.sql.*;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
-public class Controller {
+public class AdminController {
 
-    ///////////////////////////////////////////////////REGISTER PLAYER TAB////////////////////////////////////////////////////////
-    ///////////////////////////////////////////////////REGISTER PLAYER TAB////////////////////////////////////////////////////////
     ///////////////////////////////////////////////////REGISTER PLAYER TAB////////////////////////////////////////////////////////
 
     @FXML
@@ -54,15 +48,15 @@ public class Controller {
         savePlayerBtn.defaultButtonProperty().bind(savePlayerBtn.focusedProperty());
 
         if (name.isEmpty() || dateBirthInput.getValue() == null) {
-            displayError("Error Dialog", null, "Please enter player details!");
+            SceneManager.getInstance().displayError("Error Dialog", null, "Please enter player details!");
             return;
         }
         if (!validEmail(email)) {
-            displayError("Invalid email", null, "Invalid email format.");
+            SceneManager.getInstance().displayError("Invalid email", null, "Invalid email format.");
             return;
         }
         if (dateBirthInput.getValue().compareTo(LocalDate.now()) >= 0) {
-            displayError("Wrong birthday date", null, "Enter a valid date.");
+            SceneManager.getInstance().displayError("Wrong birthday date", null, "Enter a valid date.");
             return;
         }
         LocalDate birthday = dateBirthInput.getValue();
@@ -70,10 +64,10 @@ public class Controller {
             nameInput.clear();
             emailInput.clear();
             dateBirthInput.setValue(null);
-            displayInformation("Player saved!", null, "Player was saved!");
+            SceneManager.getInstance().displayInformation("Player saved!", null, "Player was saved!");
             showData();
         } else {
-            displayError("Player registration", null, "An error occurred. Please try again.");
+            SceneManager.getInstance().displayError("Player registration", null, "An error occurred. Please try again.");
         }
     }
 
@@ -93,10 +87,7 @@ public class Controller {
     @FXML
     private void btnBackAction() {
         try {
-            Parent root = FXMLLoader.load(getClass().getResource("/gui/Login.fxml"));
-            Scene scene = new Scene(root, 900, 575);
-            Main.mainStage.setScene(scene);
-            Main.mainStage.show();
+            SceneManager.getInstance().loadLoginScene();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -138,7 +129,7 @@ public class Controller {
     @FXML
     private void deletePlayer() { // TODO: 19.04.2017 add confirmation message where it states in which team the player is in
         if (selectedPlayer != null) {
-            if (displayConfirmation("Oops!",
+            if (SceneManager.getInstance().displayConfirmation("Oops!",
                     "Are you sure you want to delete player " + selectedPlayer.getPlayerName() + "?", null)) {
                 int id = selectedPlayer.getPlayerID();
                 Tournament.getInstance().deletePlayerFromDB(id);
@@ -149,7 +140,7 @@ public class Controller {
                 selectedPlayer = null;
             }
         } else {
-            displayError("Oops!", "No Player selected", "Please select player to delete!");
+            SceneManager.getInstance().displayError("Oops!", "No Player selected", "Please select player to delete!");
         }
     }
 
@@ -166,14 +157,12 @@ public class Controller {
             dateBirthInput.setValue(null);
             selectedPlayer = null;
         } else {
-            displayError("Oops", "No player selected", "You need to select a player first!");
+            SceneManager.getInstance().displayError("Oops", "No player selected", "You need to select a player first!");
         }
         showData();
     }
 
 
-    ///////////////////////////////////////////////////REGISTER TEAM TAB////////////////////////////////////////////////////////
-    ///////////////////////////////////////////////////REGISTER TEAM TAB////////////////////////////////////////////////////////
     ///////////////////////////////////////////////////REGISTER TEAM TAB////////////////////////////////////////////////////////
 
     @FXML
@@ -260,7 +249,7 @@ public class Controller {
 
             loadTeamsAndPlayers();
 
-            displayInformation("Team creation", null, "Team created!");
+            SceneManager.getInstance().displayInformation("Team creation", null, "Team created!");
             player1Selected = null;
             player2Selected = null;
 
@@ -271,13 +260,13 @@ public class Controller {
             // Code #1062 defines Duplicate entry value for primary key
             // That said, the team name is already used.
             if (e.getErrorCode() == PRIMARY_KEY_TAKEN_ERROR) {
-                displayError("Error Dialog", null, "Team name is already used. Try a new name!");
+                SceneManager.getInstance().displayError("Error Dialog", null, "Team name is already used. Try a new name!");
             } else {
-                displayError("Error Dialog", null, "Ooops, there was an error!\n Try again");
+                SceneManager.getInstance().displayError("Error Dialog", null, "Ooops, there was an error!\n Try again");
             }
             e.printStackTrace();
         } catch (NullPointerException nullPointer) {
-            displayError("Error Dialog", null, "Ooops, you need to select the players first!");
+            SceneManager.getInstance().displayError("Error Dialog", null, "Ooops, you need to select the players first!");
             nullPointer.printStackTrace();
         }
     }
@@ -308,10 +297,10 @@ public class Controller {
     @FXML
     private void startTournament() {
         if (Tournament.getInstance().isStarted()) {
-            displayError("Tournament start", null, "Tournament has already started.");
+            SceneManager.getInstance().displayError("Tournament start", null, "Tournament has already started.");
         } else {
             Tournament.getInstance().startTournament();
-            displayInformation("Tournament start", null, "Tournament successfully started.");
+            SceneManager.getInstance().displayInformation("Tournament start", null, "Tournament successfully started.");
         }
     }
 
@@ -333,7 +322,7 @@ public class Controller {
     @FXML
     private void deleteTeam() { // TODO: 19.04.2017 add confirmation message where it states in which team the player is in
         if (selectedTeam != null) {
-            if (displayConfirmation("Oops!",
+            if (SceneManager.getInstance().displayConfirmation("Oops!",
                     "Are you sure you want to delete team " + selectedTeam.getTeamName() + "?", null)) {
                 String id = selectedTeam.getTeamName();
                 Tournament.getInstance().deleteTeamD(id);
@@ -344,7 +333,7 @@ public class Controller {
                 selectedTeam = null;
             }
         } else {
-            displayError("Oops!", "No Team selected", "Please select team to delete!");
+            SceneManager.getInstance().displayError("Oops!", "No Team selected", "Please select team to delete!");
         }
     }
 
@@ -355,20 +344,20 @@ public class Controller {
         if (!name.equals(teamName)) {
             try {
                 Tournament.getInstance().editTeamDB(name, teamName);
-                displayInformation("Edit team", "Team information was successfully changed.", null);
+                SceneManager.getInstance().displayInformation("Edit team", "Team information was successfully changed.", null);
             } catch (SQLException e) {
                 // Code #1062 defines Duplicate entry value for primary key
                 // That said, the team name is already used.
                 if (e.getErrorCode() == PRIMARY_KEY_TAKEN_ERROR) {
-                    displayError("Error Dialog", null, "Team name is already used. Try a new name!");
+                    SceneManager.getInstance().displayError("Error Dialog", null, "Team name is already used. Try a new name!");
                 } else {
-                    displayError("Error Dialog", null, "Oops, there was an error!\n Try again");
+                    SceneManager.getInstance().displayError("Error Dialog", null, "Oops, there was an error!\n Try again");
                 }
                 e.printStackTrace();
             }
 
         } else {
-            displayWarning("Oops", "Ops", "Team name should be unique");
+            SceneManager.getInstance().displayWarning("Oops", "Ops", "Team name should be unique");
         }
         teamNameTextField.setText("");
         player1TextField.setText("");
@@ -379,61 +368,82 @@ public class Controller {
     }
 
     ///////////////////////////////////////////////////SCHEDULE TAB////////////////////////////////////////////////////////
-    ///////////////////////////////////////////////////SCHEDULE TAB////////////////////////////////////////////////////////
-    ///////////////////////////////////////////////////SCHEDULE TAB////////////////////////////////////////////////////////
 
     @FXML
     TableView<Match> matchesScheduleTable;
     @FXML
-    TableColumn<Match, Team> adminMatchNameColumn;
+    TableColumn<Match, Team> matchNameColumn;
     @FXML
-    TableColumn<Match, Team> adminMatchDateColumn;
+    TableColumn<Match, Team> matchDateColumn;
 
     @FXML
     private void adminLoadSchedule() {
         List<Match> matchList = Tournament.getInstance().getDueMatches();
         ObservableList<Match> data = FXCollections.observableArrayList(matchList);
-        adminMatchNameColumn.setCellValueFactory(new PropertyValueFactory<>("matchName"));
-        adminMatchDateColumn.setCellValueFactory(new PropertyValueFactory<>("matchDate"));
+        matchNameColumn.setCellValueFactory(new PropertyValueFactory<>("matchName"));
+        matchDateColumn.setCellValueFactory(new PropertyValueFactory<>("matchDate"));
         matchesScheduleTable.setItems(data);
+        selectedMatch = null;
+        editMatchDatePicker.setValue(null);
     }
 
-    @FXML
-    TableView<Match> matchesScheduleTable1;
-    @FXML
-    TableColumn<Match, Team> adminMatchNameColumn1;
-    @FXML
-    TableColumn<Match, Team> adminMatchDateColumn1;
+    private Match selectedMatch;
 
     @FXML
-    private void adminAddResults() {
-        List<Match> matchList = Tournament.getInstance().getDueMatches();
-        ObservableList<Match> data = FXCollections.observableArrayList(matchList);
-        adminMatchNameColumn1.setCellValueFactory(new PropertyValueFactory<>("matchName"));
-        adminMatchDateColumn1.setCellValueFactory(new PropertyValueFactory<>("matchDate"));
-        matchesScheduleTable1.setItems(data);
+    private void btnDeleteMatch() {
+        if (selectedMatch != null) {
+            if (Tournament.getInstance().deleteMatch(selectedMatch)) {
+                SceneManager.getInstance().displayInformation("Delete match", "Match was successfully deleted.", null);
+                selectedMatch = null;
+            } else {
+                SceneManager.getInstance().displayError("Delete match", "An error occurred during match deletion. \n Please try again", null);
+            }
+        } else {
+            SceneManager.getInstance().displayError("Delete match", "Please, first select a match to be deleted.", null);
+        }
+        adminLoadSchedule();
     }
 
-    @FXML
-    private TextField teamOneScore;
-
-    @FXML
-    private TextField teamTwoScore;
-
+    /**
+     * This method handles the mouse click on the Schedule table for the admin.
+     */
     @FXML
     private void getMatchSelected() {
-        selectedMatch = matchesScheduleTable1.getSelectionModel().getSelectedItem();
-        System.out.println("test");
+        selectedMatch = matchesScheduleTable.getSelectionModel().getSelectedItem();
         if (selectedMatch != null) {
-            teamOneScore.setText("0");
-            teamTwoScore.setText("0");
-        }else {
-            displayWarning("Oops", "No match selected", "Please select match!");
+            editMatchDatePicker.setValue(selectedMatch.getMatchDate());
         }
     }
 
     @FXML
+    private DatePicker editMatchDatePicker;
+
+    @FXML
+    private void editMatch() {
+        // TODO: 21-Apr-17 Check if date is >= today
+        if (selectedMatch != null) {
+            if (Tournament.getInstance().editMatch(selectedMatch, editMatchDatePicker.getValue())) {
+                SceneManager.getInstance().displayInformation("Edit match date", "Match date was successfully changed", null);
+                selectedMatch = null;
+                editMatchDatePicker.setValue(null);
+            } else {
+                SceneManager.getInstance().displayError("Edit match date", "An error occurred during edit. \n Please try again.", null);
+            }
+        } else {
+            SceneManager.getInstance().displayError("Edit match", "Please, first select a match to be edited.", null);
+        }
+        adminLoadSchedule();
+    }
+
+
+    @FXML
+    private TextField teamOneScore;
+    @FXML
+    private TextField teamTwoScore;
+
+    @FXML
     private void addScores() {
+        if (selectedMatch != null) {
             int score1 = Integer.parseInt(teamOneScore.getText());
             int score2 = Integer.parseInt(teamTwoScore.getText());
             selectedMatch.setGoalsForTeamOne(score1);
@@ -452,103 +462,51 @@ public class Controller {
 
                 con.close();
             } catch (SQLException e) {
-                System.out.println("SQL statement is not executed!");
-                System.out.println(e);
+                e.printStackTrace();
             }
-            if (score1>score2){
+            if (score1 > score2) {
                 selectedMatch.getTeamOne().updateGoalDifference(score1 - score2);
                 selectedMatch.getTeamOne().incrementMatchesWon();
-                    selectedMatch.getTeamTwo().updateGoalDifference(score2 - score1);
-                    selectedMatch.getTeamTwo().incrementMatchesLost();
-            }else{
+                selectedMatch.getTeamTwo().updateGoalDifference(score2 - score1);
+                selectedMatch.getTeamTwo().incrementMatchesLost();
+            } else {
                 selectedMatch.getTeamTwo().updateGoalDifference(score2 - score1);
                 selectedMatch.getTeamTwo().incrementMatchesWon();
-                    selectedMatch.getTeamOne().updateGoalDifference(score1 - score2);
-                    selectedMatch.getTeamOne().incrementMatchesLost();
-               // teamsStandingTable.setItems(stats);
+                selectedMatch.getTeamOne().updateGoalDifference(score1 - score2);
+                selectedMatch.getTeamOne().incrementMatchesLost();
+                // teamsStandingTable.setItems(stats);
             }
             teamOneScore.setText("");
             teamTwoScore.setText("");
             selectedMatch = null;
-        }
-
-
-    private Match selectedMatch;
-    @FXML
-    private void btnDeleteMatch() {
-        if (selectedMatch != null) {
-            if (Tournament.getInstance().deleteMatch(selectedMatch)) {
-                displayInformation("Delete match", "Match was successfully deleted.", null);
-                selectedMatch = null;
-            } else {
-                displayError("Delete match", "An error occurred during match deletion. \n Please try again", null);
-            }
         } else {
-            displayError("Delete match", "Please, first select a match to be deleted.", null);
-        }
-        adminLoadSchedule();
-    }
-
-    /**
-     * This method handles the mouse click on the Schedule table for the admin.
-     */
-    @FXML
-    private void adminGetMatchSelected() {
-        selectedMatch = matchesScheduleTable.getSelectionModel().getSelectedItem();
-        if (selectedMatch != null) {
-            editMatchDatePicker.setValue(selectedMatch.getMatchDate());
+            SceneManager.getInstance().displayError("Oops", "Please select a match first!",null);
         }
     }
 
-    @FXML
-    private DatePicker editMatchDatePicker;
+    ///////////////////////////////////////////////////RESULTS TAB////////////////////////////////////////////////////////
 
     @FXML
-    private void editMatch() {
-        // TODO: 21-Apr-17 Check if date is >= today
-        if (selectedMatch != null) {
-            if (Tournament.getInstance().editMatch(selectedMatch, editMatchDatePicker.getValue())) {
-                displayInformation("Edit match date", "Match date was successfully changed", null);
-                selectedMatch = null;
-                editMatchDatePicker.setValue(null);
-            } else {
-                displayError("Edit match date", "An error occurred during edit. \n Please try again.", null);
-            }
-        } else {
-            displayError("Edit match", "Please, first select a match to be edited.", null);
-        }
-        adminLoadSchedule();
+    TableView<Match> matchesResultsTable;
+    @FXML
+    private TableColumn<Match, Team> teamOneColumn;
+    @FXML
+    private TableColumn<Match, Team> teamTwoColumn;
+    @FXML
+    private TableColumn<Match, Integer> teamOneScoreColumn;
+    @FXML
+    private TableColumn<Match, Integer> teamTwoScoreColumn;
+
+    @FXML
+    private void loadResults() {
+        matchesResultsTable.setItems(FXCollections.observableArrayList(Tournament.getInstance().getMatchesResults()));
+
+        teamOneColumn.setCellValueFactory(new PropertyValueFactory<>("teamOne"));
+        teamTwoColumn.setCellValueFactory(new PropertyValueFactory<>("teamTwo"));
+        teamOneScoreColumn.setCellValueFactory(new PropertyValueFactory<>("teamOneGoals"));
+        teamTwoScoreColumn.setCellValueFactory(new PropertyValueFactory<>("teamTwoGoals"));
     }
 
-
-    ///////////////////////////////////////////////////ADMIN RESULT TAB////////////////////////////////////////////////////////
-    ///////////////////////////////////////////////////RESULT TAB////////////////////////////////////////////////////////
-    ///////////////////////////////////////////////////RESULT TAB////////////////////////////////////////////////////////
-    @FXML
-    TableView<Match> matchesAdminResultsTable;
-    @FXML
-    private TableColumn<Match, Team> teamOneColumn1;
-    @FXML
-    private TableColumn<Match, Team> teamTwoColumn2;
-    @FXML
-    private TableColumn<Match, Integer> teamOneScoreColumn1;
-    @FXML
-    private TableColumn<Match, Integer> teamTwoScoreColumn2;
-
-    @FXML
-    private void btnCreateResults() {
-        matchesAdminResultsTable.setItems(FXCollections.observableArrayList(Tournament.getInstance().getMatchesResults()));
-
-        teamOneColumn1.setCellValueFactory(new PropertyValueFactory<>("teamOne"));
-        teamTwoColumn2.setCellValueFactory(new PropertyValueFactory<>("teamTwo"));
-        teamOneScoreColumn1.setCellValueFactory(new PropertyValueFactory<>("teamOneGoals"));
-        teamTwoScoreColumn2.setCellValueFactory(new PropertyValueFactory<>("teamTwoGoals"));
-
-
-    }
-
-    ///////////////////////////////////////////////////STANDINGS TAB////////////////////////////////////////////////////////
-    ///////////////////////////////////////////////////STANDINGS TAB////////////////////////////////////////////////////////
     ///////////////////////////////////////////////////STANDINGS TAB////////////////////////////////////////////////////////
 
     @FXML
@@ -570,13 +528,8 @@ public class Controller {
     @FXML
     private TableColumn<Team, Integer> standingLosses;
 
-    List<Team> statisticsList = Tournament.getInstance().getTeamsList();
-    ObservableList<Team> stats = FXCollections.observableArrayList(statisticsList);
-
     @FXML
     private void loadStandings() {
-
-
 
         standingTeam.setCellValueFactory(new PropertyValueFactory<>("teamName"));
         standingPlayer1.setCellValueFactory(new PropertyValueFactory<>("firstPlayer"));
@@ -585,136 +538,9 @@ public class Controller {
         standingMatchPlayed.setCellValueFactory(new PropertyValueFactory<>("matchesPlayed"));
         standingWins.setCellValueFactory(new PropertyValueFactory<>("matchesWon"));
         standingLosses.setCellValueFactory(new PropertyValueFactory<>("matchesLost"));
-        standingPoints.setCellValueFactory(new PropertyValueFactory<>("pointsScored"));
+        standingPoints.setCellValueFactory(new PropertyValueFactory<>("pointsScored")); // FIXME: 23-Apr-17 Change to matches won, they are the same
 
-        teamsStandingTable.setItems(stats);
+        teamsStandingTable.setItems(FXCollections.observableArrayList(Tournament.getInstance().getTeamsList()));
     }
 
-
-    ///////////////////////////////////////////////////PLAYER VIEW////////////////////////////////////////////////////////
-    ///////////////////////////////////////////////////PLAYER VIEW////////////////////////////////////////////////////////
-    ///////////////////////////////////////////////////PLAYER VIEW////////////////////////////////////////////////////////
-
-    ///////////////////////////////////////////////////SCHEDULE TAB////////////////////////////////////////////////////////
-    ///////////////////////////////////////////////////SCHEDULE TAB////////////////////////////////////////////////////////
-    ///////////////////////////////////////////////////SCHEDULE TAB////////////////////////////////////////////////////////
-
-
-    @FXML
-    private TableView<Match> matchTable;
-    @FXML
-    TableColumn<Match, String> matchColumn;
-    @FXML
-    TableColumn<Match, String> dateColumn;
-
-    /**
-     * Gets and displays the tournament schedule of the matches that are left to be played.
-     * This method gets called when the selected tab changes to or from the 'Schedule' tab
-     */
-    @FXML
-    private void displayMatchSchedule() {
-        Tournament tournament = Tournament.getInstance();
-
-        List<Match> matchList = tournament.getDueMatches();
-        ObservableList<Match> data = FXCollections.observableArrayList(matchList);
-        matchColumn.setCellValueFactory(new PropertyValueFactory<>("matchName"));
-        dateColumn.setCellValueFactory(new PropertyValueFactory<>("matchDate"));
-        matchTable.setItems(data);
-    }
-
-    ///////////////////////////////////////////////////RESULT TAB////////////////////////////////////////////////////////
-    ///////////////////////////////////////////////////RESULT TAB////////////////////////////////////////////////////////
-    ///////////////////////////////////////////////////RESULT TAB////////////////////////////////////////////////////////
-
-
-    @FXML
-    private TableView<Match> matchesResultsTable;
-    @FXML
-    private TableColumn<Match, Team> teamOneColumn;
-    @FXML
-    private TableColumn<Match, Team> teamTwoColumn;
-    @FXML
-    private TableColumn<Match, Integer> teamOneScoreColumn;
-    @FXML
-    private TableColumn<Match, Integer> teamTwoScoreColumn;
-
-    @FXML
-    private void showMatchesResult() {
-        List<Match> matchList = Tournament.getInstance().getMatchesResults();
-        ObservableList<Match> data = FXCollections.observableArrayList(matchList);
-        matchesResultsTable.setItems(data);
-
-        teamOneColumn.setCellValueFactory(new PropertyValueFactory<>("teamOne"));
-        teamTwoColumn.setCellValueFactory(new PropertyValueFactory<>("teamTwo"));
-        teamOneScoreColumn.setCellValueFactory(new PropertyValueFactory<>("teamOneGoals"));
-        teamTwoScoreColumn.setCellValueFactory(new PropertyValueFactory<>("teamTwoGoals"));
-    }
-
-
-    ///////////////////////////////////////////////////HELPER METHODS////////////////////////////////////////////////////////
-    ///////////////////////////////////////////////////HELPER METHODS////////////////////////////////////////////////////////
-
-    /**
-     * Display an error alert with the given information.
-     *
-     * @param title   the title of the error window.
-     * @param header  the message which will be showed in the header. If headers is not wanted,
-     *                a null value can be sent as parameter.
-     * @param content the message of the error window.
-     */
-    private void displayError(String title, String header, String content) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle(title);
-        alert.setHeaderText(header);
-        alert.setContentText(content);
-
-        alert.showAndWait();
-    }
-
-    /**
-     * Display an information alert with the given information.
-     *
-     * @param title   the title of the information window.
-     * @param header  the message which will be showed in the header. If headers is not wanted,
-     *                a null value can be sent as parameter.
-     * @param content the message of the information window.
-     */
-    private void displayInformation(String title, String header, String content) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle(title);
-        alert.setHeaderText(header);
-        alert.setContentText(content);
-
-        alert.showAndWait();
-    }
-
-    /**
-     * Display a warning alert with the given information.
-     *
-     * @param title   the title of the warning window.
-     * @param header  the message which will be showed in the header. If headers is not wanted,
-     *                a null value can be sent as parameter.
-     * @param content the message of the warning window.
-     */
-    private void displayWarning(String title, String header, String content) {
-        Alert alert = new Alert(Alert.AlertType.WARNING);
-        alert.setTitle(title);
-        alert.setHeaderText(header);
-        alert.setContentText(content);
-        alert.showAndWait();
-    }
-
-    private boolean displayConfirmation(String title, String header, String content) {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle(title);
-        alert.setHeaderText(header);
-        alert.setContentText(null);
-
-        Optional<ButtonType> result = alert.showAndWait();
-        if (result.isPresent() && result.get() == ButtonType.OK) {
-            return true;
-        } else {
-            return false;
-        }
-    }
 }
