@@ -29,7 +29,6 @@ public class Team {
     private int matchesWon;   // Point amount is the same as matchesWon, that's why we refer to this field when need to get points.
     private int goalDifference;
 
-
     /**
      * Creates a new team with given players and given name.
      *
@@ -151,6 +150,7 @@ public class Team {
 
     /**
      * Returns the goal difference.
+     *
      * @return
      */
     public int getGoalDifference() {
@@ -159,10 +159,11 @@ public class Team {
 
     /**
      * Updates the goal difference for the team.
+     *
      * @param diff
      */
-    public void updateGoalDifference(int diff){
-        this.goalDifference +=diff;
+    public void updateGoalDifference(int diff) {
+        this.goalDifference += diff;
     }
 
     public int getMatchesLost() {
@@ -205,6 +206,22 @@ public class Team {
      */
     public Player getSecondPlayer() {
         return secondPlayer;
+    }
+
+    public String getPointsScored() {
+        return matchesLost + matchesWon + "";
+    }
+
+    public void setMatchesLost(int matchesLost) {
+        this.matchesLost = matchesLost;
+    }
+
+    public void setMatchesWon(int matchesWon) {
+        this.matchesWon = matchesWon;
+    }
+
+    public void setGoalDifference(int goalDifference) {
+        this.goalDifference = goalDifference;
     }
 
     @Override

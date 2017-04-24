@@ -88,15 +88,6 @@ public class Match {
     }
 
     /**
-     * Sets the name of the match.
-     *
-     * @param matchName the name of the match.
-     */
-    public void setMatchName(String matchName) {
-        this.matchName = matchName;
-    }
-
-    /**
      * Sets the date of the match.
      *
      * @param matchDate the date when the match is played.

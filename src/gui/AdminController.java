@@ -226,10 +226,7 @@ public class AdminController {
         }
     }
 
-    /**
-     * Code #1062 defines Duplicate entry value for primary key.
-     */
-    private static final int PRIMARY_KEY_TAKEN_ERROR = 1062;
+
 
     /**
      * Saves a new team with the entered information by the user.
@@ -259,7 +256,7 @@ public class AdminController {
         } catch (SQLException e) {
             // Code #1062 defines Duplicate entry value for primary key
             // That said, the team name is already used.
-            if (e.getErrorCode() == PRIMARY_KEY_TAKEN_ERROR) {
+            if (e.getErrorCode() == Tournament.PRIMARY_KEY_TAKEN_ERROR) {
                 SceneManager.getInstance().displayError("Error Dialog", null, "Team name is already used. Try a new name!");
             } else {
                 SceneManager.getInstance().displayError("Error Dialog", null, "Ooops, there was an error!\n Try again");
@@ -348,7 +345,7 @@ public class AdminController {
             } catch (SQLException e) {
                 // Code #1062 defines Duplicate entry value for primary key
                 // That said, the team name is already used.
-                if (e.getErrorCode() == PRIMARY_KEY_TAKEN_ERROR) {
+                if (e.getErrorCode() == Tournament.PRIMARY_KEY_TAKEN_ERROR) {
                     SceneManager.getInstance().displayError("Error Dialog", null, "Team name is already used. Try a new name!");
                 } else {
                     SceneManager.getInstance().displayError("Error Dialog", null, "Oops, there was an error!\n Try again");
@@ -433,6 +430,7 @@ public class AdminController {
             SceneManager.getInstance().displayError("Edit match", "Please, first select a match to be edited.", null);
         }
         loadSchedule();
+        matchesScheduleTable.refresh(); // this seems to be needed
     }
 
 
@@ -466,6 +464,7 @@ public class AdminController {
                 SceneManager.getInstance().displayError("Oops!", "The entered input is not a number!", null);
             }
             loadSchedule();
+            matchesResultsTable.refresh();
         } else {
             SceneManager.getInstance().displayError("Oops", "Please select a match first!",null);
         }
