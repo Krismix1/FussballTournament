@@ -130,7 +130,7 @@ public class AdminController {
 
     @FXML
     private void deletePlayer() { // TODO: 19.04.2017 add confirmation message where it states in which team the player is in
-        if (Tournament.getInstance().checkTournamentStarted()) {
+        if (!Tournament.getInstance().checkTournamentStarted()) {
             if (selectedPlayer != null) {
                 if (SceneManager.getInstance().displayConfirmation("Oops!",
                         "Are you sure you want to delete player " + selectedPlayer.getPlayerName() + "?", null)) {
@@ -240,7 +240,7 @@ public class AdminController {
      */
     @FXML
     private void registerTeam() {
-        if (Tournament.getInstance().checkTournamentStarted()) {
+        if (!Tournament.getInstance().checkTournamentStarted()) {
             String teamName = teamNameTextField.getText();
             try {
                 Team t;
@@ -328,7 +328,7 @@ public class AdminController {
 
     @FXML
     private void deleteTeam() { // TODO: 19.04.2017 add confirmation message where it states in which team the player is in
-        if (Tournament.getInstance().checkTournamentStarted()) {
+        if (!Tournament.getInstance().checkTournamentStarted()) {
             if (selectedTeam != null) {
                 if (SceneManager.getInstance().displayConfirmation("Oops!",
                         "Are you sure you want to delete team " + selectedTeam.getTeamName() + "?", null)) {
@@ -352,8 +352,9 @@ public class AdminController {
     private void editTeam() {
         String teamName = selectedTeam.getTeamName();
         String name = teamNameTextField.getText();
-        if (Tournament.getInstance().checkTournamentStarted() && !teamName.equals(name)) {// if tournament is started
-            // and you try to change the name of the team
+        // when tournament is started,only players can be swapped
+        // name can be changed only when tournament is not started
+        if (!Tournament.getInstance().checkTournamentStarted() || teamName.equals(name)) {// if tournament is not started or team name remains the same
             Player p1 = selectedTeam.getFirstPlayer();
             Player p2 = selectedTeam.getSecondPlayer();
             if (player1Selected != null && p1.getPlayerID() != player1Selected.getPlayerID()) {

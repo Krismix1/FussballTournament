@@ -261,9 +261,14 @@ public class Tournament {
         return readAllTeams().values();
     }
 
+    /**
+     * Reads all the teams from the database and returns a list with teams ordered descending by wins, then goal difference
+     * and afterwards, if any matches, sorted ascending by losses.
+     * @return sorted list of teams
+     */
     public List<Team> getOrderedTeamList() {
         Map<String, Team> teamsMap = readAllTeams();
-        List<Team> teams = new ArrayList<>();
+        List<Team> teams = new ArrayList<>(teamsMap.size());
         try {
             Connection con = DBConnection.getConnection();
             Statement stmt = con.createStatement();
