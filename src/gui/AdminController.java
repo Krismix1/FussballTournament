@@ -430,7 +430,7 @@ public class AdminController {
             SceneManager.getInstance().displayError("Edit match", "Please, first select a match to be edited.", null);
         }
         loadSchedule();
-        matchesScheduleTable.refresh(); // this seems to be needed
+        //matchesScheduleTable.refresh(); // this seems to be needed
     }
 
 
@@ -464,7 +464,7 @@ public class AdminController {
                 SceneManager.getInstance().displayError("Oops!", "The entered input is not a number!", null);
             }
             loadSchedule();
-            matchesResultsTable.refresh();
+            //matchesResultsTable.refresh();
         } else {
             SceneManager.getInstance().displayError("Oops", "Please select a match first!",null);
         }
