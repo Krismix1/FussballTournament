@@ -338,9 +338,18 @@ public class AdminController {
     private void editTeam() {
         String teamName = selectedTeam.getTeamName();
         String name = teamNameTextField.getText();
-        if (!name.equals(teamName)) {
+        Player p1 = selectedTeam.getFirstPlayer();
+        Player p2 = selectedTeam.getSecondPlayer();
+        if(p1.getPlayerID()!= player1Selected.getPlayerID()){
+            p1 = player1Selected;
+        }
+        if(p2.getPlayerID()!= player2Selected.getPlayerID()){
+            p2 = player2Selected;
+        }
+        Team team = new Team(p1, p2, name);
+       // if (!name.equals(teamName)) {
             try {
-                Tournament.getInstance().editTeamDB(name, teamName);
+                Tournament.getInstance().editTeamDB(teamName, team);
                 SceneManager.getInstance().displayInformation("Edit team", "Team information was successfully changed.", null);
             } catch (SQLException e) {
                 // Code #1062 defines Duplicate entry value for primary key
@@ -352,15 +361,15 @@ public class AdminController {
                 }
                 e.printStackTrace();
             }
-
-        } else {
-            SceneManager.getInstance().displayWarning("Oops", "Ops", "Team name should be unique");
-        }
+//        } else {
+//            SceneManager.getInstance().displayWarning("Oops", "Ops", "Team name should be unique");
+//        }
         teamNameTextField.setText("");
         player1TextField.setText("");
         player2TextField.setText("");
         selectedTeam = null;
         loadTeamsAndPlayers();
+
 
     }
 
