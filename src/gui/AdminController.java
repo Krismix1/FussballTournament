@@ -19,6 +19,8 @@ import technicalservices.DBConnection;
 import java.io.IOException;
 import java.sql.*;
 import java.time.LocalDate;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 public class AdminController {
@@ -227,7 +229,6 @@ public class AdminController {
     }
 
 
-
     /**
      * Saves a new team with the entered information by the user.
      * If team name is not provided, a team with default name will be saved.
@@ -340,27 +341,26 @@ public class AdminController {
         String name = teamNameTextField.getText();
         Player p1 = selectedTeam.getFirstPlayer();
         Player p2 = selectedTeam.getSecondPlayer();
-        if(p1.getPlayerID()!= player1Selected.getPlayerID()){
+        if (player1Selected != null && p1.getPlayerID() != player1Selected.getPlayerID()) {
             p1 = player1Selected;
         }
-        if(p2.getPlayerID()!= player2Selected.getPlayerID()){
+        if (player2Selected != null && p2.getPlayerID() != player2Selected.getPlayerID()) {
             p2 = player2Selected;
         }
         Team team = new Team(p1, p2, name);
-       // if (!name.equals(teamName)) {
-            try {
-                Tournament.getInstance().editTeamDB(teamName, team);
-                SceneManager.getInstance().displayInformation("Edit team", "Team information was successfully changed.", null);
-            } catch (SQLException e) {
-                // Code #1062 defines Duplicate entry value for primary key
-                // That said, the team name is already used.
-                if (e.getErrorCode() == Tournament.PRIMARY_KEY_TAKEN_ERROR) {
-                    SceneManager.getInstance().displayError("Error Dialog", null, "Team name is already used. Try a new name!");
-                } else {
-                    SceneManager.getInstance().displayError("Error Dialog", null, "Oops, there was an error!\n Try again");
-                }
-                e.printStackTrace();
+        try {
+            Tournament.getInstance().editTeamDB(teamName, team);
+            SceneManager.getInstance().displayInformation("Edit team", "Team information was successfully changed.", null);
+        } catch (SQLException e) {
+            // Code #1062 defines Duplicate entry value for primary key
+            // That said, the team name is already used.
+            if (e.getErrorCode() == Tournament.PRIMARY_KEY_TAKEN_ERROR) {
+                SceneManager.getInstance().displayError("Error Dialog", null, "Team name is already used. Try a new name!");
+            } else {
+                SceneManager.getInstance().displayError("Error Dialog", null, "Oops, there was an error!\n Try again");
             }
+            e.printStackTrace();
+        }
 //        } else {
 //            SceneManager.getInstance().displayWarning("Oops", "Ops", "Team name should be unique");
 //        }
@@ -454,7 +454,7 @@ public class AdminController {
             try {
                 int score1 = Integer.parseInt(teamOneScore.getText());
                 int score2 = Integer.parseInt(teamTwoScore.getText());
-                if(score1 >= 0 && score2 >= 0) {
+                if (score1 >= 0 && score2 >= 0) {
                     selectedMatch.setGoalsForTeamOne(score1);
                     selectedMatch.setGoalsForTeamTwo(score2);
 
@@ -466,7 +466,7 @@ public class AdminController {
                     teamOneScore.setText("");
                     teamTwoScore.setText("");
                     selectedMatch = null;
-                }else{
+                } else {
                     SceneManager.getInstance().displayWarning("Oops!", "Negative number entered!", "Please try again");
                 }
             } catch (NumberFormatException e) {
@@ -475,7 +475,7 @@ public class AdminController {
             loadSchedule();
             //matchesResultsTable.refresh();
         } else {
-            SceneManager.getInstance().displayError("Oops", "Please select a match first!",null);
+            SceneManager.getInstance().displayError("Oops", "Please select a match first!", null);
         }
     }
 
@@ -538,4 +538,21 @@ public class AdminController {
         teamsStandingTable.setItems(FXCollections.observableArrayList(Tournament.getInstance().getOrderedTeamList()));
     }
 
+    @FXML
+    private void finishTournament() {
+        if (SceneManager.getInstance().displayConfirmation("End tournament", null, "Are you sure you want to end the tournament?" +
+                "\nThis will delete all information about teams and matches")) {
+            List<Team> winners = Tournament.getInstance().getOrderedTeamList();
+            String teamNames = "";
+            for (int i = 0; i < 3 && i < winners.size(); i++) {
+                teamNames += (i + 1) + ". " + winners.get(i) + "\n";
+            }
+            if (Tournament.getInstance().endTournament()) {
+                SceneManager.getInstance().displayInformation("End tournament", "Tournament successfully ended.\nTop 3 teams:", teamNames);
+            } else {
+                SceneManager.getInstance().displayError("End tournament.", null, "An error occurred.\nPlease try again.");
+            }
+        }
+        loadStandings();
+    }
 }

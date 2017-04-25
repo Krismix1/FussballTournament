@@ -70,6 +70,27 @@ public class Tournament {
         readAllMatches(teamsMap); //this? FIXME
     }
 
+    public boolean endTournament() {
+        if (isStarted) {
+            isStarted = false;
+            try {
+                String sql = "TRUNCATE TABLE matches;";
+
+                Connection con = DBConnection.getConnection();
+                Statement stmt = con.createStatement();
+                stmt.executeUpdate(sql);
+
+                sql = "DELETE from teams;";
+                stmt.executeUpdate(sql);
+                con.close();
+                return true;
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return false;
+    }
+
     /**
      * Adds player to the database.
      *
@@ -246,9 +267,9 @@ public class Tournament {
         return readAllTeams().values();
     }
 
-    public Collection<Team> getOrderedTeamList() {
+    public List<Team> getOrderedTeamList() {
         Map<String, Team> teamsMap = readAllTeams();
-        Collection<Team> teams = new ArrayList<>();
+        List<Team> teams = new ArrayList<>();
         try {
             Connection con = DBConnection.getConnection();
             Statement stmt = con.createStatement();
