@@ -24,7 +24,6 @@ public class Team {
     private String teamName;
     private Player firstPlayer;
     private Player secondPlayer;
-    private int matchesPlayed;
     private int matchesLost;
     private int matchesWon;   // Point amount is the same as matchesWon, that's why we refer to this field when need to get points.
     private int goalDifference;
@@ -145,7 +144,7 @@ public class Team {
      * @return the number of played matches
      */
     public int getMatchesPlayed() {
-        return matchesPlayed;
+        return matchesLost + matchesWon;
     }
 
     /**
@@ -179,7 +178,6 @@ public class Team {
      */
     public void incrementMatchesLost() {
         this.matchesLost++;
-        this.matchesPlayed++;
     }
 
     /**
@@ -187,7 +185,6 @@ public class Team {
      */
     public void incrementMatchesWon() {
         this.matchesWon++;
-        this.matchesPlayed++;
     }
 
     /**
@@ -208,8 +205,8 @@ public class Team {
         return secondPlayer;
     }
 
-    public String getPointsScored() {
-        return matchesLost + matchesWon + "";
+    public int getPointsScored() {
+        return matchesWon;
     }
 
     public void setMatchesLost(int matchesLost) {

@@ -246,13 +246,14 @@ public class Tournament {
         return readAllTeams().values();
     }
 
-    public void editTeamDB(String s1, String s2) throws SQLException {
-
+    public void editTeamDB(String teamName, Team team) throws SQLException {
         Connection con = DBConnection.getConnection();
-        String sql = "UPDATE teams SET `team_name` = ? WHERE team_name = ?";
+        String sql = "UPDATE teams SET `team_name` = ?, player_one_id = ?, player_two_id = ? WHERE team_name = ?";
         PreparedStatement pstmt = con.prepareStatement(sql);
-        pstmt.setString(1, s1);
-        pstmt.setString(2, s2);
+        pstmt.setString(1, team.getTeamName());
+        pstmt.setInt(2, team.getFirstPlayer().getPlayerID());
+        pstmt.setInt(3, team.getSecondPlayer().getPlayerID());
+        pstmt.setString(4, teamName);
         pstmt.executeUpdate();
 
         con.close();
@@ -452,9 +453,9 @@ public class Tournament {
         String winnerName = winner.getTeamName();
         String loserName = loser.getTeamName();
 
-        winner.updateGoalDifference(teamOneGoals - teamTwoGoals);
+        winner.updateGoalDifference(Math.abs(teamOneGoals - teamTwoGoals));
         winner.incrementMatchesWon();
-        loser.updateGoalDifference(teamTwoGoals - teamOneGoals);
+        loser.updateGoalDifference(Math.abs(teamTwoGoals - teamOneGoals)*(-1));
         loser.incrementMatchesLost();
         try {
             Connection con = DBConnection.getConnection();
