@@ -44,7 +44,7 @@ public class AdminController {
     private void savePlayer(ActionEvent actionEvent) {
         String name = nameInput.getText();
         String email = emailInput.getText();
-        if (email.length() <= 0) {
+        if (email.length() == 0) {
             email = null;
         }
         savePlayerBtn.defaultButtonProperty().bind(savePlayerBtn.focusedProperty());
@@ -130,19 +130,24 @@ public class AdminController {
 
     @FXML
     private void deletePlayer() { // TODO: 19.04.2017 add confirmation message where it states in which team the player is in
-        if (selectedPlayer != null) {
-            if (SceneManager.getInstance().displayConfirmation("Oops!",
-                    "Are you sure you want to delete player " + selectedPlayer.getPlayerName() + "?", null)) {
-                int id = selectedPlayer.getPlayerID();
-                Tournament.getInstance().deletePlayerFromDB(id);
-                showData();
-                nameInput.setText("");
-                emailInput.setText("");
-                dateBirthInput.setValue(null);
-                selectedPlayer = null;
+        if (Tournament.getInstance().checkTournamentStarted()) {
+            if (selectedPlayer != null) {
+                if (SceneManager.getInstance().displayConfirmation("Oops!",
+                        "Are you sure you want to delete player " + selectedPlayer.getPlayerName() + "?", null)) {
+                    int id = selectedPlayer.getPlayerID();
+                    Tournament.getInstance().deletePlayerFromDB(id);
+                    showData();
+                    nameInput.setText("");
+                    emailInput.setText("");
+                    dateBirthInput.setValue(null);
+                    selectedPlayer = null;
+                }
+            } else {
+                SceneManager.getInstance().displayError("Oops!", "No Player selected", "Please select player to delete!");
             }
         } else {
-            SceneManager.getInstance().displayError("Oops!", "No Player selected", "Please select player to delete!");
+            SceneManager.getInstance().displayError("Delete player", null,
+                    "Players can not be deleted when tournament is running");
         }
     }
 
@@ -235,37 +240,41 @@ public class AdminController {
      */
     @FXML
     private void registerTeam() {
-        String teamName = teamNameTextField.getText();
-        try {
-            Team t;
-            if (teamName.isEmpty()) {
-                t = new Team(player1Selected, player2Selected);
-            } else {
-                t = new Team(player1Selected, player2Selected, teamName);
+        if (Tournament.getInstance().checkTournamentStarted()) {
+            String teamName = teamNameTextField.getText();
+            try {
+                Team t;
+                if (teamName.isEmpty()) {
+                    t = new Team(player1Selected, player2Selected);
+                } else {
+                    t = new Team(player1Selected, player2Selected, teamName);
+                }
+                Tournament.getInstance().registerTeam(t);
+
+                loadTeamsAndPlayers();
+
+                SceneManager.getInstance().displayInformation("Team creation", null, "Team created!");
+                player1Selected = null;
+                player2Selected = null;
+
+                teamNameTextField.clear();
+                player1TextField.clear();
+                player2TextField.clear();
+            } catch (SQLException e) {
+                // Code #1062 defines Duplicate entry value for primary key
+                // That said, the team name is already used.
+                if (e.getErrorCode() == Tournament.PRIMARY_KEY_TAKEN_ERROR) {
+                    SceneManager.getInstance().displayError("Error Dialog", null, "Team name is already used. Try a new name!");
+                } else {
+                    SceneManager.getInstance().displayError("Error Dialog", null, "Ooops, there was an error!\n Try again");
+                }
+                e.printStackTrace();
+            } catch (NullPointerException nullPointer) {
+                SceneManager.getInstance().displayError("Error Dialog", null, "Ooops, you need to select the players first!");
+                nullPointer.printStackTrace();
             }
-            Tournament.getInstance().registerTeam(t);
-
-            loadTeamsAndPlayers();
-
-            SceneManager.getInstance().displayInformation("Team creation", null, "Team created!");
-            player1Selected = null;
-            player2Selected = null;
-
-            teamNameTextField.clear();
-            player1TextField.clear();
-            player2TextField.clear();
-        } catch (SQLException e) {
-            // Code #1062 defines Duplicate entry value for primary key
-            // That said, the team name is already used.
-            if (e.getErrorCode() == Tournament.PRIMARY_KEY_TAKEN_ERROR) {
-                SceneManager.getInstance().displayError("Error Dialog", null, "Team name is already used. Try a new name!");
-            } else {
-                SceneManager.getInstance().displayError("Error Dialog", null, "Ooops, there was an error!\n Try again");
-            }
-            e.printStackTrace();
-        } catch (NullPointerException nullPointer) {
-            SceneManager.getInstance().displayError("Error Dialog", null, "Ooops, you need to select the players first!");
-            nullPointer.printStackTrace();
+        } else {
+            SceneManager.getInstance().displayError("Team registration" , null, "Teams can not be registered when tournament is running.");
         }
     }
 
@@ -294,7 +303,7 @@ public class AdminController {
      */
     @FXML
     private void startTournament() {
-        if (Tournament.getInstance().isStarted()) {
+        if (Tournament.getInstance().checkTournamentStarted()) {
             SceneManager.getInstance().displayError("Tournament start", null, "Tournament has already started.");
         } else {
             Tournament.getInstance().startTournament();
@@ -319,19 +328,23 @@ public class AdminController {
 
     @FXML
     private void deleteTeam() { // TODO: 19.04.2017 add confirmation message where it states in which team the player is in
-        if (selectedTeam != null) {
-            if (SceneManager.getInstance().displayConfirmation("Oops!",
-                    "Are you sure you want to delete team " + selectedTeam.getTeamName() + "?", null)) {
-                String id = selectedTeam.getTeamName();
-                Tournament.getInstance().deleteTeamD(id);
-                loadTeamsAndPlayers();
-                teamNameTextField.setText("");
-                player1TextField.setText("");
-                player2TextField.setText("");
-                selectedTeam = null;
+        if (Tournament.getInstance().checkTournamentStarted()) {
+            if (selectedTeam != null) {
+                if (SceneManager.getInstance().displayConfirmation("Oops!",
+                        "Are you sure you want to delete team " + selectedTeam.getTeamName() + "?", null)) {
+                    String id = selectedTeam.getTeamName();
+                    Tournament.getInstance().deleteTeamD(id);
+                    loadTeamsAndPlayers();
+                    teamNameTextField.setText("");
+                    player1TextField.setText("");
+                    player2TextField.setText("");
+                    selectedTeam = null;
+                }
+            } else {
+                SceneManager.getInstance().displayError("Oops!", "No Team selected", "Please select team to delete!");
             }
         } else {
-            SceneManager.getInstance().displayError("Oops!", "No Team selected", "Please select team to delete!");
+            SceneManager.getInstance().displayError("Delete team", null, "Team cannot be deleted when tournament is running.");
         }
     }
 
@@ -339,38 +352,39 @@ public class AdminController {
     private void editTeam() {
         String teamName = selectedTeam.getTeamName();
         String name = teamNameTextField.getText();
-        Player p1 = selectedTeam.getFirstPlayer();
-        Player p2 = selectedTeam.getSecondPlayer();
-        if (player1Selected != null && p1.getPlayerID() != player1Selected.getPlayerID()) {
-            p1 = player1Selected;
-        }
-        if (player2Selected != null && p2.getPlayerID() != player2Selected.getPlayerID()) {
-            p2 = player2Selected;
-        }
-        Team team = new Team(p1, p2, name);
-        try {
-            Tournament.getInstance().editTeamDB(teamName, team);
-            SceneManager.getInstance().displayInformation("Edit team", "Team information was successfully changed.", null);
-        } catch (SQLException e) {
-            // Code #1062 defines Duplicate entry value for primary key
-            // That said, the team name is already used.
-            if (e.getErrorCode() == Tournament.PRIMARY_KEY_TAKEN_ERROR) {
-                SceneManager.getInstance().displayError("Error Dialog", null, "Team name is already used. Try a new name!");
-            } else {
-                SceneManager.getInstance().displayError("Error Dialog", null, "Oops, there was an error!\n Try again");
+        if (Tournament.getInstance().checkTournamentStarted() && !teamName.equals(name)) {// if tournament is started
+            // and you try to change the name of the team
+            Player p1 = selectedTeam.getFirstPlayer();
+            Player p2 = selectedTeam.getSecondPlayer();
+            if (player1Selected != null && p1.getPlayerID() != player1Selected.getPlayerID()) {
+                p1 = player1Selected;
             }
-            e.printStackTrace();
+            if (player2Selected != null && p2.getPlayerID() != player2Selected.getPlayerID()) {
+                p2 = player2Selected;
+            }
+            Team team = new Team(p1, p2, name);
+            try {
+                Tournament.getInstance().editTeamDB(teamName, team);
+                SceneManager.getInstance().displayInformation("Edit team", "Team information was successfully changed.", null);
+            } catch (SQLException e) {
+                // Code #1062 defines Duplicate entry value for primary key
+                // That said, the team name is already used.
+                if (e.getErrorCode() == Tournament.PRIMARY_KEY_TAKEN_ERROR) {
+                    SceneManager.getInstance().displayError("Error Dialog", null, "Team name is already used. Try a new name!");
+                } else {
+                    SceneManager.getInstance().displayError("Error Dialog", null, "Oops, there was an error!\n Try again");
+                }
+                e.printStackTrace();
+            }
+            teamNameTextField.setText("");
+            player1TextField.setText("");
+            player2TextField.setText("");
+            selectedTeam = null;
+        } else {
+            SceneManager.getInstance().displayError("Edit team", "Tournament is already started.",
+                    "Changing team name after tournament was started is not allowed.\nOnly swapping players!");
         }
-//        } else {
-//            SceneManager.getInstance().displayWarning("Oops", "Ops", "Team name should be unique");
-//        }
-        teamNameTextField.setText("");
-        player1TextField.setText("");
-        player2TextField.setText("");
-        selectedTeam = null;
         loadTeamsAndPlayers();
-
-
     }
 
     ///////////////////////////////////////////////////SCHEDULE TAB////////////////////////////////////////////////////////

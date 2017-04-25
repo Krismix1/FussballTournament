@@ -24,14 +24,7 @@ public class Tournament {
 
     // This block of code gets executed when this class gets loaded.
     static {
-        Tournament t = Tournament.getInstance();
-        Map<String, Team> teamsMap = t.readAllTeams();
-        Map<String, Match> matchList = t.readAllMatches(teamsMap);
-        if (teamsMap.size() >= 2) { // we have at least 2 teams, that means there should be at least 1 match
-            if (matchList.size() > 0) { // we have at least 1 match registered in the database
-                t.isStarted = true;
-            }
-        }
+        Tournament.getInstance().checkTournamentStarted();
     }
 
     // Assuring that the class is a singleton
@@ -47,32 +40,17 @@ public class Tournament {
         return instance;
     }
 
-    // Will store state of the tournament: false - not started, true - started.
-    private boolean isStarted = false;
-
-    /**
-     * Returns if the tournament has been started or not.
-     *
-     * @return true if tournament was started, false otherwise
-     */
-    public boolean isStarted() {
-        return isStarted;
-    }
-
     /**
      * Starts the tournament, does all required actions like creating and registering matches
      */
     public void startTournament() {
-        isStarted = true;
         Map<String, Team> teamsMap = readAllTeams();
         List<Match> matchList = createMatches(new ArrayList<>(teamsMap.values()));
         saveMatchesToDB(matchList);
-        readAllMatches(teamsMap); //this? FIXME
     }
 
     public boolean endTournament() {
-        if (isStarted) {
-            isStarted = false;
+        //if (checkTournamentStarted()) {
             try {
                 String sql = "TRUNCATE TABLE matches;";
 
@@ -86,6 +64,22 @@ public class Tournament {
                 return true;
             } catch (SQLException e) {
                 e.printStackTrace();
+            }
+        //}
+        return false;
+    }
+
+    /**
+     * Returns if the tournament has been started or not.
+     *
+     * @return true if tournament was started, false otherwise
+     */
+    public boolean checkTournamentStarted() {
+        Map<String, Team> teamsMap = readAllTeams();
+        Map<String, Match> matchList = readAllMatches(teamsMap);
+        if (teamsMap.size() >= 2) { // we have at least 2 teams, that means there should be at least 1 match
+            if (matchList.size() > 0) { // we have at least 1 match registered in the database
+                return true;
             }
         }
         return false;
