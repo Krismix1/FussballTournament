@@ -191,8 +191,8 @@ public class Tournament {
             Statement stmt = con.createStatement();
             String sql = "SELECT team_name,wins,losses,goal_difference,name,birthday,email,player_id " +
                     "FROM teams, players " +
-                    "where teams.player_one_id = players.player_id or " +
-                    "teams.player_two_id = players.player_id";
+                    "WHERE teams.player_one_id = players.player_id or " +
+                    "teams.player_two_id = players.player_id;";
             ResultSet rs = stmt.executeQuery(sql);
             while (rs.next()) {
                 String teamName = rs.getString(1);
@@ -244,6 +244,30 @@ public class Tournament {
      */
     public Collection<Team> getTeamsList() {
         return readAllTeams().values();
+    }
+
+    public Collection<Team> getOrderedTeamList() {
+        Map<String, Team> teamsMap = readAllTeams();
+        Collection<Team> teams = new ArrayList<>();
+        try {
+            Connection con = DBConnection.getConnection();
+            Statement stmt = con.createStatement();
+            String sql = "SELECT team_name " +
+                    "FROM teams,players " +
+                    "WHERE teams.player_one_id = players.player_id or " +
+                    "teams.player_two_id = players.player_id " +
+                    "ORDER BY wins DESC, goal_difference DESC, losses ASC";
+            ResultSet rs = stmt.executeQuery(sql);
+            while (rs.next()) {
+                String teamName = rs.getString(1);
+                teams.add(teamsMap.get(teamName));
+                rs.next();
+            }
+            con.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return teams;
     }
 
     public void editTeamDB(String teamName, Team team) throws SQLException {
@@ -455,7 +479,7 @@ public class Tournament {
 
         winner.updateGoalDifference(Math.abs(teamOneGoals - teamTwoGoals));
         winner.incrementMatchesWon();
-        loser.updateGoalDifference(Math.abs(teamTwoGoals - teamOneGoals)*(-1));
+        loser.updateGoalDifference(Math.abs(teamTwoGoals - teamOneGoals) * (-1));
         loser.incrementMatchesLost();
         try {
             Connection con = DBConnection.getConnection();

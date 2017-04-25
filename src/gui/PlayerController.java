@@ -102,7 +102,7 @@ public class PlayerController {
 
     @FXML
     private void loadStandings() {
-        Collection<Team> statisticsList = Tournament.getInstance().getTeamsList();
+        Collection<Team> statisticsList = Tournament.getInstance().getOrderedTeamList();
         ObservableList<Team> stats = FXCollections.observableArrayList(statisticsList);
 
         standingTeam.setCellValueFactory(new PropertyValueFactory<>("teamName"));

@@ -535,7 +535,7 @@ public class AdminController {
         standingLosses.setCellValueFactory(new PropertyValueFactory<>("matchesLost"));
         standingPoints.setCellValueFactory(new PropertyValueFactory<>("pointsScored")); // FIXME: 23-Apr-17 Change to matches won, they are the same
 
-        teamsStandingTable.setItems(FXCollections.observableArrayList(Tournament.getInstance().getTeamsList()));
+        teamsStandingTable.setItems(FXCollections.observableArrayList(Tournament.getInstance().getOrderedTeamList()));
     }
 
 }
