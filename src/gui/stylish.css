@@ -1,3 +1,22 @@
 .persistent-prompt:focused {
     -fx-prompt-text-fill: derive(-fx-control-inner-background,-30%);
 }
+.tab {
+    -fx-background-color: dodgerblue;
+}
+.button{
+    -fx-background-color: salmon;
+}
+.tab-pane{
+    -fx-background-color: beige;
+}
+.table-view{
+    -fx-background-color: brown;
+}
+.table-column{
+    -fx-background-color: azure;
+}
+.text-field{
+    -fx-alignment: baseline-center;
+    -fx-background-color: gray;
+}

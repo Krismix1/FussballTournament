@@ -23,9 +23,9 @@ public class Tournament {
     public static final int PRIMARY_KEY_TAKEN_ERROR = 1062;
 
     // This block of code gets executed when this class gets loaded.
-    static {
-        Tournament.getInstance().checkTournamentStarted();
-    }
+    //static {
+    //    Tournament.getInstance().checkTournamentStarted();
+    //}
 
     // Assuring that the class is a singleton
     private Tournament() {
