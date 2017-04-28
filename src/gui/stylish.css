@@ -1,7 +1,7 @@
 .persistent-prompt:focused {
     -fx-prompt-text-fill: derive(-fx-control-inner-background,-30%);
 }
-.tab {
+/*.tab {
     -fx-background-color: dodgerblue;
 }
 .button{
@@ -19,4 +19,4 @@
 .text-field{
     -fx-alignment: baseline-center;
     -fx-background-color: gray;
-}
+}*/

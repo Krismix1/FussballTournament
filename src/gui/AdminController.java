@@ -14,13 +14,10 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import technicalservices.DBConnection;
 
 import java.io.IOException;
 import java.sql.*;
 import java.time.LocalDate;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 public class AdminController {
@@ -37,7 +34,7 @@ public class AdminController {
     private Button savePlayerBtn;
 
     /**
-     * The save player button action. Will check the entered information for all required fields, valid email if provided.
+     * The save player button action. Will check the entered information for all required fields, valid email, if provided.
      * If succeeds, sends a request to the Tournament class to save the player to the database.
      */
     @FXML
@@ -104,6 +101,9 @@ public class AdminController {
     @FXML
     private TableView<Player> playersTable;
 
+    /**
+     *
+     */
     @FXML
     private void showData() {
         ObservableList<Player> players = FXCollections.observableArrayList(Tournament.getInstance().getPlayersFromDB());
@@ -135,7 +135,7 @@ public class AdminController {
                 if (SceneManager.getInstance().displayConfirmation("Oops!",
                         "Are you sure you want to delete player " + selectedPlayer.getPlayerName() + "?", null)) {
                     int id = selectedPlayer.getPlayerID();
-                    Tournament.getInstance().deletePlayerFromDB(id);
+                    Tournament.getInstance().deletePlayerFromDB(selectedPlayer);
                     showData();
                     nameInput.setText("");
                     emailInput.setText("");
@@ -332,8 +332,7 @@ public class AdminController {
             if (selectedTeam != null) {
                 if (SceneManager.getInstance().displayConfirmation("Oops!",
                         "Are you sure you want to delete team " + selectedTeam.getTeamName() + "?", null)) {
-                    String id = selectedTeam.getTeamName();
-                    Tournament.getInstance().deleteTeamD(id);
+                    Tournament.getInstance().deleteTeam(selectedTeam);
                     loadTeamsAndPlayers();
                     teamNameTextField.setText("");
                     player1TextField.setText("");
@@ -443,7 +442,8 @@ public class AdminController {
     private void editMatch() {
         // TODO: 21-Apr-17 Check if date is >= today
         if (selectedMatch != null) {
-            if (Tournament.getInstance().editMatchDate(selectedMatch, editMatchDatePicker.getValue())) {
+            selectedMatch.setMatchDate(editMatchDatePicker.getValue());
+            if (Tournament.getInstance().editMatchDate(selectedMatch)) {
                 SceneManager.getInstance().displayInformation("Edit match date", "Match date was successfully changed", null);
                 selectedMatch = null;
                 editMatchDatePicker.setValue(null);
