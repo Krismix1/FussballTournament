@@ -1,5 +1,6 @@
 package domain;
 
+import sun.plugin.dom.exception.InvalidStateException;
 import technicalservices.DBConnection;
 import technicalservices.MatchCRUD;
 import technicalservices.PlayerCRUD;
@@ -51,26 +52,30 @@ public class Tournament {
      */
     public void startTournament() {
         Map<String, Team> teamsMap = teamTable.readAllTeams();
-        List<Match> matchList = createMatches(new ArrayList<>(teamsMap.values()));
-        matchTable.saveMatchesToDB(matchList);
+        if (teamsMap.size() >= 2) {
+            List<Match> matchList = createMatches(new ArrayList<>(teamsMap.values()));
+            matchTable.saveMatchesToDB(matchList);
+        }else{
+            throw new InvalidStateException("You need at least 2 teams to start a tournament");
+        }
     }
 
     public boolean endTournament() {
         //if (checkTournamentStarted()) {
-            try {
-                String sql = "TRUNCATE TABLE matches;";
+        try {
+            String sql = "TRUNCATE TABLE matches;";
 
-                Connection con = DBConnection.getConnection();
-                Statement stmt = con.createStatement();
-                stmt.executeUpdate(sql);
+            Connection con = DBConnection.getConnection();
+            Statement stmt = con.createStatement();
+            stmt.executeUpdate(sql);
 
-                sql = "DELETE from teams;";
-                stmt.executeUpdate(sql);
-                con.close();
-                return true;
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+            sql = "DELETE from teams;";
+            stmt.executeUpdate(sql);
+            con.close();
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         //}
         return false;
     }
@@ -140,7 +145,7 @@ public class Tournament {
         return teamTable.getOrderedTeamList();
     }
 
-    public void registerTeam(Team team) throws SQLException{
+    public void registerTeam(Team team) throws SQLException {
         teamTable.registerTeam(team);
     }
 
@@ -148,7 +153,7 @@ public class Tournament {
         teamTable.deleteTeamDB(team);
     }
 
-    public void editTeamDB(String teamName, Team team) throws SQLException{
+    public void editTeamDB(String teamName, Team team) throws SQLException {
         teamTable.editTeamDB(teamName, team);
     }
 

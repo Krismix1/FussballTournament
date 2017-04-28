@@ -14,6 +14,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import sun.plugin.dom.exception.InvalidStateException;
 
 import java.io.IOException;
 import java.sql.*;
@@ -306,8 +307,12 @@ public class AdminController {
         if (Tournament.getInstance().checkTournamentStarted()) {
             SceneManager.getInstance().displayError("Tournament start", null, "Tournament has already started.");
         } else {
-            Tournament.getInstance().startTournament();
-            SceneManager.getInstance().displayInformation("Tournament start", null, "Tournament successfully started.");
+            try {
+                Tournament.getInstance().startTournament();
+                SceneManager.getInstance().displayInformation("Tournament start", null, "Tournament successfully started.");
+            } catch (InvalidStateException e) {
+                SceneManager.getInstance().displayError("Tournament start", null, "At least 2 teams need to be registered in order to start a tournament.");
+            }
         }
     }
 
