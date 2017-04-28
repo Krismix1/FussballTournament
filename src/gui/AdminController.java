@@ -226,7 +226,7 @@ public class AdminController {
                 if (player1TextField.getText().isEmpty()) {
                     player1Selected = p;
                     player1TextField.setText(p.getPlayerName());
-                } else if (player2TextField.getText().isEmpty()) {
+                } else if (player2TextField.getText().isEmpty() && !player1Selected.equals(p)) {
                     player2TextField.setText(p.getPlayerName());
                     player2Selected = p;
                 }
